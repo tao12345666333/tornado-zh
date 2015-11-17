@@ -81,12 +81,12 @@ Tornado的源码托管在 `hosted on GitHub
 
 **平台**: Tornado可以运行在任何类Unix平台上,虽然为了最好的性能和可扩展性
 只有Linux(使用 ``epoll``)和BSD(使用 ``kqueue``)是推荐的产品部署环境(尽管Mac OS X通过BSD发展来并且支持kqueue,但它的网络质量很差，所以它只适合开发使用)
-Tornado也可以运行在Windows上，虽然它的配置不是官方支持的同时也只是推荐用来做开发.
+Tornado也可以运行在Windows上，虽然它的配置不是官方支持的,同时也仅仅推荐开发使用.
 
-Documentation
+文档
 -------------
 
-This documentation is also available in `PDF and Epub formats
+这个文档同时也提供 `PDF 和 Epub 格式
 <https://readthedocs.org/projects/tornado/downloads/>`_.
 
 .. toctree::
@@ -106,16 +106,15 @@ This documentation is also available in `PDF and Epub formats
 * :ref:`modindex`
 * :ref:`search`
 
-Discussion and support
+讨论和支持
 ----------------------
 
-You can discuss Tornado on `the Tornado developer mailing list
-<http://groups.google.com/group/python-tornado>`_, and report bugs on
-the `GitHub issue tracker
-<https://github.com/tornadoweb/tornado/issues>`_.  Links to additional
-resources can be found on the `Tornado wiki
-<https://github.com/tornadoweb/tornado/wiki/Links>`_.  New releases are
-announced on the `announcements mailing list
+你可以讨论Tornado在 `Tornado 开发者邮件列表
+<http://groups.google.com/group/python-tornado>`_, 报告bug在 `GitHub issue tracker
+<https://github.com/tornadoweb/tornado/issues>`_. 
+
+其他资源可以在 `Tornado wiki
+<https://github.com/tornadoweb/tornado/wiki/Links>`_ 上找到. 新版本会宣布在 `announcements mailing list
 <http://groups.google.com/group/python-tornado-announce>`_.
 
 Tornado is available under
