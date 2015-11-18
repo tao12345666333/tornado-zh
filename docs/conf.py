@@ -14,7 +14,10 @@
 
 import sys
 import os
-import shlex
+# import shlex
+import time
+sys.path.insert(0, os.path.abspath(".."))
+import tornado
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -29,7 +32,14 @@ import shlex
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = []
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.coverage",
+    "sphinx.ext.doctest",
+    "sphinx.ext.extlinks",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.viewcode",
+    ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -46,8 +56,8 @@ source_encoding = 'utf-8-sig'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Tornado'
-copyright = u'2015, The Tornado Authors'
+project = "Tornado"
+copyright = "2009-%s, The Tornado Authors" % time.strftime("%Y")
 author = u'The Tornado Authors'
 
 # The version info for the project you're documenting, acts as replacement for
