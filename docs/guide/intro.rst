@@ -2,7 +2,7 @@
 ------------
 
 `Tornado <http://www.tornadoweb.org>`_ 是一个Python web框架和异步网络库
-起初在 `FriendFeed
+起初由 `FriendFeed
 <http://friendfeed.com>`_ 开发. 通过使用非阻塞网络I/O, Tornado
 可以支持上万级的连接，处理
 `长连接 <http://en.wikipedia.org/wiki/Push_technology#Long_polling>`_,
@@ -15,7 +15,7 @@ Tornado 大体上可以被分为4个主要的部分:
 * HTTP的客户端和服务端实现 (`.HTTPServer` and
   `.AsyncHTTPClient`).
 * 异步网络库 (`.IOLoop` and `.IOStream`),
-  为HTTP组建提供构建模块，也可以用来实现其他协议.
+  为HTTP组件提供构建模块，也可以用来实现其他协议.
 * 协程库 (`tornado.gen`) 允许异步代码写的更直接而不用链式回调的方式.
 
 Tornado web 框架和HTTP server 一起为

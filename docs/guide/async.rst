@@ -1,66 +1,55 @@
-Asynchronous and non-Blocking I/O
+异步和非阻塞I/O
 ---------------------------------
 
-Real-time web features require a long-lived mostly-idle connection per
-user.  In a traditional synchronous web server, this implies devoting
-one thread to each user, which can be very expensive.
+实时web功能需要为每个用户提供一个多数时间被闲置的长连接,
+在传统的同步web服务器中，这意味着要为每个用户提供一个线程,
+当然每个线程的开销都是很昂贵的.
 
-To minimize the cost of concurrent connections, Tornado uses a
-single-threaded event loop.  This means that all application code
-should aim to be asynchronous and non-blocking because only one
-operation can be active at a time.
+为了尽量减少并发连接造成的开销，Tornado使用了一种单线程事件循环的方式.
+这就意味着所有的应用代码都应该是异步非阻塞的,
+因为在同一时间只有一个操作是有效的.
 
-The terms asynchronous and non-blocking are closely related and are
-often used interchangeably, but they are not quite the same thing.
+异步和非阻塞是非常相关的并且这两个术语经常交换使用,但它们不是完全相同的事情.
 
-Blocking
+阻塞
 ~~~~~~~~
 
-A function **blocks** when it waits for something to happen before
-returning.  A function may block for many reasons: network I/O, disk
-I/O, mutexes, etc.  In fact, *every* function blocks, at least a
-little bit, while it is running and using the CPU (for an extreme
-example that demonstrates why CPU blocking must be taken as seriously
-as other kinds of blocking, consider password hashing functions like
-`bcrypt <http://bcrypt.sourceforge.net/>`_, which by design use
-hundreds of milliseconds of CPU time, far more than a typical network
-or disk access).
+一个函数在等待某些事情的返回值的时候会被 **阻塞**. 函数被阻塞的原因有很多:
+网络I/O,磁盘I/O,互斥锁等.事实上 *每个* 函数在运行和使用CPU的时候都或多或少
+会被阻塞(举个极端的例子来说明为什么对待CPU阻塞要和对待一般阻塞一样的严肃:
+比如密码哈希函数
+`bcrypt <http://bcrypt.sourceforge.net/>`_, 需要消耗几百毫秒的CPU时间,这已
+经远远超过了一般的网络或者磁盘请求时间了).
 
-A function can be blocking in some respects and non-blocking in
-others.  For example, `tornado.httpclient` in the default
-configuration blocks on DNS resolution but not on other network access
-(to mitigate this use `.ThreadedResolver` or a
-``tornado.curl_httpclient`` with a properly-configured build of
-``libcurl``).  In the context of Tornado we generally talk about
-blocking in the context of network I/O, although all kinds of blocking
-are to be minimized.
+一个函数可以在某些方面阻塞在另外一些方面不阻塞.例如,
+`tornado.httpclient` 在默认的配置下,会在DNS解析上面阻塞,但是在其他网络请
+求的时候不阻塞
+(为了减轻这种影响，可以用 `.ThreadedResolver` 或者是
+通过正确配置 ``libcurl`` 用 ``tornado.curl_httpclient`` 来做).
+在Tornado的上下文中,我们一般讨论网络I/O上下文的阻塞,尽管各种阻塞已经被最小
+化.
 
-Asynchronous
+异步
 ~~~~~~~~~~~~
 
-An **asynchronous** function returns before it is finished, and
-generally causes some work to happen in the background before
-triggering some future action in the application (as opposed to normal
-**synchronous** functions, which do everything they are going to do
-before returning).  There are many styles of asynchronous interfaces:
+**异步** 函数在会在完成之前返回，在应用中触发下一个动作之前通常会在后
+台执行一些工作(和正常的 **同步** 函数在返回前就执行完所有的事情不同).这里列
+举了几种风格的异步接口:
 
-* Callback argument
-* Return a placeholder (`.Future`, ``Promise``, ``Deferred``)
-* Deliver to a queue
-* Callback registry (e.g. POSIX signals)
+* 回调参数
+* 返回一个占位符 (`.Future`, ``Promise``, ``Deferred``)
+* 传送给一个队列
+* 回调注册表 (e.g. POSIX信号)
 
-Regardless of which type of interface is used, asynchronous functions
-*by definition* interact differently with their callers; there is no
-free way to make a synchronous function asynchronous in a way that is
-transparent to its callers (systems like `gevent
-<http://www.gevent.org>`_ use lightweight threads to offer performance
-comparable to asynchronous systems, but they do not actually make
-things asynchronous).
+不论使用哪种类型的接口, *按照定义* 异步函数与它们的调用者都有着不同的交互方
+式;也没有什么对调用者透明的方式使得同步函数异步(类似 `gevent
+<http://www.gevent.org>`_ 使用轻量级线程的系统性能虽然堪比异步系统,但它们并
+没有真正的让事情异步).
 
-Examples
+例子
 ~~~~~~~~
 
-Here is a sample synchronous function:
+一个简单的同步函数:
 
 .. testcode::
 
@@ -74,8 +63,7 @@ Here is a sample synchronous function:
 .. testoutput::
    :hide:
 
-And here is the same function rewritten to be asynchronous with a
-callback argument:
+把上面的例子用回调参数重写的异步函数:
 
 .. testcode::
 
@@ -90,7 +78,7 @@ callback argument:
 .. testoutput::
    :hide:
 
-And again with a `.Future` instead of a callback:
+使用 `.Future` 代替回调:
 
 .. testcode::
 
@@ -107,15 +95,11 @@ And again with a `.Future` instead of a callback:
 .. testoutput::
    :hide:
 
-The raw `.Future` version is more complex, but ``Futures`` are
-nonetheless recommended practice in Tornado because they have two
-major advantages.  Error handling is more consistent since the
-`.Future.result` method can simply raise an exception (as opposed to
-the ad-hoc error handling common in callback-oriented interfaces), and
-``Futures`` lend themselves well to use with coroutines.  Coroutines
-will be discussed in depth in the next section of this guide.  Here is
-the coroutine version of our sample function, which is very similar to
-the original synchronous version:
+`.Future` 版本明显更加复杂，但是 ``Futures`` 却是Tornado中推荐的写法
+因为它有连个主要的优势.首先是错误处理更加一致,因为 `.Future.result` 
+方法可以简单的抛出异常(相较于常见的回调函数接口特别指定错误处理),
+而且 ``Futures`` 很适合和协程一起使用.协程会在后面深入讨论.这里是上
+面例子的协程版本,和最初的同步版本很像:
 
 .. testcode::
 
@@ -130,9 +114,8 @@ the original synchronous version:
 .. testoutput::
    :hide:
 
-The statement ``raise gen.Return(response.body)`` is an artifact of
-Python 2 (and 3.2), in which generators aren't allowed to return
-values. To overcome this, Tornado coroutines raise a special kind of
-exception called a `.Return`. The coroutine catches this exception and
-treats it like a returned value. In Python 3.3 and later, a ``return
-response.body`` achieves the same result.
+``raise gen.Return(response.body)`` 声明是在Python 2 (and 3.2)下人为
+执行的, 因为在其中生成器不允许返回值.为了客服这个问题,Tornado的协程
+抛出一种特殊的叫 `.Return` 的异常. 协程捕获这个异常并把它作为返回值.
+在Python 3.3和更高版本,使用 ``return
+response.body`` 有相同的结果.
