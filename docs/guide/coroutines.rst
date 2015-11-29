@@ -1,13 +1,12 @@
-Coroutines
+协程
 ==========
 
 .. testsetup::
 
    from tornado import gen
 
-**Coroutines** are the recommended way to write asynchronous code in
-Tornado.  Coroutines use the Python ``yield`` keyword to suspend and
-resume execution instead of a chain of callbacks (cooperative
+Tornado中推荐使用 **协程** 写异步代码. 协程使用了Python的 ``yield`` 
+关键字代替链式回调来挂起和恢复执行(cooperative
 lightweight threads as seen in frameworks like `gevent
 <http://www.gevent.org>`_ are sometimes called coroutines as well, but
 in Tornado all coroutines use explicit context switches and are called
