@@ -1,25 +1,19 @@
-Coroutines
+协程
 ==========
 
 .. testsetup::
 
    from tornado import gen
 
-**Coroutines** are the recommended way to write asynchronous code in
-Tornado.  Coroutines use the Python ``yield`` keyword to suspend and
-resume execution instead of a chain of callbacks (cooperative
-lightweight threads as seen in frameworks like `gevent
-<http://www.gevent.org>`_ are sometimes called coroutines as well, but
-in Tornado all coroutines use explicit context switches and are called
-as asynchronous functions).
+Tornado中推荐使用 **协程** 写异步代码. 协程使用了Python的 ``yield`` 
+关键字代替链式回调来将程序挂起和恢复执行(像在 `gevent
+<http://www.gevent.org>`_ 中出现的轻量级线程合作方式有时也被称为协程,
+但是在Tornado中所有的协程使用明确的上下文切换,并被称为异步函数).
 
-Coroutines are almost as simple as synchronous code, but without the
-expense of a thread.  They also `make concurrency easier
-<https://glyph.twistedmatrix.com/2014/02/unyielding.html>`_ to reason
-about by reducing the number of places where a context switch can
-happen.
+使用协程几乎像写同步代码一样简单,并且不需要浪费额外的线程. 它们还通过减少上下文切换来 `使并发编程更简单
+<https://glyph.twistedmatrix.com/2014/02/unyielding.html>`_ .
 
-Example::
+例子::
 
     from tornado import gen
 
@@ -27,10 +21,9 @@ Example::
     def fetch_coroutine(url):
         http_client = AsyncHTTPClient()
         response = yield http_client.fetch(url)
-        # In Python versions prior to 3.3, returning a value from
-        # a generator is not allowed and you must use
-        #   raise gen.Return(response.body)
-        # instead.
+        # 在Python 3.3之前, 在generator中是不允许有返回值的
+        # 必须通过抛出异常来代替.
+        # 就像 raise gen.Return(response.body).
         return response.body
 
 .. _native_coroutines:
@@ -38,33 +31,22 @@ Example::
 Python 3.5: ``async`` and ``await``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Python 3.5 introduces the ``async`` and ``await`` keywords (functions
-using these keywords are also called "native coroutines"). Starting in
-Tornado 4.3, you can use them in place of ``yield``-based coroutines.
-Simply use ``async def foo()`` in place of a function definition with
-the ``@gen.coroutine`` decorator, and ``await`` in place of yield. The
-rest of this document still uses the ``yield`` style for compatibility
-with older versions of Python, but ``async`` and ``await`` will run
-faster when they are available::
+Python 3.5 引入了 ``async`` 和 ``await`` 关键字(使用这些关键字的
+函数也被称为"原生协程"). 从Tornado 4.3, 你可以用它们代替 ``yield`` 为基础的协程.
+只需要简单的使用 ``async def foo()`` 在函数定义的时候代替 ``@gen.coroutine`` 装饰器, 用 ``await`` 代替yield. 本文档的其他部分会继续使用 ``yield`` 的风格来和旧版本的Python兼容, 但是如果 ``async`` 和 ``await`` 可用的话，它们运行起来会更快::
 
     async def fetch_coroutine(url):
         http_client = AsyncHTTPClient()
         response = await http_client.fetch(url)
         return response.body
 
-The ``await`` keyword is less versatile than the ``yield`` keyword.
-For example, in a ``yield``-based coroutine you can yield a list of
-``Futures``, while in a native coroutine you must wrap the list in
-`tornado.gen.multi`. You can also use `tornado.gen.convert_yielded`
-to convert anything that would work with ``yield`` into a form that
-will work with ``await``.
+``await`` 关键字比 ``yield`` 关键字功能要少一些.
+例如,在一个使用 ``yield`` 的协程中， 你可以得到
+``Futures`` 列表, 但是在原生协程中,你必须把列表用 `tornado.gen.multi` 包起来. 你也可以使用 `tornado.gen.convert_yielded`
+来把任何使用 ``yield`` 工作的代码转换成使用 ``await`` 的形式.
 
-While native coroutines are not visibly tied to a particular framework
-(i.e. they do not use a decorator like `tornado.gen.coroutine` or
-`asyncio.coroutine`), not all coroutines are compatible with each
-other. There is a *coroutine runner* which is selected by the first
-coroutine to be called, and then shared by all coroutines which are
-called directly with ``await``. The Tornado coroutine runner is
+虽然原生协程没有明显依赖于特定框架(例如它们没有使用装饰器,例如 `tornado.gen.coroutine` 或
+`asyncio.coroutine`), 不是所有的协程都和其他的兼容. 有一个 *协程执行者(coroutine runner)* 在第一个协程被调用的时候进行选择, 然后被所有用  ``await`` 直接调用的协程共享. The Tornado coroutine runner is
 designed to be versatile and accept awaitable objects from any
 framework; other coroutine runners may be more limited (for example,
 the ``asyncio`` coroutine runner does not accept coroutines from other
