@@ -46,25 +46,20 @@ Python 3.5 引入了 ``async`` 和 ``await`` 关键字(使用这些关键字的
 来把任何使用 ``yield`` 工作的代码转换成使用 ``await`` 的形式.
 
 虽然原生协程没有明显依赖于特定框架(例如它们没有使用装饰器,例如 `tornado.gen.coroutine` 或
-`asyncio.coroutine`), 不是所有的协程都和其他的兼容. 有一个 *协程执行者(coroutine runner)* 在第一个协程被调用的时候进行选择, 然后被所有用  ``await`` 直接调用的协程共享. The Tornado coroutine runner is
-designed to be versatile and accept awaitable objects from any
-framework; other coroutine runners may be more limited (for example,
-the ``asyncio`` coroutine runner does not accept coroutines from other
-frameworks). For this reason, it is recommended to use the Tornado
-coroutine runner for any application which combines multiple
-frameworks. To call a coroutine using the Tornado runner from within a
-coroutine that is already using the asyncio runner, use the
-`tornado.platform.asyncio.to_asyncio_future` adapter.
+`asyncio.coroutine`), 不是所有的协程都和其他的兼容. 有一个 *协程执行者(coroutine runner)* 在第一个协程被调用的时候进行选择, 然后被所有用  ``await`` 直接调用的协程共享.
+Tornado 的协程执行者(coroutine runner)在设计上是多用途的,可以接受任何来自其他框架的awaitable对象;
+其他的协程运行时可能有很多限制(例如, ``asyncio`` 协程执行者不接受来自其他框架的协程).
+基于这些原因,我们推荐组合了多个框架的应用都使用Tornado的协程执行者来进行协程调度.
+为了能使用Tornado来调度执行asyncio的协程, 可以使用
+`tornado.platform.asyncio.to_asyncio_future` 适配器.
 
 
-How it works
-~~~~~~~~~~~~
+它是如何工作的
+~~~~~~~~~~~~~~~~~~~~
 
-A function containing ``yield`` is a **generator**.  All generators
-are asynchronous; when called they return a generator object instead
-of running to completion.  The ``@gen.coroutine`` decorator
-communicates with the generator via the ``yield`` expressions, and
-with the coroutine's caller by returning a `.Future`.
+包含了 ``yield`` 关键字的函数是一个 **生成器(generator)**. 所有的生成器都是异步的;
+当调用它们的时候,会返回一个生成器对象,而不是一个执行完的结果.
+``@gen.coroutine`` 装饰器通过 ``yield`` 表达式和生成器进行交流, 而且通过返回一个 `.Future` 与协程的调用方进行交互.
 
 Here is a simplified version of the coroutine decorator's inner loop::
 
