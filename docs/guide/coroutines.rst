@@ -61,9 +61,9 @@ Tornado 的协程执行者(coroutine runner)在设计上是多用途的,可以�
 当调用它们的时候,会返回一个生成器对象,而不是一个执行完的结果.
 ``@gen.coroutine`` 装饰器通过 ``yield`` 表达式和生成器进行交流, 而且通过返回一个 `.Future` 与协程的调用方进行交互.
 
-Here is a simplified version of the coroutine decorator's inner loop::
+下面是一个协程装饰器内部循环的简单版本::
 
-    # Simplified inner loop of tornado.gen.Runner
+    # tornado.gen.Runner 简化的内部循环
     def run(self):
         # send(x) makes the current yield return x.
         # It returns when the next yield is reached
@@ -73,90 +73,80 @@ Here is a simplified version of the coroutine decorator's inner loop::
             self.run()
         future.add_done_callback(callback)
 
-The decorator receives a `.Future` from the generator, waits (without
-blocking) for that `.Future` to complete, then "unwraps" the `.Future`
-and sends the result back into the generator as the result of the
-``yield`` expression.  Most asynchronous code never touches the `.Future`
-class directly except to immediately pass the `.Future` returned by
-an asynchronous function to a ``yield`` expression.
+装饰器从生成器接收一个 `.Future` 对象, 等待(非阻塞的)这个 `.Future` 
+对象执行完成, 然后"解开(unwraps)" 这个 `.Future` 对象，并把结果作为
+``yield`` 表达式的结果传回给生成器.  大多数异步代码从来不会直接接触 `.Future` 类
+除非 `.Future` 立即通过异步函数返回给 ``yield`` 表达式.
 
-How to call a coroutine
+如何调用协程
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Coroutines do not raise exceptions in the normal way: any exception
-they raise will be trapped in the `.Future` until it is yielded. This
-means it is important to call coroutines in the right way, or you may
-have errors that go unnoticed::
+协程一般不会抛出异常: 它们抛出的任何异常将被 `.Future` 捕获
+直到它被得到. 这意味着用正确的方式调用协程是重要的, 否则你可能有被
+忽略的错误::
 
     @gen.coroutine
     def divide(x, y):
         return x / y
 
     def bad_call():
-        # This should raise a ZeroDivisionError, but it won't because
-        # the coroutine is called incorrectly.
+        # 这里应该抛出一个 ZeroDivisionError 的异常, 但事实上并没有
+        # 因为协程的调用方式是错误的.
         divide(1, 0)
 
-In nearly all cases, any function that calls a coroutine must be a
-coroutine itself, and use the ``yield`` keyword in the call. When you
-are overriding a method defined in a superclass, consult the
-documentation to see if coroutines are allowed (the documentation
-should say that the method "may be a coroutine" or "may return a
-`.Future`")::
+几乎所有的情况下, 任何一个调用协程的函数都必须是协程它自身, 并且在
+调用的时候使用 ``yield`` 关键字. 当你复写超类中的方法, 请参阅文档,
+看看协程是否支持(文档应该会写该方法 "可能是一个协程" 或者 "可能返回
+一个 `.Future` ")::
 
     @gen.coroutine
     def good_call():
-        # yield will unwrap the Future returned by divide() and raise
-        # the exception.
+        # yield 将会解开 divide() 返回的 Future 并且抛出异常
         yield divide(1, 0)
 
-Sometimes you may want to "fire and forget" a coroutine without waiting
-for its result. In this case it is recommended to use `.IOLoop.spawn_callback`,
-which makes the `.IOLoop` responsible for the call. If it fails,
-the `.IOLoop` will log a stack trace::
+有时你可能想要对一个协程"一劳永逸"而且不等待它的结果. 在这种情况下,
+建议使用 `.IOLoop.spawn_callback`, 它使得 `.IOLoop` 负责调用. 如果
+它失败了, `.IOLoop` 会在日志中把调用栈记录下来::
 
-    # The IOLoop will catch the exception and print a stack trace in
-    # the logs. Note that this doesn't look like a normal call, since
-    # we pass the function object to be called by the IOLoop.
+    # IOLoop 将会捕获异常,并且在日志中打印栈记录.
+    # 注意这不像是一个正常的调用, 因为我们是通过
+    # IOLoop 调用的这个函数.
     IOLoop.current().spawn_callback(divide, 1, 0)
 
-Finally, at the top level of a program, *if the `.IOLoop` is not yet
-running,* you can start the `.IOLoop`, run the coroutine, and then
-stop the `.IOLoop` with the `.IOLoop.run_sync` method. This is often
-used to start the ``main`` function of a batch-oriented program::
+最后, 在程序顶层, *如果 `.IOLoop` 尚未运行,* 你可以启动 `.IOLoop`,
+执行协程,然后使用 `.IOLoop.run_sync` 方法停止 `.IOLoop` . 这通常被
+用来启动面向批处理程序的 ``main`` 函数::
 
-    # run_sync() doesn't take arguments, so we must wrap the
-    # call in a lambda.
+    # run_sync() 不接收参数,所以我们必须把调用包在lambda函数中.
     IOLoop.current().run_sync(lambda: divide(1, 0))
 
-Coroutine patterns
+协程模式
 ~~~~~~~~~~~~~~~~~~
 
-Interaction with callbacks
+结合 callback
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-To interact with asynchronous code that uses callbacks instead of
-`.Future`, wrap the call in a `.Task`.  This will add the callback
-argument for you and return a `.Future` which you can yield:
+为了使用回调而不是 `.Future` 与异步代码进行交互, 把调用包在 `.Task`
+中. 这将为你添加一个回调参数并且返回一个可以yield的 `.Future` :
 
 .. testcode::
 
     @gen.coroutine
     def call_task():
-        # Note that there are no parens on some_function.
-        # This will be translated by Task into
+        # 注意这里没有传进来some_function.
+        # 这里会被Task翻译成
         #   some_function(other_args, callback=callback)
         yield gen.Task(some_function, other_args)
 
 .. testoutput::
    :hide:
 
-Calling blocking functions
+调用阻塞函数
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The simplest way to call a blocking function from a coroutine is to
-use a `~concurrent.futures.ThreadPoolExecutor`, which returns
-``Futures`` that are compatible with coroutines::
+从协程调用阻塞函数最简单的方式是使用
+`~concurrent.futures.ThreadPoolExecutor`, 它将返回和协程兼容的 
+``Futures`` ::
 
     thread_pool = ThreadPoolExecutor(4)
 
@@ -164,11 +154,10 @@ use a `~concurrent.futures.ThreadPoolExecutor`, which returns
     def call_blocking():
         yield thread_pool.submit(blocking_func, args)
 
-Parallelism
+并行
 ^^^^^^^^^^^
 
-The coroutine decorator recognizes lists and dicts whose values are
-``Futures``, and waits for all of those ``Futures`` in parallel:
+协程装饰器能识别列表或者字典对象中各自的 ``Futures``, 并且并行的等待这些 ``Futures`` :
 
 .. testcode::
 
@@ -180,22 +169,22 @@ The coroutine decorator recognizes lists and dicts whose values are
     @gen.coroutine
     def parallel_fetch_many(urls):
         responses = yield [http_client.fetch(url) for url in urls]
-        # responses is a list of HTTPResponses in the same order
+        # 响应是和HTTPResponses相同顺序的列表
 
     @gen.coroutine
     def parallel_fetch_dict(urls):
         responses = yield {url: http_client.fetch(url)
                             for url in urls}
-        # responses is a dict {url: HTTPResponse}
+        # 响应是一个字典 {url: HTTPResponse}
 
 .. testoutput::
    :hide:
 
-Interleaving
+交叉存取
 ^^^^^^^^^^^^
 
-Sometimes it is useful to save a `.Future` instead of yielding it
-immediately, so you can start another operation before waiting:
+有时候保存一个 `.Future` 比立即yield它更有用, 所以你可以在等待之前
+执行其他操作:
 
 .. testcode::
 
@@ -212,7 +201,7 @@ immediately, so you can start another operation before waiting:
 .. testoutput::
    :hide:
 
-Looping
+循环
 ^^^^^^^
 
 Looping is tricky with coroutines since there is no way in Python
