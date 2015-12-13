@@ -1,12 +1,13 @@
-:class:`~tornado.queues.Queue` example - a concurrent web spider
+:class:`~tornado.queues.Queue` 示例 - 一个并发网络爬虫
 ================================================================
 
 .. currentmodule:: tornado.queues
 
-Tornado's `tornado.queues` module implements an asynchronous producer /
-consumer pattern for coroutines, analogous to the pattern implemented for
-threads by the Python standard library's `queue` module.
+Tornado的 `tornado.queues` 模块实现了异步生产者/消费者模式的协程, 类似于
+通过Python 标准库的 `queue` 实现线程模式.
 
+一个yield `Queue.get` 的协程直到队列中有值的时候才会暂停. 如果队列设置了最大长度
+yield `Queue.put` 的协程直到队列中有空间才会暂停.
 A coroutine that yields `Queue.get` pauses until there is an item in the queue.
 If the queue has a maximum size set, a coroutine that yields `Queue.put` pauses
 until there is room for another item.
