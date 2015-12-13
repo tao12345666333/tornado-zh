@@ -10,7 +10,7 @@ Tornado中推荐使用 **协程** 写异步代码. 协程使用了Python的 ``yi
 <http://www.gevent.org>`_ 中出现的轻量级线程合作方式有时也被称为协程,
 但是在Tornado中所有的协程使用明确的上下文切换,并被称为异步函数).
 
-使用协程几乎像写同步代码一样简单,并且不需要浪费额外的线程. 它们还通过减少上下文切换来 `使并发编程更简单
+使用协程几乎像写同步代码一样简单, 并且不需要浪费额外的线程. 它们还通过减少上下文切换来 `使并发编程更简单
 <https://glyph.twistedmatrix.com/2014/02/unyielding.html>`_ .
 
 例子::
@@ -204,11 +204,10 @@ Tornado 的协程执行者(coroutine runner)在设计上是多用途的,可以�
 循环
 ^^^^^^^
 
-Looping is tricky with coroutines since there is no way in Python
-to ``yield`` on every iteration of a ``for`` or ``while`` loop and
-capture the result of the yield.  Instead, you'll need to separate
-the loop condition from accessing the results, as in this example
-from `Motor <http://motor.readthedocs.org/en/stable/>`_::
+协程的循环是棘手的, 因为在Python中 没有办法在 ``for`` 循环或者
+``while`` 循环 ``yield`` 迭代器,并且捕获yield的结果. 相反,你需要将
+循环条件从访问结果中分离出来, 下面是一个使用 `Motor
+<http://motor.readthedocs.org/en/stable/>`_ 的例子::
 
     import motor
     db = motor.MotorClient().test
@@ -219,11 +218,11 @@ from `Motor <http://motor.readthedocs.org/en/stable/>`_::
         while (yield cursor.fetch_next):
             doc = cursor.next_object()
 
-Running in the background
+在后台运行
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-`.PeriodicCallback` is not normally used with coroutines. Instead, a
-coroutine can contain a ``while True:`` loop and use
+`.PeriodicCallback` 通常不使用协程. 相反,一个协程可以包含一个
+``while True:`` 循环并使用
 `tornado.gen.sleep`::
 
     @gen.coroutine
@@ -236,14 +235,13 @@ coroutine can contain a ``while True:`` loop and use
     # spawn_callback().
     IOLoop.current().spawn_callback(minute_loop)
 
-Sometimes a more complicated loop may be desirable. For example, the
-previous loop runs every ``60+N`` seconds, where ``N`` is the running
-time of ``do_something()``. To run exactly every 60 seconds, use the
-interleaving pattern from above::
+有时可能会遇到一个更复杂的循环. 例如, 上一个循环运行每次花费
+``60+N`` 秒, 其中 ``N`` 是 ``do_something()`` 花费的时间. 为了
+准确的每60秒运行,使用上面的交叉模式::
 
     @gen.coroutine
     def minute_loop2():
         while True:
-            nxt = gen.sleep(60)   # Start the clock.
-            yield do_something()  # Run while the clock is ticking.
-            yield nxt             # Wait for the timer to run out.
+            nxt = gen.sleep(60)   # 开始计时.
+            yield do_something()  # 计时后运行.
+            yield nxt             # 等待计时结束.
