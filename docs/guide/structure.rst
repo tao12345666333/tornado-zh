@@ -4,15 +4,14 @@
 
    import tornado.web
 
-Structure of a Tornado web application
+Tornado web应用的结构
 ======================================
 
-A Tornado web application generally consists of one or more
-`.RequestHandler` subclasses, an `.Application` object which
-routes incoming requests to handlers, and a ``main()`` function
-to start the server.
+通常一个Tornado web应用包括一个或者多个 `.RequestHandler` 子类,
+一个可以将收到的请求路由到对应handler的 `.Application` 对象,和
+一个启动服务的 ``main()`` 函数.
 
-A minimal "hello world" example looks something like this:
+一个最小的"hello world"例子就像下面这样:
 
 .. testcode::
 
@@ -36,26 +35,22 @@ A minimal "hello world" example looks something like this:
 .. testoutput::
    :hide:
 
-The ``Application`` object
+``Application`` 对象
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The `.Application` object is responsible for global configuration, including
-the routing table that maps requests to handlers.
+`.Application` 对象是负责全局配置的, 包括映射请求转发给处理程序的路由
+表.
 
-The routing table is a list of `.URLSpec` objects (or tuples), each of
-which contains (at least) a regular expression and a handler class.
-Order matters; the first matching rule is used.  If the regular
-expression contains capturing groups, these groups are the *path
-arguments* and will be passed to the handler's HTTP method.  If a
-dictionary is passed as the third element of the `.URLSpec`, it
-supplies the *initialization arguments* which will be passed to
-`.RequestHandler.initialize`.  Finally, the `.URLSpec` may have a
-name, which will allow it to be used with
-`.RequestHandler.reverse_url`.
+路由表是 `.URLSpec` 对象(或元组)的列表, 其中每个都包含(至少)一个正则
+表达式和一个处理类. 顺序问题; 第一个匹配的规则会被使用. 如果正则表达
+式包含捕获组, 这些组会被作为 *路径参数* 传递给处理函数的HTTP方法.
+如果一个字典作为 `.URLSpec` 的第三个参数被传递, 它会作为 *初始参数*
+传递给 `.RequestHandler.initialize`.  最后 `.URLSpec` 可能有一个名字
+, 这将允许它被 `.RequestHandler.reverse_url` 使用.
 
-For example, in this fragment the root URL ``/`` is mapped to
-``MainHandler`` and URLs of the form ``/story/`` followed by a number
-are mapped to ``StoryHandler``.  That number is passed (as a string) to
+例如, 在这个片段中根URL ``/`` 映射到了
+``MainHandler`` , 像 ``/story/`` 后跟着一个数字这种形式的URL被映射到了
+``StoryHandler``.  这个数字被传递(作为字符串)给
 ``StoryHandler.get``.
 
 ::
