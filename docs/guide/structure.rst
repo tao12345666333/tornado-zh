@@ -72,17 +72,15 @@ Tornado web应用的结构
         url(r"/story/([0-9]+)", StoryHandler, dict(db=db), name="story")
         ])
 
-The `.Application` constructor takes many keyword arguments that
-can be used to customize the behavior of the application and enable
-optional features; see `.Application.settings` for the complete list.
+`.Application` 构造函数有很多关键字参数可以用于自定义应用程序的行为
+和使用某些特性(或者功能); 完整列表请查看 `.Application.settings` .
 
-Subclassing ``RequestHandler``
+ ``RequestHandler`` 子类
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Most of the work of a Tornado web application is done in subclasses
-of `.RequestHandler`.  The main entry point for a handler subclass
-is a method named after the HTTP method being handled: ``get()``,
-``post()``, etc.  Each handler may define one or more of these methods
+Tornado web 应用程序的大部分工作是在 `.RequestHandler` 子类下完成的.
+处理子类的主入口点是一个命名为处理HTTP方法的函数: ``get()``,
+``post()``, 等等.  Each handler may define one or more of these methods
 to handle different HTTP actions.  As described above, these methods
 will be called with arguments corresponding to the capturing groups
 of the routing rule that matched.
