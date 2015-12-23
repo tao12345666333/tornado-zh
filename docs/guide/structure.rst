@@ -80,26 +80,21 @@ Tornado web应用的结构
 
 Tornado web 应用程序的大部分工作是在 `.RequestHandler` 子类下完成的.
 处理子类的主入口点是一个命名为处理HTTP方法的函数: ``get()``,
-``post()``, 等等.  Each handler may define one or more of these methods
-to handle different HTTP actions.  As described above, these methods
-will be called with arguments corresponding to the capturing groups
-of the routing rule that matched.
+``post()``, 等等. 每个处理程序可以定义一个或者多个这种方法来处理不同
+的HTTP动作. 如上所述, 这些方法将被匹配路由规则的捕获组对应的参数调用.
 
-Within a handler, call methods such as `.RequestHandler.render` or
-`.RequestHandler.write` to produce a response.  ``render()`` loads a
-`.Template` by name and renders it with the given
-arguments. ``write()`` is used for non-template-based output; it
-accepts strings, bytes, and dictionaries (dicts will be encoded as
-JSON).
+在处理程序中, 调用方法如 `.RequestHandler.render` 或者
+`.RequestHandler.write` 产生一个响应.  ``render()`` 通过名字加载一个
+`.Template` 并使用给定的参数渲染它. ``write()`` 被用于非模板基础的输
+出; 它接受字符串, 字节, 和字典(字典会被编码成JSON).
 
-Many methods in `.RequestHandler` are designed to be overridden in
-subclasses and be used throughout the application.  It is common
-to define a ``BaseHandler`` class that overrides methods such as
-`~.RequestHandler.write_error` and `~.RequestHandler.get_current_user`
-and then subclass your own ``BaseHandler`` instead of `.RequestHandler`
-for all your specific handlers.
+在 `.RequestHandler` 中的很多方法的设计是为了在子类中复写和在整个应用
+中使用. 常用的方法是定义一个 ``BaseHandler`` 类, 复写一些方法例如
+`~.RequestHandler.write_error` 和 `~.RequestHandler.get_current_user`
+然后子类继承使用你自己的 ``BaseHandler`` 而不是 `.RequestHandler`
+在你所有具体的处理程序中.
 
-Handling request input
+处理请求输入
 ~~~~~~~~~~~~~~~~~~~~~~
 
 The request handler can access the object representing the current
