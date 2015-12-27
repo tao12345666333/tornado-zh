@@ -94,17 +94,16 @@ Tornado web 应用程序的大部分工作是在 `.RequestHandler` 子类下完�
 然后子类继承使用你自己的 ``BaseHandler`` 而不是 `.RequestHandler`
 在你所有具体的处理程序中.
 
-处理请求输入
+处理输入请求
 ~~~~~~~~~~~~~~~~~~~~~~
 
-The request handler can access the object representing the current
-request with ``self.request``.  See the class definition for
-`~tornado.httputil.HTTPServerRequest` for a complete list of
-attributes.
+处理请求的程序(request handler)可以使用 ``self.request`` 访问代表当
+前请求的对象. 通过
+`~tornado.httputil.HTTPServerRequest` 的类定义查看完整的属性列表.
 
-Request data in the formats used by HTML forms will be parsed for you
-and is made available in methods like `~.RequestHandler.get_query_argument`
-and `~.RequestHandler.get_body_argument`.
+使用HTML表单格式请求的数据会被解析并且可以在一些方法中使用, 例如
+`~.RequestHandler.get_query_argument` 和
+`~.RequestHandler.get_body_argument`.
 
 .. testcode::
 
