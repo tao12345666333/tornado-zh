@@ -121,24 +121,21 @@ Tornado web 应用程序的大部分工作是在 `.RequestHandler` 子类下完�
 .. testoutput::
    :hide:
 
-Since the HTML form encoding is ambiguous as to whether an argument is
-a single value or a list with one element, `.RequestHandler` has
-distinct methods to allow the application to indicate whether or not
-it expects a list.  For lists, use
-`~.RequestHandler.get_query_arguments` and
-`~.RequestHandler.get_body_arguments` instead of their singular
-counterparts.
+由于HTLM表单编码不确定一个标签的参数是单一值还是一个列表,
+`.RequestHandler` 有明确的方法来允许应用程序表明是否它期望接收一个列表.
+对于列表, 使用
+`~.RequestHandler.get_query_arguments` 和
+`~.RequestHandler.get_body_arguments` 而不是它们的单数形式.
 
-Files uploaded via a form are available in ``self.request.files``,
-which maps names (the name of the HTML ``<input type="file">``
-element) to a list of files. Each file is a dictionary of the form
-``{"filename":..., "content_type":..., "body":...}``.  The ``files``
-object is only present if the files were uploaded with a form wrapper
-(i.e. a ``multipart/form-data`` Content-Type); if this format was not used
-the raw uploaded data is available in ``self.request.body``.
-By default uploaded files are fully buffered in memory; if you need to
-handle files that are too large to comfortably keep in memory see the
-`.stream_request_body` class decorator.
+通过一个表单上传的文件可以使用 ``self.request.files``,
+它遍历名字(HTML 标签 ``<input type="file">`` 的name)到一个文件列表.
+每个文件都是一个字典的形式
+``{"filename":..., "content_type":..., "body":...}``.  ``files``
+对象是当前唯一的如果文件上传是通过一个表单包装
+(i.e. a ``multipart/form-data`` Content-Type); 如果没用这种格式,
+原生上传的数据可以调用 ``self.request.body`` 使用.
+默认上传的文件是完全缓存在内存中的; 如果你需要处理占用内存太大的文件
+可以看看 `.stream_request_body` 类装饰器.
 
 Due to the quirks of the HTML form encoding (e.g. the ambiguity around
 singular versus plural arguments), Tornado does not attempt to unify
