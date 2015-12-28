@@ -137,12 +137,10 @@ Tornado web 应用程序的大部分工作是在 `.RequestHandler` 子类下完�
 默认上传的文件是完全缓存在内存中的; 如果你需要处理占用内存太大的文件
 可以看看 `.stream_request_body` 类装饰器.
 
-Due to the quirks of the HTML form encoding (e.g. the ambiguity around
-singular versus plural arguments), Tornado does not attempt to unify
-form arguments with other types of input.  In particular, we do not
-parse JSON request bodies.  Applications that wish to use JSON instead
-of form-encoding may override `~.RequestHandler.prepare` to parse their
-requests::
+由于HTML表单编码格式的怪异 (e.g. 在单数和复数参数的含糊不清), Tornado
+不会试图统一表单参数和其他输入类型的参数. 特别是, 我们不解析JSON请求体.
+应用程序希望使用JSON代替表单编码可以复写 `~.RequestHandler.prepare`
+来解析它们的请求::
 
     def prepare(self):
         if self.request.headers["Content-Type"].startswith("application/json"):
@@ -150,17 +148,16 @@ requests::
         else:
             self.json_args = None
 
-Overriding RequestHandler methods
+复写RequestHandler的方法
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In addition to ``get()``/``post()``/etc, certain other methods in
-`.RequestHandler` are designed to be overridden by subclasses when
-necessary. On every request, the following sequence of calls takes
-place:
+除了 ``get()``/``post()``/等, 在 `.RequestHandler` 中的某些其他方法
+被设计成了在必要的时候让子类重写. 在每个请求中, 会发生下面的调用序
+列:
 
-1. A new `.RequestHandler` object is created on each request
-2. `~.RequestHandler.initialize()` is called with the initialization
-   arguments from the `.Application` configuration. ``initialize``
+1. 在每次请求时生成一个新的 `.RequestHandler` 对象
+2. `~.RequestHandler.initialize()` 被 `.Application` 配置中的初始化
+   参数被调用. ``initialize``
    should typically just save the arguments passed into member
    variables; it may not produce any output or call methods like
    `~.RequestHandler.send_error`.
