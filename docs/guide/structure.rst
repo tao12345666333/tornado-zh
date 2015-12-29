@@ -157,39 +157,33 @@ Tornado web 应用程序的大部分工作是在 `.RequestHandler` 子类下完�
 
 1. 在每次请求时生成一个新的 `.RequestHandler` 对象
 2. `~.RequestHandler.initialize()` 被 `.Application` 配置中的初始化
-   参数被调用. ``initialize``
-   should typically just save the arguments passed into member
-   variables; it may not produce any output or call methods like
+   参数被调用. ``initialize``  通常应该只保存成员变量传递的参数;
+   它不可能产生任何输出或者调用方法, 例如
    `~.RequestHandler.send_error`.
-3. `~.RequestHandler.prepare()` is called. This is most useful in a
-   base class shared by all of your handler subclasses, as ``prepare``
-   is called no matter which HTTP method is used. ``prepare`` may
-   produce output; if it calls `~.RequestHandler.finish` (or
-   ``redirect``, etc), processing stops here.
-4. One of the HTTP methods is called: ``get()``, ``post()``, ``put()``,
-   etc. If the URL regular expression contains capturing groups, they
-   are passed as arguments to this method.
-5. When the request is finished, `~.RequestHandler.on_finish()` is
-   called.  For synchronous handlers this is immediately after
-   ``get()`` (etc) return; for asynchronous handlers it is after the
-   call to `~.RequestHandler.finish()`.
+3. `~.RequestHandler.prepare()` 被调用. 这在你所有处理子类共享的基
+   类中是最有用的, 无论是使用哪种HTTP方法, ``prepare`` 都会被调用.
+   ``prepare`` 可能会产生输出; 如果它调用 `~.RequestHandler.finish`
+   (或者 ``redirect``, 等), 处理会在这里结束.
+4. 其中一种HTTP方法被调用: ``get()``, ``post()``, ``put()``,
+   等. 如果URL的正则表达式包含捕获组, 它们会被作为参数传递给这个方
+   法.
+5. 当请求结束, `~.RequestHandler.on_finish()` 方法被调用. 对于同步
+   处理程序会在 ``get()`` (等)后立即返回; 对于异步处理程序,会在调用
+   `~.RequestHandler.finish()` 后返回.
 
-All methods designed to be overridden are noted as such in the
-`.RequestHandler` documentation.  Some of the most commonly
-overridden methods include:
+所有这样设计被用来复写的方法被记录在了 `.RequestHandler` 的文档中.
+其中最常用的一些被复写的方法包括:
 
 - `~.RequestHandler.write_error` -
-  outputs HTML for use on error pages.
-- `~.RequestHandler.on_connection_close` - called when the client
-  disconnects; applications may choose to detect this case and halt
-  further processing.  Note that there is no guarantee that a closed
-  connection can be detected promptly.
-- `~.RequestHandler.get_current_user` - see :ref:`user-authentication`
-- `~.RequestHandler.get_user_locale` - returns `.Locale` object to use
-  for the current user
-- `~.RequestHandler.set_default_headers` - may be used to set
-  additional headers on the response (such as a custom ``Server``
-  header)
+  输出对错误页面使用的HTML.
+- `~.RequestHandler.on_connection_close` - 当客户端断开时被调用;
+  应用程序可以检测这种情况,并中断后续处理. 注意这不能保证一个关闭
+  的连接及时被发现.
+- `~.RequestHandler.get_current_user` - 参考 :ref:`user-authentication`
+- `~.RequestHandler.get_user_locale` - 返回 `.Locale` 对象给当前
+  用户使用
+- `~.RequestHandler.set_default_headers` - 可以被用来设置额外的响应
+  头(例如自定义的 ``Server`` 头)
 
 Error Handling
 ~~~~~~~~~~~~~~
