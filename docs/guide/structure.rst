@@ -185,24 +185,21 @@ Tornado web 应用程序的大部分工作是在 `.RequestHandler` 子类下完�
 - `~.RequestHandler.set_default_headers` - 可以被用来设置额外的响应
   头(例如自定义的 ``Server`` 头)
 
-Error Handling
+错误处理
 ~~~~~~~~~~~~~~
 
-If a handler raises an exception, Tornado will call
-`.RequestHandler.write_error` to generate an error page.
-`tornado.web.HTTPError` can be used to generate a specified status
-code; all other exceptions return a 500 status.
+如果一个处理程序抛出一个异常, Tornado会调用
+`.RequestHandler.write_error` 来生成一个错误页.
+`tornado.web.HTTPError` 可以被用来生成一个指定的状态码; 所有其他的异常
+都会返回一个500状态.
 
-The default error page includes a stack trace in debug mode and a
-one-line description of the error (e.g. "500: Internal Server Error")
-otherwise.  To produce a custom error page, override
-`RequestHandler.write_error` (probably in a base class shared by all
-your handlers).  This method may produce output normally via
-methods such as `~RequestHandler.write` and `~RequestHandler.render`.
-If the error was caused by an exception, an ``exc_info`` triple will
-be passed as a keyword argument (note that this exception is not
-guaranteed to be the current exception in `sys.exc_info`, so
-``write_error`` must use e.g.  `traceback.format_exception` instead of
+默认的错误页面包含一个debug模式下的调用栈和另外一行错误描述
+(e.g. "500: Internal Server Error").  为了创建自定义的错误页面, 复写
+`RequestHandler.write_error` (可能在一个所有处理程序共享的一个基类里面).
+这个方法可能产生输出通常通过一些方法, 例如 `~RequestHandler.write` 和
+`~RequestHandler.render`. 如果错误是由异常引起的, 一个 ``exc_info`` 
+将作为一个关键字参数传递(注意这个异常不能保证是 `sys.exc_info` 当前的
+异常, 所以 ``write_error`` 必须使用 e.g.  `traceback.format_exception` 代替
 `traceback.format_exc`).
 
 It is also possible to generate an error page from regular handler
