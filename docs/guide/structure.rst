@@ -202,50 +202,42 @@ Tornado web 应用程序的大部分工作是在 `.RequestHandler` 子类下完�
 异常, 所以 ``write_error`` 必须使用 e.g.  `traceback.format_exception` 代替
 `traceback.format_exc`).
 
-It is also possible to generate an error page from regular handler
-methods instead of ``write_error`` by calling
-`~.RequestHandler.set_status`, writing a response, and returning.
-The special exception `tornado.web.Finish` may be raised to terminate
-the handler without calling ``write_error`` in situations where simply
-returning is not convenient.
+也可以在常规的处理方法中调用 `~.RequestHandler.set_status` 代替
+``write_error`` 返回一个(自定义)响应来生成一个错误页面. 特殊的例外
+`tornado.web.Finish` 在直接返回不方便的情况下能够在不调用 ``write_error``
+前结束处理程序.
 
-For 404 errors, use the ``default_handler_class`` `Application setting
-<.Application.settings>`.  This handler should override
-`~.RequestHandler.prepare` instead of a more specific method like
-``get()`` so it works with any HTTP method.  It should produce its
-error page as described above: either by raising a ``HTTPError(404)``
-and overriding ``write_error``, or calling ``self.set_status(404)``
-and producing the response directly in ``prepare()``.
+对于404错误, 使用 ``default_handler_class`` `Application setting
+<.Application.settings>`. 这个处理程序会复写
+`~.RequestHandler.prepare` 而不是一个更具体的方法, 例如 ``get()``
+所以它可以在任何HTTP方法下工作. 它应该会产生如上所说的错误页面: 要么raise
+一个 ``HTTPError(404)`` 要么复写 ``write_error``, 或者调用
+``self.set_status(404)`` 或者在 ``prepare()`` 中直接生成响应.
 
-Redirection
+重定向
 ~~~~~~~~~~~
 
-There are two main ways you can redirect requests in Tornado:
-`.RequestHandler.redirect` and with the `.RedirectHandler`.
+这里有两种主要的方式让你可以在Tornado中重定向请求:
+`.RequestHandler.redirect` 和使用 `.RedirectHandler`.
 
-You can use ``self.redirect()`` within a `.RequestHandler` method to
-redirect users elsewhere. There is also an optional parameter
-``permanent`` which you can use to indicate that the redirection is
-considered permanent.  The default value of ``permanent`` is
-``False``, which generates a ``302 Found`` HTTP response code and is
-appropriate for things like redirecting users after successful
-``POST`` requests.  If ``permanent`` is true, the ``301 Moved
-Permanently`` HTTP response code is used, which is useful for
-e.g. redirecting to a canonical URL for a page in an SEO-friendly
-manner.
+你可以在一个 `.RequestHandler` 的方法中使用 ``self.redirect()`` 把用
+户重定向到其他地方. 还有一个可选参数 ``permanent`` 你可以使用它来表明这个
+重定向被认为是永久的. ``permanent`` 的默认值是 ``False``, 这会生成一个
+``302 Found`` HTTP响应状态码, 适合类似在用户的 ``POST`` 请求成功后的重定向.
+如果 ``permanent`` 是true, 会使用 ``301 Moved
+Permanently`` HTTP响应, 更适合
+e.g. 在SEO友好的方法中把一个页面重定向到一个权威的URL.
 
-`.RedirectHandler` lets you configure redirects directly in your
-`.Application` routing table.  For example, to configure a single
-static redirect::
+`.RedirectHandler` 让你直接在你 `.Application` 路由表中配置. 例如, 配置一个
+静态重定向::
 
     app = tornado.web.Application([
         url(r"/app", tornado.web.RedirectHandler,
             dict(url="http://itunes.apple.com/my-app-id")),
         ])
 
-`.RedirectHandler` also supports regular expression substitutions.
-The following rule redirects all requests beginning with ``/pictures/``
-to the prefix ``/photos/`` instead::
+`.RedirectHandler` 也支持正则表达式替换. 下面的规则重定向所有以 ``/pictures/``
+开始的请求用 ``/photos/`` 前缀代替::
 
     app = tornado.web.Application([
         url(r"/photos/(.*)", MyPhotoHandler),
@@ -253,40 +245,33 @@ to the prefix ``/photos/`` instead::
             dict(url=r"/photos/\1")),
         ])
 
-Unlike `.RequestHandler.redirect`, `.RedirectHandler` uses permanent
-redirects by default.  This is because the routing table does not change
-at runtime and is presumed to be permanent, while redirects found in
-handlers are likely to be the result of other logic that may change.
-To send a temporary redirect with a `.RedirectHandler`, add
-``permanent=False`` to the `.RedirectHandler` initialization arguments.
+不像 `.RequestHandler.redirect`, `.RedirectHandler` 默认使用永久重定向.
+这是因为路由表在运行时不会改变, 而且被认为是永久的.
+当在处理程序中发现重定向的时候, 可能是其他可能改变的逻辑的结果.
+用 `.RedirectHandler` 发送临时重定向, 需要添加 ``permanent=False`` 到
+`.RedirectHandler` 的初始化参数.
 
-Asynchronous handlers
+异步处理
 ~~~~~~~~~~~~~~~~~~~~~
 
-Tornado handlers are synchronous by default: when the
-``get()``/``post()`` method returns, the request is considered
-finished and the response is sent.  Since all other requests are
-blocked while one handler is running, any long-running handler should
-be made asynchronous so it can call its slow operations in a
-non-blocking way.  This topic is covered in more detail in
-:doc:`async`; this section is about the particulars of
-asynchronous techniques in `.RequestHandler` subclasses.
+Tornado默认会同步处理: 当 ``get()``/``post()`` 方法返回, 请求被认为结束
+并且返回响应. 因为当一个处理程序正在运行的时候其他所有请求都被阻塞,
+任何需要长时间运行的处理都应该是异步的, 这样它就可以在非阻塞的方式中调用
+它的慢操作了. 这个话题更详细的内容包含在
+:doc:`async` 中; 这部分是关于在 `.RequestHandler` 子类中的异步技术的细节.
 
-The simplest way to make a handler asynchronous is to use the
-`.coroutine` decorator.  This allows you to perform non-blocking I/O
-with the ``yield`` keyword, and no response will be sent until the
-coroutine has returned.  See :doc:`coroutines` for more details.
+使用 `.coroutine` 装饰器是做异步最简单的方式. 这允许你使用 ``yield`` 关键
+字执行非阻塞I/O, 并且直到协程返回才发送响应. 查看 :doc:`coroutines` 了解
+更多细节.
 
-In some cases, coroutines may be less convenient than a
-callback-oriented style, in which case the `.tornado.web.asynchronous`
-decorator can be used instead.  When this decorator is used the response
-is not automatically sent; instead the request will be kept open until
-some callback calls `.RequestHandler.finish`.  It is up to the application
-to ensure that this method is called, or else the user's browser will
-simply hang.
+在某些情况下, 协程不如回调为主的风格方便, 在这种情况下
+`.tornado.web.asynchronous` 装饰器可以用来代替. 当使用这个装饰器的时候,
+响应不会自动发送; 而请求将一直保持开放直到callback调用
+`.RequestHandler.finish`. 这需要应用程序确保这个方法被调用或者其他用户
+的浏览器简单的挂起.
 
-Here is an example that makes a call to the FriendFeed API using
-Tornado's built-in `.AsyncHTTPClient`:
+这里是一个使用Tornado's 内置的 `.AsyncHTTPClient` 调用FriendFeed API的例
+子:
 
 .. testcode::
 
