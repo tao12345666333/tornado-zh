@@ -292,12 +292,11 @@ Tornado默认会同步处理: 当 ``get()``/``post()`` 方法返回, 请求被�
 .. testoutput::
    :hide:
 
-When ``get()`` returns, the request has not finished. When the HTTP
-client eventually calls ``on_response()``, the request is still open,
-and the response is finally flushed to the client with the call to
-``self.finish()``.
+当 ``get()`` 返回, 请求还没有完成. 当HTTP客户端最终调用
+``on_response()``, 这个请求仍然是开放的, 响应最终刷到客户端
+通过调用 ``self.finish()``.
 
-For comparison, here is the same example using a coroutine:
+为了方便对比, 这里有一个使用协程的相同的例子:
 
 .. testcode::
 
@@ -313,11 +312,10 @@ For comparison, here is the same example using a coroutine:
 .. testoutput::
    :hide:
 
-For a more advanced asynchronous example, take a look at the `chat
+更多高级异步的示例, 请看 `chat
 example application
-<https://github.com/tornadoweb/tornado/tree/stable/demos/chat>`_, which
-implements an AJAX chat room using `long polling
-<http://en.wikipedia.org/wiki/Push_technology#Long_polling>`_.  Users
-of long polling may want to override ``on_connection_close()`` to
-clean up after the client closes the connection (but see that method's
-docstring for caveats).
+<https://github.com/tornadoweb/tornado/tree/stable/demos/chat>`_, 实现了一个
+使用 `长轮询(long polling)
+<http://en.wikipedia.org/wiki/Push_technology#Long_polling>`_ 的AJAX聊天室.
+长轮询的可能想要覆盖 ``on_connection_close()`` 来在客户端关闭连接之后进行清
+理(注意看方法的文档来查看警告).
