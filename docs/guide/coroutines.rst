@@ -204,7 +204,7 @@ Tornado 的协程执行者(coroutine runner)在设计上是多用途的,可以�
 循环
 ^^^^^^^
 
-协程的循环是棘手的, 因为在Python中 没有办法在 ``for`` 循环或者
+协程的循环是棘手的, 因为在Python中没有办法在 ``for`` 循环或者
 ``while`` 循环 ``yield`` 迭代器,并且捕获yield的结果. 相反,你需要将
 循环条件从访问结果中分离出来, 下面是一个使用 `Motor
 <http://motor.readthedocs.org/en/stable/>`_ 的例子::
