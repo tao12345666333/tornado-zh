@@ -1,27 +1,25 @@
-Templates and UI
+模板和UI
 ================
 
 .. testsetup::
 
    import tornado.web
 
-Tornado includes a simple, fast, and flexible templating language.
-This section describes that language as well as related issues
-such as internationalization.
+Tornado 包含一个简单,快速并灵活的模板语言. 本节介绍了语言以及相
+关的问题,比如国际化.
 
-Tornado can also be used with any other Python template language,
-although there is no provision for integrating these systems into
-`.RequestHandler.render`.  Simply render the template to a string
-and pass it to `.RequestHandler.write`
+Tornado 也可以使用其他的Python模板语言, 虽然没有准备把这些系统整合
+到 `.RequestHandler.render` 里面. 而是简单的将模板转成字符串并传递
+给 `.RequestHandler.write`
 
-Configuring templates
+配置模板
 ~~~~~~~~~~~~~~~~~~~~~
 
-By default, Tornado looks for template files in the same directory as
-the ``.py`` files that refer to them.  To put your template files in a
-different directory, use the ``template_path`` `Application setting
-<.Application.settings>` (or override `.RequestHandler.get_template_path`
-if you have different template paths for different handlers).
+默认情况下, Tornado会在和当前 ``.py`` 文件相同的目录查找关联的模板
+文件. 如果想把你的模板文件放在不同的目录中, 可以使用
+``template_path`` `Application setting
+<.Application.settings>` (或复写 `.RequestHandler.get_template_path`
+如果你不同的处理函数有不同的模板路径).
 
 To load templates from a non-filesystem location, subclass
 `tornado.template.BaseLoader` and pass an instance as the
@@ -33,7 +31,7 @@ visible, use the application settings ``compiled_template_cache=False``
 or ``debug=True``.
 
 
-Template syntax
+模板语法
 ~~~~~~~~~~~~~~~
 
 A Tornado template is just HTML (or any other text-based format) with
