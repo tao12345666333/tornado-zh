@@ -21,21 +21,20 @@ Tornado 也可以使用其他的Python模板语言, 虽然没有准备把这些�
 <.Application.settings>` (或复写 `.RequestHandler.get_template_path`
 如果你不同的处理函数有不同的模板路径).
 
-To load templates from a non-filesystem location, subclass
-`tornado.template.BaseLoader` and pass an instance as the
-``template_loader`` application setting.
+为了从非文件系统位置加载模板, 实例化子类 `tornado.template.BaseLoader`
+并为其在应用设置(application setting)中配置
+``template_loader`` .
 
-Compiled templates are cached by default; to turn off this caching
-and reload templates so changes to the underlying files are always
-visible, use the application settings ``compiled_template_cache=False``
-or ``debug=True``.
+默认情况下编译出来的模板会被缓存; 为了关掉这个缓存也为了使(对目标的)
+修改在重新加载后总是可见, 使用应用设置(application settings)中的
+``compiled_template_cache=False`` 或 ``debug=True``.
 
 
 模板语法
 ~~~~~~~~~~~~~~~
 
-A Tornado template is just HTML (or any other text-based format) with
-Python control sequences and expressions embedded within the markup::
+一个Tornado模板仅仅是用一些标记把Python控制序列和表达式嵌入
+HTML(或者任意其他文本格式)的文件中::
 
     <html>
        <head>
@@ -50,8 +49,8 @@ Python control sequences and expressions embedded within the markup::
        </body>
      </html>
 
-If you saved this template as "template.html" and put it in the same
-directory as your Python file, you could render this template with:
+如果你把这个目标保存为"template.html"并且把它放在你Python文件的
+相同目录下, 你可以使用下面的代码渲染它:
 
 .. testcode::
 
@@ -63,10 +62,10 @@ directory as your Python file, you could render this template with:
 .. testoutput::
    :hide:
 
-Tornado templates support *control statements* and *expressions*.
-Control statements are surrounded by ``{%`` and ``%}``, e.g.,
-``{% if len(items) > 2 %}``. Expressions are surrounded by ``{{`` and
-``}}``, e.g., ``{{ items[0] }}``.
+Tornado模板支持 *控制语句(control statements)* 和 *表达式(expressions)*.
+控制语句被包在 ``{%`` 和 ``%}`` 中间, e.g.,
+``{% if len(items) > 2 %}``. 表达式被包在 ``{{`` 和
+``}}`` 之间, e.g., ``{{ items[0] }}``.
 
 Control statements more or less map exactly to Python statements. We
 support ``if``, ``for``, ``while``, and ``try``, all of which are
