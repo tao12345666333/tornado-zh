@@ -104,33 +104,26 @@ Tornado模板支持 *控制语句(control statements)* 和 *表达式(expression
 尤其是目标继承. 阅读所有关于这些特性的介绍在 `tornado.template`
 部分 (一些特性, 包括 ``UIModules`` 是在 `tornado.web` 模块中实现的)
 
-Under the hood, Tornado templates are translated directly to Python. The
-expressions you include in your template are copied verbatim into a
-Python function representing your template. We don't try to prevent
-anything in the template language; we created it explicitly to provide
-the flexibility that other, stricter templating systems prevent.
-Consequently, if you write random stuff inside of your template
-expressions, you will get random Python errors when you execute the
-template.
+在引擎下, Tornado模板被直接转换为Python. 包含在你模板中的表达式会
+逐字的复制到一个代表你模板的Python函数中. 我们不会试图阻止模板语言
+中的任何东西; 我们明确的创造一个高度灵活的模板系统, 而不是有严格限制
+的模板系统. 因此, 如果你在模板表达式中随意填充(代码), 当你执行它的时
+候你也会得到各种随机错误.
 
-All template output is escaped by default, using the
-`tornado.escape.xhtml_escape` function. This behavior can be changed
-globally by passing ``autoescape=None`` to the `.Application` or
-`.tornado.template.Loader` constructors, for a template file with the
-``{% autoescape None %}`` directive, or for a single expression by
-replacing ``{{ ... }}`` with ``{% raw ...%}``. Additionally, in each of
-these places the name of an alternative escaping function may be used
-instead of ``None``.
+所有模板输出默认都会使用 `tornado.escape.xhtml_escape` 函数转义.
+这个行为可以通过传递 ``autoescape=None`` 给 `.Application` 或者
+`.tornado.template.Loader` 构造器来全局改变, 对于一个模板文件可以使
+用 ``{% autoescape None %}`` 指令, 对于一个单一表达式可以使用
+ ``{% raw ...%}`` 来代替 ``{{ ... }}`` . 此外, 在每个地方一个可选的
+ 转义函数名可以被用来代替 ``None``.
 
-Note that while Tornado's automatic escaping is helpful in avoiding
-XSS vulnerabilities, it is not sufficient in all cases.  Expressions
-that appear in certain locations, such as in Javascript or CSS, may need
-additional escaping.  Additionally, either care must be taken to always
-use double quotes and `.xhtml_escape` in HTML attributes that may contain
-untrusted content, or a separate escaping function must be used for
-attributes (see e.g. http://wonko.com/post/html-escaping)
+注意, 虽然Tornado的自动转义在预防XSS漏洞上是有帮助的, 但是它并不能
+胜任所有的情况. 在某一位置出现的表达式, 例如Javascript 或 CSS, 可能需
+要另外的转义. 此外, 要么是必须注意总是在可能包含不可信内容的HTML中
+使用双引号和 `.xhtml_escape` , 要么必须在属性中使用单独的转义函数
+(参见 e.g. http://wonko.com/post/html-escaping)
 
-Internationalization
+国际化
 ~~~~~~~~~~~~~~~~~~~~
 
 The locale of the current user (whether they are logged in or not) is
