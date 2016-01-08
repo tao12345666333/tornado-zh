@@ -67,47 +67,42 @@ Tornado模板支持 *控制语句(control statements)* 和 *表达式(expression
 ``{% if len(items) > 2 %}``. 表达式被包在 ``{{`` 和
 ``}}`` 之间, e.g., ``{{ items[0] }}``.
 
-Control statements more or less map exactly to Python statements. We
-support ``if``, ``for``, ``while``, and ``try``, all of which are
-terminated with ``{% end %}``. We also support *template inheritance*
-using the ``extends`` and ``block`` statements, which are described in
-detail in the documentation for the `tornado.template`.
+控制语句或多或少都和Python语句类似. 我们支持 ``if``, ``for``,
+``while``, 和 ``try``, 这些都必须使用 ``{% end %}`` 来标识结束. 我们也
+支持 *模板继承(template inheritance)* 使用 ``extends`` 和 ``block``
+标签声明, 这些内容的详细信息都可以在 `tornado.template` 中看到.
 
-Expressions can be any Python expression, including function calls.
-Template code is executed in a namespace that includes the following
-objects and functions (Note that this list applies to templates
-rendered using `.RequestHandler.render` and
-`~.RequestHandler.render_string`. If you're using the
-`tornado.template` module directly outside of a `.RequestHandler` many
-of these entries are not present).
+表达式可以是任意的Python表达式, 包括函数调用. 模板代码会在包含以下对象
+和函数的命名空间中执行 (注意这个列表适用于使用 `.RequestHandler.render`
+和 `~.RequestHandler.render_string` 渲染模板的情况. 如果你直接在
+`.RequestHandler` 之外使用 `tornado.template` 模块, 下面这些很多都不存
+在).
 
-- ``escape``: alias for `tornado.escape.xhtml_escape`
-- ``xhtml_escape``: alias for `tornado.escape.xhtml_escape`
-- ``url_escape``: alias for `tornado.escape.url_escape`
-- ``json_encode``: alias for `tornado.escape.json_encode`
-- ``squeeze``: alias for `tornado.escape.squeeze`
-- ``linkify``: alias for `tornado.escape.linkify`
-- ``datetime``: the Python `datetime` module
-- ``handler``: the current `.RequestHandler` object
-- ``request``: alias for `handler.request <.HTTPServerRequest>`
-- ``current_user``: alias for `handler.current_user
-  <.RequestHandler.current_user>`
-- ``locale``: alias for `handler.locale <.Locale>`
-- ``_``: alias for `handler.locale.translate <.Locale.translate>`
-- ``static_url``: alias for `handler.static_url <.RequestHandler.static_url>`
-- ``xsrf_form_html``: alias for `handler.xsrf_form_html
-  <.RequestHandler.xsrf_form_html>`
-- ``reverse_url``: alias for `.Application.reverse_url`
-- All entries from the ``ui_methods`` and ``ui_modules``
-  ``Application`` settings
-- Any keyword arguments passed to `~.RequestHandler.render` or
-  `~.RequestHandler.render_string`
+- ``escape``: `tornado.escape.xhtml_escape` 的别名
+- ``xhtml_escape``: `tornado.escape.xhtml_escape` 的别名
+- ``url_escape``: `tornado.escape.url_escape` 的别名
+- ``json_encode``: `tornado.escape.json_encode` 的别名
+- ``squeeze``: `tornado.escape.squeeze` 的别名
+- ``linkify``: `tornado.escape.linkify` 的别名
+- ``datetime``: Python `datetime` 模块
+- ``handler``: 当前的 `.RequestHandler` 对象
+- ``request``: `handler.request <.HTTPServerRequest>` 的别名
+- ``current_user``: `handler.current_user
+  <.RequestHandler.current_user>` 的别名
+- ``locale``: `handler.locale <.Locale>` 的别名
+- ``_``: `handler.locale.translate <.Locale.translate>` 的别名
+- ``static_url``: `handler.static_url <.RequestHandler.static_url>` 的别名
+- ``xsrf_form_html``: `handler.xsrf_form_html
+  <.RequestHandler.xsrf_form_html>` 的别名
+- ``reverse_url``: `.Application.reverse_url` 的别名
+- 所有从 ``ui_methods`` 和 ``ui_modules``
+  ``Application`` 设置的条目
+- 任何传递给 `~.RequestHandler.render` 或
+  `~.RequestHandler.render_string` 的关键字参数
 
-When you are building a real application, you are going to want to use
-all of the features of Tornado templates, especially template
-inheritance. Read all about those features in the `tornado.template`
-section (some features, including ``UIModules`` are implemented in the
-`tornado.web` module)
+当你正在构建一个真正的应用, 你可能想要使用Tornado模板的所有特性,
+尤其是目标继承. 阅读所有关于这些特性的介绍在 `tornado.template`
+部分 (一些特性, 包括 ``UIModules`` 是在 `tornado.web` 模块中实现的)
 
 Under the hood, Tornado templates are translated directly to Python. The
 expressions you include in your template are copied verbatim into a
