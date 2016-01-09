@@ -126,31 +126,27 @@ Tornado模板支持 *控制语句(control statements)* 和 *表达式(expression
 国际化
 ~~~~~~~~~~~~~~~~~~~~
 
-The locale of the current user (whether they are logged in or not) is
-always available as ``self.locale`` in the request handler and as
-``locale`` in templates. The name of the locale (e.g., ``en_US``) is
-available as ``locale.name``, and you can translate strings with the
-`.Locale.translate` method. Templates also have the global function
-call ``_()`` available for string translation. The translate function
-has two forms::
+当前用户的区域设置(无论他们是否登录)总是可用的, 在请求处理程序中
+使用 ``self.locale`` 或者在模板中使用 ``locale`` . 区域的名字
+(e.g., ``en_US``) 可以通过 ``locale.name`` 获得, 你可以翻译字符串
+通过 `.Locale.translate` 方法. 模板也有一个叫做 ``_()`` 全局函数
+用来进行字符串翻译. 翻译函数有两种形式::
 
     _("Translate this string")
 
-which translates the string directly based on the current locale, and::
+是直接根据当前的区域设置进行翻译, 还有::
 
     _("A person liked this", "%(num)d people liked this",
       len(people)) % {"num": len(people)}
 
-which translates a string that can be singular or plural based on the
-value of the third argument. In the example above, a translation of the
-first string will be returned if ``len(people)`` is ``1``, or a
-translation of the second string will be returned otherwise.
+是可以根据第三个参数的值来翻译字符串单复数的. 在上面的例子中,
+如果 ``len(people)`` 是 ``1``, 那么第一句翻译将被返回, 其他情况
+第二句的翻译将会返回.
 
-The most common pattern for translations is to use Python named
-placeholders for variables (the ``%(num)d`` in the example above) since
-placeholders can move around on translation.
+翻译最通用的模式四使用Python命名占位符变量(上面例子中的
+``%(num)d`` ) 因为占位符可以继续翻译.
 
-Here is a properly internationalized template::
+这是一个正确的国际化模板::
 
     <html>
        <head>
