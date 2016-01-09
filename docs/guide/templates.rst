@@ -162,11 +162,10 @@ Tornado模板支持 *控制语句(control statements)* 和 *表达式(expression
        </body>
      </html>
 
-By default, we detect the user's locale using the ``Accept-Language``
-header sent by the user's browser. We choose ``en_US`` if we can't find
-an appropriate ``Accept-Language`` value. If you let user's set their
-locale as a preference, you can override this default locale selection
-by overriding `.RequestHandler.get_user_locale`:
+默认情况下, 我们通过用户的浏览器发送的 ``Accept-Language`` 头来发现
+用户的区域设置. 如果我们没有发现恰当的 ``Accept-Language`` 值, 我们
+会使用 ``en_US`` . 如果你让用户进行自己偏爱的区域设置, 你可以通过复
+写 `.RequestHandler.get_user_locale` 来覆盖默认选择的区域:
 
 .. testcode::
 
@@ -185,45 +184,41 @@ by overriding `.RequestHandler.get_user_locale`:
 .. testoutput::
    :hide:
 
-If ``get_user_locale`` returns ``None``, we fall back on the
-``Accept-Language`` header.
+如果 ``get_user_locale`` 返回 ``None``, 那我们(继续)依靠
+``Accept-Language`` 头(进行判断).
 
-The `tornado.locale` module supports loading translations in two
-formats: the ``.mo`` format used by `gettext` and related tools, and a
-simple ``.csv`` format.  An application will generally call either
-`tornado.locale.load_translations` or
-`tornado.locale.load_gettext_translations` once at startup; see those
-methods for more details on the supported formats..
+`tornado.locale` 模块支持两种形式加载翻译: 一种是用 `gettext`
+和相关的工具的 ``.mo`` 格式, 还有一种是简单的 ``.csv`` 格式.
+应用程序在启动时通常会调用一次 `tornado.locale.load_translations`
+或者 `tornado.locale.load_gettext_translations` 其中之一; 查看
+这些方法来获取更多有关支持格式的详细信息..
 
-You can get the list of supported locales in your application with
-`tornado.locale.get_supported_locales()`. The user's locale is chosen
-to be the closest match based on the supported locales. For example, if
-the user's locale is ``es_GT``, and the ``es`` locale is supported,
-``self.locale`` will be ``es`` for that request. We fall back on
-``en_US`` if no close match can be found.
+你可以使用 `tornado.locale.get_supported_locales()` 得到你的应用
+所支持的区域(设置)列表. 用户的区域是从被支持的区域中选择距离最近
+的匹配得到的. 例如, 如果用户的区域是 ``es_GT``, 同时 ``es`` 区域
+是被支持的, 请求中的 ``self.locale`` 将会设置为 ``es`` . 如果找不
+到距离最近的匹配项, 我们将会使用 ``en_US`` .
 
 .. _ui-modules:
 
-UI modules
+UI 模块
 ~~~~~~~~~~
 
-Tornado supports *UI modules* to make it easy to support standard,
-reusable UI widgets across your application. UI modules are like special
-function calls to render components of your page, and they can come
-packaged with their own CSS and JavaScript.
+Tornado支持 *UI modules* 使它易于支持标准, 在你的应用程序中复用
+UI组件. UI模块像是特殊的函数调用来渲染你的页面上的组件并且它们可
+以包装自己的CSS和JavaScript.
 
-For example, if you are implementing a blog, and you want to have blog
-entries appear on both the blog home page and on each blog entry page,
-you can make an ``Entry`` module to render them on both pages. First,
-create a Python module for your UI modules, e.g., ``uimodules.py``::
+例如, 如果你实现一个博客, 并且你想要有博客入口出现在首页和每篇博
+客页, 你可以实现一个 ``Entry`` 模块来在这些页面上渲染它们. 首先,
+为你的UI模块新建一个Python模块, e.g., ``uimodules.py``::
 
     class Entry(tornado.web.UIModule):
         def render(self, entry, show_comments=False):
             return self.render_string(
                 "module-entry.html", entry=entry, show_comments=show_comments)
 
-Tell Tornado to use ``uimodules.py`` using the ``ui_modules`` setting in
-your application::
+在你的应用设置中, 使用 ``ui_modules`` 配置, 告诉Tornado使用
+``uimodules.py`` ::
 
     from . import uimodules
 
@@ -246,21 +241,20 @@ your application::
         (r"/entry/([0-9]+)", EntryHandler),
     ], **settings)
 
-Within a template, you can call a module with the ``{% module %}``
-statement.  For example, you could call the ``Entry`` module from both
-``home.html``::
+在一个模板中, 你可以使用 ``{% module %}`` 语法调用一个模块. 例如,
+你可以调用 ``Entry`` 模块从 ``home.html``::
 
     {% for entry in entries %}
       {% module Entry(entry) %}
     {% end %}
 
-and ``entry.html``::
+和 ``entry.html``::
 
     {% module Entry(entry, show_comments=True) %}
 
-Modules can include custom CSS and JavaScript functions by overriding
-the ``embedded_css``, ``embedded_javascript``, ``javascript_files``, or
-``css_files`` methods::
+模块可以包含自定义的CSS和JavaScript函数, 通过复写 ``embedded_css``,
+``embedded_javascript``, ``javascript_files``, 或 ``css_files``
+方法::
 
     class Entry(tornado.web.UIModule):
         def embedded_css(self):
@@ -270,24 +264,20 @@ the ``embedded_css``, ``embedded_javascript``, ``javascript_files``, or
             return self.render_string(
                 "module-entry.html", show_comments=show_comments)
 
-Module CSS and JavaScript will be included once no matter how many times
-a module is used on a page. CSS is always included in the ``<head>`` of
-the page, and JavaScript is always included just before the ``</body>``
-tag at the end of the page.
+模块CSS和JavaScript将被加载(或包含)一次, 无论模块在一个页面上被使
+用多少次. CSS总是包含在页面的 ``<head>`` 标签中, JavaScript 总是被
+包含在页面最底部的 ``</body>`` 标签之前.
 
-When additional Python code is not required, a template file itself may
-be used as a module. For example, the preceding example could be
-rewritten to put the following in ``module-entry.html``::
+当不需要额外的Python代码时, 一个模板文件本身可以作为一个模块. 例如,
+先前的例子可以重写到下面的 ``module-entry.html``::
 
     {{ set_resources(embedded_css=".entry { margin-bottom: 1em; }") }}
     <!-- more template html... -->
 
-This revised template module would be invoked with::
+这个被修改过的模块模块可以被引用::
 
     {% module Template("module-entry.html", show_comments=True) %}
 
-The ``set_resources`` function is only available in templates invoked
-via ``{% module Template(...) %}``. Unlike the ``{% include ... %}``
-directive, template modules have a distinct namespace from their
-containing template - they can only see the global template namespace
-and their own keyword arguments.
+``set_resources`` 函数只能在模板中通过 ``{% module Template(...) %}``
+才可用. 不像 ``{% include ... %}`` 指令, 模板模块有一个明确的命名空间
+它们的包含模板-它们只能看到全局模板命名空间和它们自己的关键字参数.
