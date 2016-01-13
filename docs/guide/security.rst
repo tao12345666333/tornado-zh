@@ -67,7 +67,8 @@ Tornado的安全cookie保证完整性但是不保证机密性. 也就是说, coo
 到如下的效果, 例如大多数情况下有30天有效期的cookie, 但是对某些敏感操作(例
 如修改账单信息)你可以使用一个较小的 ``max_age_days`` .
 
-Tornado也支持多签名密钥, 使签名密钥轮换. ``cookie_secret`` then must be a dict with integer key versions
+Tornado也支持多签名密钥, 使签名密钥轮换. ``cookie_secret`` 然后必须是一个
+以整数key版本作为key, 以相对应的密钥作为值的字典. then must be a dict with integer key versions
 as keys and the corresponding secrets as values. The currently used
 signing key must then be set as ``key_version`` application setting
 but all other keys in the dict are allowed for cookie signature validation,
