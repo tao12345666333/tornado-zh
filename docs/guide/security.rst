@@ -68,29 +68,25 @@ Tornado的安全cookie保证完整性但是不保证机密性. 也就是说, coo
 如修改账单信息)你可以使用一个较小的 ``max_age_days`` .
 
 Tornado也支持多签名密钥, 使签名密钥轮换. ``cookie_secret`` 然后必须是一个
-以整数key版本作为key, 以相对应的密钥作为值的字典. then must be a dict with integer key versions
-as keys and the corresponding secrets as values. The currently used
-signing key must then be set as ``key_version`` application setting
-but all other keys in the dict are allowed for cookie signature validation,
-if the correct key version is set in the cookie.
-To implement cookie updates, the current signing key version can be
-queried via `~.RequestHandler.get_secure_cookie_key_version`.
+以整数key版本作为key, 以相对应的密钥作为值的字典. 当前使用的签名键
+必须是 应用设置中 ``key_version`` 的集合. 不过字典中的其他key都允许做
+cookie签名验证, 如果当前key版本在cookie集合中.为了实现cookie更新, 可以通过
+`~.RequestHandler.get_secure_cookie_key_version` 查询当前key版本.
 
 .. _user-authentication:
 
-User authentication
+用户认证
 ~~~~~~~~~~~~~~~~~~~
 
-The currently authenticated user is available in every request handler
-as `self.current_user <.RequestHandler.current_user>`, and in every
-template as ``current_user``. By default, ``current_user`` is
+当前已经通过认证的用户在每个请求处理函数中都可以通过
+`self.current_user <.RequestHandler.current_user>` 得到, 在每个模板中
+可以使用 ``current_user`` 获得. 默认情况下, ``current_user`` 是
 ``None``.
 
-To implement user authentication in your application, you need to
-override the ``get_current_user()`` method in your request handlers to
-determine the current user based on, e.g., the value of a cookie. Here
-is an example that lets users log into the application simply by
-specifying a nickname, which is then saved in a cookie:
+为了在你的应用程序中实现用户认证, 你需要在你的请求处理函数中复写
+``get_current_user()`` 方法来判断当前用户, 比如可以基于cookie的值.
+这里有一个例子, 这个例子允许用户通过一个保存在cookie中特殊的昵称登录
+到应用程序中:
 
 .. testcode::
 
