@@ -85,8 +85,8 @@ cookie签名验证, 如果当前key版本在cookie集合中.为了实现cookie�
 
 为了在你的应用程序中实现用户认证, 你需要在你的请求处理函数中复写
 ``get_current_user()`` 方法来判断当前用户, 比如可以基于cookie的值.
-这里有一个例子, 这个例子允许用户通过一个保存在cookie中特殊的昵称登录
-到应用程序中:
+这里有一个例子, 这个例子允许用户简单的通过一个保存在cookie中的特殊昵称
+登录到应用程序中:
 
 .. testcode::
 
@@ -121,12 +121,11 @@ cookie签名验证, 如果当前key版本在cookie集合中.为了实现cookie�
 .. testoutput::
    :hide:
 
-You can require that the user be logged in using the `Python
-decorator <http://www.python.org/dev/peps/pep-0318/>`_
-`tornado.web.authenticated`. If a request goes to a method with this
-decorator, and the user is not logged in, they will be redirected to
-``login_url`` (another application setting). The example above could be
-rewritten:
+你可以使用 `Python
+装饰器(decorator) <http://www.python.org/dev/peps/pep-0318/>`_
+`tornado.web.authenticated` 要求用户登录. 如果请求方法带有这个装饰器
+并且用户没有登录, 用户将会被重定向到 ``login_url`` (另一个应用设置).
+上面的例子可以被重写:
 
 .. testcode::
 
@@ -148,18 +147,16 @@ rewritten:
 .. testoutput::
    :hide:
 
-If you decorate ``post()`` methods with the ``authenticated``
-decorator, and the user is not logged in, the server will send a
-``403`` response.  The ``@authenticated`` decorator is simply
-shorthand for ``if not self.current_user: self.redirect()`` and may
-not be appropriate for non-browser-based login schemes.
+如果你使用 ``authenticated`` 装饰 ``post()`` 方法并且用户没有登录,
+服务将返回一个 ``403`` 响应. ``@authenticated`` 装饰器是
+``if not self.current_user: self.redirect()`` 的简写. 可能不适合
+非基于浏览器的登录方案.
 
-Check out the `Tornado Blog example application
-<https://github.com/tornadoweb/tornado/tree/stable/demos/blog>`_ for a
-complete example that uses authentication (and stores user data in a
-MySQL database).
+通过 `Tornado Blog example application
+<https://github.com/tornadoweb/tornado/tree/stable/demos/blog>`_ 
+可以看到一个使用用户验证(并且在MySQL数据库中存储用户数据)的完整例子.
 
-Third party authentication
+第三方用户验证
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The `tornado.auth` module implements the authentication and
