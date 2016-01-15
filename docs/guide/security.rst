@@ -196,21 +196,19 @@ cookie签名验证, 如果当前key版本在cookie集合中.为了实现cookie�
 跨站请求伪造(防护)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-`Cross-site request
-forgery <http://en.wikipedia.org/wiki/Cross-site_request_forgery>`_, or
-XSRF, is a common problem for personalized web applications. See the
+`跨站请求伪造(Cross-site request
+forgery) <http://en.wikipedia.org/wiki/Cross-site_request_forgery>`_, 或
+XSRF, 是所有web应用程序面临的一个主要问题. 可以通过
 `Wikipedia
-article <http://en.wikipedia.org/wiki/Cross-site_request_forgery>`_ for
-more information on how XSRF works.
+文章 <http://en.wikipedia.org/wiki/Cross-site_request_forgery>`_ 来了解
+更多关于XSRF的细节.
 
-The generally accepted solution to prevent XSRF is to cookie every user
-with an unpredictable value and include that value as an additional
-argument with every form submission on your site. If the cookie and the
-value in the form submission do not match, then the request is likely
-forged.
+普遍接受的预防XSRF攻击的方案是让每个用户的cookie都是不确定的值, 并且
+把那个cookie值在你站点的每个form提交中作为额外的参数包含进来. 如果cookie
+和form提交中的值不匹配, 则请求可能是伪造的.
 
-Tornado comes with built-in XSRF protection. To include it in your site,
-include the application setting ``xsrf_cookies``:
+Tornado内置XSRF保护. 你需要在你的应用设置中使用 ``xsrf_cookies`` 便可
+以在你的网站上使用:
 
 .. testcode::
 
@@ -227,12 +225,12 @@ include the application setting ``xsrf_cookies``:
 .. testoutput::
    :hide:
 
-If ``xsrf_cookies`` is set, the Tornado web application will set the
-``_xsrf`` cookie for all users and reject all ``POST``, ``PUT``, and
-``DELETE`` requests that do not contain a correct ``_xsrf`` value. If
-you turn this setting on, you need to instrument all forms that submit
-via ``POST`` to contain this field. You can do this with the special
-`.UIModule` ``xsrf_form_html()``, available in all templates::
+如果设置了 ``xsrf_cookies`` , Tornado web应用程序将会给所有用户设置
+``_xsrf`` cookie并且拒绝所有不包含一个正确的 ``_xsrf`` 值的
+``POST``, ``PUT``, 或 ``DELETE`` 请求. 如果你打开这个设置, 你必须给
+所有通过 ``POST`` 请求的form提交添加这个字段. 你可以使用一个特性的
+`.UIModule` ``xsrf_form_html()`` 来做这件事情, 
+这个方法在所有模板中都是可用的::
 
     <form action="/new_message" method="post">
       {% module xsrf_form_html() %}
@@ -240,11 +238,10 @@ via ``POST`` to contain this field. You can do this with the special
       <input type="submit" value="Post"/>
     </form>
 
-If you submit AJAX ``POST`` requests, you will also need to instrument
-your JavaScript to include the ``_xsrf`` value with each request. This
-is the `jQuery <http://jquery.com/>`_ function we use at FriendFeed for
-AJAX ``POST`` requests that automatically adds the ``_xsrf`` value to
-all requests::
+如果你提交一个AJAX的 ``POST`` 请求, 你也需要在每个请求中给你的
+JavaScript添加 ``_xsrf`` 值. 这是我们在FriendFeed为了AJAX的
+``POST`` 请求使用的一个 `jQuery <http://jquery.com/>`_ 函数, 可以
+自动的给所有请求添加 ``_xsrf`` 值::
 
     function getCookie(name) {
         var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
@@ -259,18 +256,14 @@ all requests::
         }});
     };
 
-For ``PUT`` and ``DELETE`` requests (as well as ``POST`` requests that
-do not use form-encoded arguments), the XSRF token may also be passed
-via an HTTP header named ``X-XSRFToken``.  The XSRF cookie is normally
-set when ``xsrf_form_html`` is used, but in a pure-Javascript application
-that does not use any regular forms you may need to access
-``self.xsrf_token`` manually (just reading the property is enough to
-set the cookie as a side effect).
+对于 ``PUT`` 和 ``DELETE`` 请求(除了不使用form编码(form-encoded) 参数
+的 ``POST`` 请求, XSRF token也会通过一个 ``X-XSRFToken`` 的HTTP头传递.
+XSRF cookie 通常在使用 ``xsrf_form_html`` 会设置, 但是在不使用正规
+form的纯Javascript应用中, 你可能需要访问 ``self.xsrf_token`` 手动设置
+(只读这个属性足够设置cookie了).
 
-If you need to customize XSRF behavior on a per-handler basis, you can
-override `.RequestHandler.check_xsrf_cookie()`. For example, if you
-have an API whose authentication does not use cookies, you may want to
-disable XSRF protection by making ``check_xsrf_cookie()`` do nothing.
-However, if you support both cookie and non-cookie-based authentication,
-it is important that XSRF protection be used whenever the current
-request is authenticated with a cookie.
+如果你需要自定义每一个处理程序基础的XSRF行为, 你可以复写
+`.RequestHandler.check_xsrf_cookie()`. 例如, 如果你有一个没有使用
+cookie验证的API, 你可能想禁用XSRF保护, 可以通过使 ``check_xsrf_cookie()``
+不做任何处理. 然而, 如果你支持基于cookie和非基于cookie的认证, 重要的是,
+当前带有cookie认证的请求究竟什么时候使用XSRF保护.
