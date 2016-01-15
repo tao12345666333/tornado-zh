@@ -159,16 +159,13 @@ cookie签名验证, 如果当前key版本在cookie集合中.为了实现cookie�
 第三方用户验证
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The `tornado.auth` module implements the authentication and
-authorization protocols for a number of the most popular sites on the
-web, including Google/Gmail, Facebook, Twitter, and FriendFeed.
-The module includes methods to log users in via these sites and, where
-applicable, methods to authorize access to the service so you can, e.g.,
-download a user's address book or publish a Twitter message on their
-behalf.
+`tornado.auth` 模块实现了对一些网络上最流行的网站的身份认证和授权协议,
+包括Google/Gmail, Facebook, Twitter,和FriendFeed. 该模块包括通过这些
+网站登录用户的方法, 并在适用情况下允许访问该网站服务的方法, 例如, 下载
+一个用户的地址簿或者在他们支持下发布一条Twitter信息.
 
-Here is an example handler that uses Google for authentication, saving
-the Google credentials in a cookie for later access:
+这是个使用Google身份认证, 在cookie中保存Google的认证信息以供之后访问
+的示例处理程序:
 
 .. testcode::
 
@@ -192,11 +189,11 @@ the Google credentials in a cookie for later access:
 .. testoutput::
    :hide:
 
-See the `tornado.auth` module documentation for more details.
+查看 `tornado.auth` 模块的文档以了解更多细节.
 
 .. _xsrf:
 
-Cross-site request forgery protection
+跨站请求伪造(防护)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 `Cross-site request
