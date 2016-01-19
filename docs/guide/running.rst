@@ -1,10 +1,9 @@
-Running and deploying
+运行和部署
 =====================
 
-Since Tornado supplies its own HTTPServer, running and deploying it is
-a little different from other Python web frameworks.  Instead of
-configuring a WSGI container to find your application, you write a
-``main()`` function that starts the server:
+因为Tornado内置了自己的HTTPServer, 运行和部署它与其他Python web框架不
+太一样. 你需要写一个``main()``函数来启动服务, 而不是配置一个WSGI容器
+来运行你的应用:
 
 .. testcode::
 
@@ -19,11 +18,10 @@ configuring a WSGI container to find your application, you write a
 .. testoutput::
    :hide:
 
-Configure your operating system or process manager to run this program to
-start the server. Please note that it may be necessary to increase the number 
-of open files per process (to avoid "Too many open files"-Error). 
-To raise this limit (setting it to 50000 for example)  you can use the ulimit command, 
-modify /etc/security/limits.conf or setting ``minfds`` in your supervisord config.
+配置你的操作系统或者进程管理器来运行这个程序以启动服务. 请注意, 增加每个
+进程允许打开的最大文件句柄数是可能是必要的(为了避免"Too many open files"
+的错误). 为了增加这个上限(例如设置为50000 ) 你可以使用ulimit命令, 
+修改/etc/security/limits.conf 或者设置``minfds`` 在你的supervisord配置中.
 
 Processes and ports
 ~~~~~~~~~~~~~~~~~~~
