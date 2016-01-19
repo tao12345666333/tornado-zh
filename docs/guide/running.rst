@@ -23,16 +23,14 @@
 的错误). 为了增加这个上限(例如设置为50000 ) 你可以使用ulimit命令, 
 修改/etc/security/limits.conf 或者设置``minfds`` 在你的supervisord配置中.
 
-Processes and ports
+进程和端口
 ~~~~~~~~~~~~~~~~~~~
 
-Due to the Python GIL (Global Interpreter Lock), it is necessary to run
-multiple Python processes to take full advantage of multi-CPU machines.
-Typically it is best to run one process per CPU.
+由于Python的GIL(全局解释器锁), 为了充分利用多CPU的机器, 运行多个Python
+进程是很有必要的. 通常, 最好是每个CPU运行一个进程.
 
-Tornado includes a built-in multi-process mode to start several
-processes at once.  This requires a slight alteration to the standard
-main function:
+Tornado包含了一个内置的多进程模式来一次启动多个进程. 这需要一个在main
+函数上做点微小的改变:
 
 .. testcode::
 
@@ -46,13 +44,11 @@ main function:
 .. testoutput::
    :hide:
 
-This is the easiest way to start multiple processes and have them all
-share the same port, although it has some limitations.  First, each
-child process will have its own IOLoop, so it is important that
-nothing touch the global IOLoop instance (even indirectly) before the
-fork.  Second, it is difficult to do zero-downtime updates in this model.
-Finally, since all the processes share the same port it is more difficult
-to monitor them individually.
+这是最简单的方式来启动多进程并让他们共享同样的端口, 虽然它有一些局限
+性. 首先, 每个子进程将有它自己的IOLoop, 所以fork之前, 不接触全局
+IOLoop实例是重要的(甚至是间接的). 其次, 在这个模型中, 很难做到零停机
+(zero-downtime)更新. 最后, 因为所有的进程共享相同的端口, 想单独监控
+它们就更加困难了.
 
 For more sophisticated deployments, it is recommended to start the processes
 independently, and have each one listen on a different port.
