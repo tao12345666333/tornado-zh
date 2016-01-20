@@ -193,18 +193,15 @@ e.g., ``http://localhost:8888/static/foo.png`` 将会通过指定的static目录
 内容的哈希(hash), 并且它的存在使得Tornado服务向用户的浏览器发送缓存头,
 这将使浏览器无限期的缓存内容.
 
-Since the ``v`` argument is based on the content of the file, if you
-update a file and restart your server, it will start sending a new ``v``
-value, so the user's browser will automatically fetch the new file. If
-the file's contents don't change, the browser will continue to use a
-locally cached copy without ever checking for updates on the server,
-significantly improving rendering performance.
+因为参数 ``v`` 是基于文件内容的, 如果你更新一个文件并重启服务, 它将发送
+一个新的 ``v`` 值, 所以用户的浏览器将会自动的拉去新的文件. 如果文件的内
+容没有改变, 浏览器将会继续使用本地缓存的副本, 而不会从服务器检查更新,
+显著的提高了渲染性能.
 
-In production, you probably want to serve static files from a more
-optimized static file server like `nginx <http://nginx.net/>`_. You
-can configure most any web server to recognize the version tags used
-by ``static_url()`` and set caching headers accordingly.  Here is the
-relevant portion of the nginx configuration we use at FriendFeed::
+在生产中, 你可能想提供静态文件通过一个更优的静态服务器, 比如
+`nginx <http://nginx.net/>`_ . 你可以配置任何web服务器识别通过
+``static_url()`` 提供的版本标签并相应的设置缓存头. 下面是我们在
+FriendFeed 使用的nginx相关配置的一部分::
 
     location /static/ {
         root /var/friendfeed/static;
@@ -215,23 +212,21 @@ relevant portion of the nginx configuration we use at FriendFeed::
 
 .. _debug-mode:
 
-Debug mode and automatic reloading
+Debug模式和自动重载
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you pass ``debug=True`` to the ``Application`` constructor, the app
-will be run in debug/development mode. In this mode, several features
-intended for convenience while developing will be enabled (each of which
-is also available as an individual flag; if both are specified the
-individual flag takes precedence):
+如果传递 ``debug=True`` 配置给 ``Application`` 的构造函数, 应用程序将会
+运行在debug/开发模式. 在这个模式下, 为了方便于开发的一些功能将被启用(
+每一个也可以作为独立的标签使用; 如果它们都被专门指定, 那它们都将获得
+独立的优先级):
 
-* ``autoreload=True``: The app will watch for changes to its source
-  files and reload itself when anything changes. This reduces the need
-  to manually restart the server during development. However, certain
-  failures (such as syntax errors at import time) can still take the
-  server down in a way that debug mode cannot currently recover from.
-* ``compiled_template_cache=False``: Templates will not be cached.
-* ``static_hash_cache=False``: Static file hashes (used by the
-  ``static_url`` function) will not be cached
+* ``autoreload=True``: 应用程序将会观察它的源文件是否改变, 并且当任何
+  文件改变的时候便重载它自己. 这减少了在开发中需要手动重启服务的需求.
+  然而, 在debug模式下, 某些错误(例如import的时候有语法错误)会导致服务
+  关闭, 并且无法自动恢复.
+* ``compiled_template_cache=False``: 模板将不会被缓存.
+* ``static_hash_cache=False``: 静态文件哈希 (被 ``static_url`` 函数
+  使用) 将不会被缓存
 * ``serve_traceback=True``: When an exception in a `.RequestHandler`
   is not caught, an error page including a stack trace will be
   generated.
