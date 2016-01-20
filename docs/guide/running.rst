@@ -50,26 +50,23 @@ IOLoop实例是重要的(甚至是间接的). 其次, 在这个模型中, 很难
 (zero-downtime)更新. 最后, 因为所有的进程共享相同的端口, 想单独监控
 它们就更加困难了.
 
-For more sophisticated deployments, it is recommended to start the processes
-independently, and have each one listen on a different port.
-The "process groups" feature of `supervisord <http://www.supervisord.org>`_
-is one good way to arrange this.  When each process uses a different port,
-an external load balancer such as HAProxy or nginx is usually needed
-to present a single address to outside visitors.
+对更复杂的部署, 建议启动独立的进程, 并让它们各自监听不同的端口.
+`supervisord <http://www.supervisord.org>`_ 的"进程组(process groups)"
+功能是一个很好的方式来安排这些. 当每个进程使用不同的端口, 一个外部的
+负载均衡器例如HAProxy 或nginx通常需要对外向访客提供一个单一的地址.
 
 
-Running behind a load balancer
+运行在负载均衡器后面
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When running behind a load balancer like nginx, it is recommended to
-pass ``xheaders=True`` to the `.HTTPServer` constructor. This will tell
-Tornado to use headers like ``X-Real-IP`` to get the user's IP address
-instead of attributing all traffic to the balancer's IP address.
+当运行在一个负载均衡器例如nginx, 建议传递``xheaders=True`` 给
+`.HTTPServer` 的构造器. 这将告诉Tornado使用类似 ``X-Real-IP``
+这样的HTTP头来获取用户的IP地址而不是把所有流量都认为来自于
+负载均衡器的IP地址.
 
-This is a barebones nginx config file that is structurally similar to
-the one we use at FriendFeed. It assumes nginx and the Tornado servers
-are running on the same machine, and the four Tornado servers are
-running on ports 8000 - 8003::
+这是一份原始的nginx配置文件, 在结构上类似于我们在FriendFeed所使用的
+配置. 这是假设nginx和Tornado server运行在同一台机器上的, 并且四个
+Tornado server正运行在8000 - 8003端口::
 
     user nginx;
     worker_processes 1;
@@ -143,11 +140,11 @@ running on ports 8000 - 8003::
         }
     }
 
-Static files and aggressive file caching
+静态文件和文件缓存
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can serve static files from Tornado by specifying the
-``static_path`` setting in your application::
+Tornado中, 你可以通过在应用程序中指定特殊的 ``static_path`` 来提供静态文
+件服务::
 
     settings = {
         "static_path": os.path.join(os.path.dirname(__file__), "static"),
@@ -162,32 +159,25 @@ You can serve static files from Tornado by specifying the
          dict(path=settings['static_path'])),
     ], **settings)
 
-This setting will automatically make all requests that start with
-``/static/`` serve from that static directory, e.g.,
-``http://localhost:8888/static/foo.png`` will serve the file
-``foo.png`` from the specified static directory. We also automatically
-serve ``/robots.txt`` and ``/favicon.ico`` from the static directory
-(even though they don't start with the ``/static/`` prefix).
+这些设置将自动的把所有以 ``/static/`` 开头的请求从static目录进行提供,
+e.g., ``http://localhost:8888/static/foo.png`` 将会通过指定的static目录
+提供 ``foo.png`` 文件. 我们也自动的会从static目录提供 ``/robots.txt``
+和 ``/favicon.ico`` (尽管它们并没有以 ``/static/`` 前缀开始).
 
-In the above settings, we have explicitly configured Tornado to serve
-``apple-touch-icon.png`` from the root with the `.StaticFileHandler`,
-though it is physically in the static file directory. (The capturing
-group in that regular expression is necessary to tell
-`.StaticFileHandler` the requested filename; recall that capturing
-groups are passed to handlers as method arguments.) You could do the
-same thing to serve e.g. ``sitemap.xml`` from the site root. Of
-course, you can also avoid faking a root ``apple-touch-icon.png`` by
-using the appropriate ``<link />`` tag in your HTML.
+在上面的设置中, 我们明确的配置Tornado 提供 ``apple-touch-icon.png``
+文件从 `.StaticFileHandler` 根下, 虽然文件在static文件目录中.
+(正则表达式捕获组必须告诉 `.StaticFileHandler` 请求的文件名; 调用捕获组
+把文件名作为方法的参数传递给处理程序.) 你可以做同样的事情 e.g.
+从网站的根提供 ``sitemap.xml`` 文件. 当然, 你也可以通过在你的HTML中使用
+``<link />`` 标签来避免伪造根目录的 ``apple-touch-icon.png`` .
 
-To improve performance, it is generally a good idea for browsers to
-cache static resources aggressively so browsers won't send unnecessary
-``If-Modified-Since`` or ``Etag`` requests that might block the
-rendering of the page. Tornado supports this out of the box with *static
-content versioning*.
+为了改善性能, 通常情况下, 让浏览器主动缓存静态资源是个好主意, 这样浏览器
+就不会发送不必要的可能在渲染页面时阻塞的 ``If-Modified-Since`` 或
+``Etag`` 请求了. Tornado使用 *静态内容版本(static content versioning)*
+来支持此项功能.
 
-To use this feature, use the `~.RequestHandler.static_url` method in
-your templates rather than typing the URL of the static file directly
-in your HTML::
+为了使用这些功能, 在你的模板中使用 `~.RequestHandler.static_url` 方法
+而不是直接在你的HTML中输入静态文件的URL::
 
     <html>
        <head>
@@ -198,11 +188,10 @@ in your HTML::
        </body>
      </html>
 
-The ``static_url()`` function will translate that relative path to a URI
-that looks like ``/static/images/logo.png?v=aae54``. The ``v`` argument
-is a hash of the content in ``logo.png``, and its presence makes the
-Tornado server send cache headers to the user's browser that will make
-the browser cache the content indefinitely.
+``static_url()`` 函数将把相对路径翻译成一个URI类似于
+``/static/images/logo.png?v=aae54``. 其中的 ``v`` 参数是 ``logo.png``
+内容的哈希(hash), 并且它的存在使得Tornado服务向用户的浏览器发送缓存头,
+这将使浏览器无限期的缓存内容.
 
 Since the ``v`` argument is based on the content of the file, if you
 update a file and restart your server, it will start sending a new ``v``
