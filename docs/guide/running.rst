@@ -227,47 +227,41 @@ Debug模式和自动重载
 * ``compiled_template_cache=False``: 模板将不会被缓存.
 * ``static_hash_cache=False``: 静态文件哈希 (被 ``static_url`` 函数
   使用) 将不会被缓存
-* ``serve_traceback=True``: When an exception in a `.RequestHandler`
-  is not caught, an error page including a stack trace will be
-  generated.
+* ``serve_traceback=True``: 当一个异常在 `.RequestHandler` 中没有捕获,
+  将会生成一个包含调用栈信息的错误页.
 
-Autoreload mode is not compatible with the multi-process mode of `.HTTPServer`.
-You must not give `HTTPServer.start <.TCPServer.start>` an argument other than 1 (or
-call `tornado.process.fork_processes`) if you are using autoreload mode.
+自动重载(autoreload)模式和 `.HTTPServer` 的多进程模式不兼容. 你不能给
+`HTTPServer.start <.TCPServer.start>` 传递1以外的参数(或者调用
+`tornado.process.fork_processes`) 当你使用自动重载模式的时候.
 
-The automatic reloading feature of debug mode is available as a
-standalone module in `tornado.autoreload`.  The two can be used in
-combination to provide extra robustness against syntax errors: set
-``autoreload=True`` within the app to detect changes while it is running,
-and start it with ``python -m tornado.autoreload myserver.py`` to catch
-any syntax errors or other errors at startup.
+debug模式的自动重载功能可作为一个独立的模块位于 `tornado.autoreload`.
+以下两者可以结合使用, 在语法错误之时提供额外的健壮性: 设置
+``autoreload=True`` 可以在app运行时检测文件修改, 还有启动
+``python -m tornado.autoreload myserver.py`` 来捕获任意语法错误或者
+其他的启动时错误.
 
-Reloading loses any Python interpreter command-line arguments (e.g. ``-u``)
-because it re-executes Python using `sys.executable` and `sys.argv`.
-Additionally, modifying these variables will cause reloading to behave
-incorrectly.
+重载会丢失任何Python解释器命令行参数(e.g. ``-u``). 因为它使用
+`sys.executable` 和 `sys.argv` 重新执行Python. 此外, 修改这些变量
+将造成重载错误.
 
-On some platforms (including Windows and Mac OSX prior to 10.6), the
-process cannot be updated "in-place", so when a code change is
-detected the old server exits and a new one starts.  This has been
-known to confuse some IDEs.
+在一些平台(包括Windows 和Mac OSX 10.6之前), 进程不能被"原地"更新,
+所以当检测到代码更新, 旧服务就会退出然后启动一个新服务. 这已经被公知
+来混淆一些IDE.
 
 
-WSGI and Google App Engine
+WSGI和Google App Engine
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Tornado is normally intended to be run on its own, without a WSGI
-container.  However, in some environments (such as Google App Engine),
-only WSGI is allowed and applications cannot run their own servers.
-In this case Tornado supports a limited mode of operation that does
-not support asynchronous operation but allows a subset of Tornado's
-functionality in a WSGI-only environment.  The features that are
-not allowed in WSGI mode include coroutines, the ``@asynchronous``
-decorator, `.AsyncHTTPClient`, the ``auth`` module, and WebSockets.
+Tornado通常是独立运行的, 不需要一个WSGI容器. 然而, 在一些环境中
+(例如Google App Engine), 只运行WSGI, 应用程序不能独立运行自己的
+服务. 在这种情况下, Tornado支持一个有限制的操作模式, 不支持异步
+操作但允许一个Tornado's功能的子集在仅WSGI环境中. 以下功能在WSGI
+模式下是不支持的, 包括协程, ``@asynchronous`` 装饰器,
+`.AsyncHTTPClient`, ``auth`` 模块和WebSockets.
 
-You can convert a Tornado `.Application` to a WSGI application
-with `tornado.wsgi.WSGIAdapter`.  In this example, configure
-your WSGI container to find the ``application`` object:
+你可以使用 `tornado.wsgi.WSGIAdapter` 把一个Tornado
+`.Application` 转换成WSGI应用. 在这个例子中, 配置你的WSGI容器发
+现 ``application`` 对象:
 
 .. testcode::
 
@@ -286,6 +280,6 @@ your WSGI container to find the ``application`` object:
 .. testoutput::
    :hide:
 
-See the `appengine example application
-<https://github.com/tornadoweb/tornado/tree/stable/demos/appengine>`_ for a
-full-featured AppEngine app built on Tornado.
+查看 `appengine example application
+<https://github.com/tornadoweb/tornado/tree/stable/demos/appengine>`_ 以
+了解AppEngine在Tornado上开发的完整功能.
