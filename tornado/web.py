@@ -14,12 +14,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-"""``tornado.web`` provides a simple web framework with asynchronous
-features that allow it to scale to large numbers of open connections,
-making it ideal for `long polling
-<http://en.wikipedia.org/wiki/Push_technology#Long_polling>`_.
+"""``tornado.web`` 提供了一种带有异步功能并允许它扩展到大量开放连接的
+简单的web 框架, 使其成为处理 `长连接(long polling)
+<http://en.wikipedia.org/wiki/Push_technology#Long_polling>`_ 的一种理想选择.
 
-Here is a simple "Hello, world" example app:
+这里有一个简单的"Hello, world"示例应用:
 
 .. testcode::
 
@@ -41,18 +40,16 @@ Here is a simple "Hello, world" example app:
    :hide:
 
 
-See the :doc:`guide` for additional information.
+查看 :doc:`guide` 以了解更多信息.
 
-Thread-safety notes
+线程安全说明
 -------------------
 
-In general, methods on `RequestHandler` and elsewhere in Tornado are
-not thread-safe.  In particular, methods such as
-`~RequestHandler.write()`, `~RequestHandler.finish()`, and
-`~RequestHandler.flush()` must only be called from the main thread.  If
-you use multiple threads it is important to use `.IOLoop.add_callback`
-to transfer control back to the main thread before finishing the
-request.
+一般情况下, 在 `RequestHandler` 中的方法和Tornado 中其他的方法不是
+线程安全的. 尤其是, 一些方法例如 `~RequestHandler.write()`,
+`~RequestHandler.finish()`, 和 `~RequestHandler.flush()` 要求只能从
+主线程调用. 如果你使用多线程, 那么在结束请求之前, 使用
+`.IOLoop.add_callback` 来把控制权传送回主线程是很重要的.
 
 """
 
@@ -144,10 +141,9 @@ May be overridden by passing a ``min_version`` keyword argument.
 
 
 class RequestHandler(object):
-    """Base class for HTTP request handlers.
+    """HTTP请求处理的基类.
 
-    Subclasses must define at least one of the methods defined in the
-    "Entry points" section below.
+    子类至少定义下面在"Entry points" 部分中被定义的方法其中之一.
     """
     SUPPORTED_METHODS = ("GET", "HEAD", "POST", "DELETE", "PATCH", "PUT",
                          "OPTIONS")

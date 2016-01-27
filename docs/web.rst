@@ -1,4 +1,4 @@
-``tornado.web`` --- ``RequestHandler`` and ``Application`` classes
+``tornado.web`` --- ``RequestHandler`` 和 ``Application`` 类
 ==================================================================
 
 .. testsetup::
