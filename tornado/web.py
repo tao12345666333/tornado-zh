@@ -179,12 +179,12 @@ class RequestHandler(object):
         self.initialize(**kwargs)
 
     def initialize(self):
-        """Hook for subclass initialization.
+        """子类初始化(Hook).
 
-        A dictionary passed as the third argument of a url spec will be
-        supplied as keyword arguments to initialize().
+        作为url spec的第三个参数传递的字典, 将作为关键字参数提供给
+        initialize().
 
-        Example::
+        例子::
 
             class ProfileHandler(RequestHandler):
                 def initialize(self, database):
@@ -201,7 +201,7 @@ class RequestHandler(object):
 
     @property
     def settings(self):
-        """An alias for `self.application.settings <Application.settings>`."""
+        """ `self.application.settings <Application.settings>` 的别名."""
         return self.application.settings
 
     def head(self, *args, **kwargs):
@@ -226,19 +226,17 @@ class RequestHandler(object):
         raise HTTPError(405)
 
     def prepare(self):
-        """Called at the beginning of a request before  `get`/`post`/etc.
+        """在每个请求的最开始被调用, 在 `get`/`post`/等方法之前.
 
-        Override this method to perform common initialization regardless
-        of the request method.
+        通过复写这个方法, 可以执行共同的初始化, 而不用考虑每个请求方法.
 
-        Asynchronous support: Decorate this method with `.gen.coroutine`
-        or `.return_future` to make it asynchronous (the
-        `asynchronous` decorator cannot be used on `prepare`).
-        If this method returns a `.Future` execution will not proceed
-        until the `.Future` is done.
+        异步支持: 这个方法使用 `.gen.coroutine` 或 `.return_future`
+        装饰器来使它异步( `asynchronous` 装饰器不能被用在 `prepare`).
+        如果这个方法返回一个 `.Future` 对象, 执行将不再进行, 直到
+        `.Future` 对象完成.
 
         .. versionadded:: 3.1
-           Asynchronous support.
+           异步支持.
         """
         pass
 
