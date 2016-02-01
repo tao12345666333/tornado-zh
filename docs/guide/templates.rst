@@ -114,8 +114,8 @@ Tornado模板支持 *控制语句(control statements)* 和 *表达式(expression
 这个行为可以通过传递 ``autoescape=None`` 给 `.Application` 或者
 `.tornado.template.Loader` 构造器来全局改变, 对于一个模板文件可以使
 用 ``{% autoescape None %}`` 指令, 对于一个单一表达式可以使用
- ``{% raw ...%}`` 来代替 ``{{ ... }}`` . 此外, 在每个地方一个可选的
- 转义函数名可以被用来代替 ``None``.
+``{% raw ...%}`` 来代替 ``{{ ... }}``. 此外, 在每个地方一个可选的
+转义函数名可以被用来代替 ``None``.
 
 注意, 虽然Tornado的自动转义在预防XSS漏洞上是有帮助的, 但是它并不能
 胜任所有的情况. 在某一位置出现的表达式, 例如Javascript 或 CSS, 可能需

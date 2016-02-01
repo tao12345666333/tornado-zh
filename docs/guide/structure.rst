@@ -75,7 +75,7 @@ Tornado web应用的结构
 `.Application` 构造函数有很多关键字参数可以用于自定义应用程序的行为
 和使用某些特性(或者功能); 完整列表请查看 `.Application.settings` .
 
- ``RequestHandler`` 子类
+``RequestHandler`` 子类
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Tornado web 应用程序的大部分工作是在 `.RequestHandler` 子类下完成的.
