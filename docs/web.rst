@@ -20,13 +20,11 @@
 
    .. _verbs:
 
-   Implement any of the following methods (collectively known as the
-   HTTP verb methods) to handle the corresponding HTTP method.
-   These methods can be made asynchronous with one of the following
-   decorators: `.gen.coroutine`, `.return_future`, or `asynchronous`.
+   执行后面任何的方法 (统称为HTTP 动词(verb) 方法) 来处理相应的HTTP方法.
+   这些方法可以通过使用下面的装饰器: `.gen.coroutine`, `.return_future`,
+   或 `asynchronous` 变成异步.
 
-   To support a method not on this list, override the class variable
-   ``SUPPORTED_METHODS``::
+   为了支持不再列表中的方法, 可以复写类变量 ``SUPPORTED_METHODS``::
 
      class WebDAVHandler(RequestHandler):
          SUPPORTED_METHODS = RequestHandler.SUPPORTED_METHODS + ('PROPFIND',)

@@ -143,7 +143,7 @@ May be overridden by passing a ``min_version`` keyword argument.
 class RequestHandler(object):
     """HTTP请求处理的基类.
 
-    子类至少定义下面在"Entry points" 部分中被定义的方法其中之一.
+    子类至少应该定义以下"Entry points" 部分中被定义的方法其中之一.
     """
     SUPPORTED_METHODS = ("GET", "HEAD", "POST", "DELETE", "PATCH", "PUT",
                          "OPTIONS")
@@ -241,12 +241,11 @@ class RequestHandler(object):
         pass
 
     def on_finish(self):
-        """Called after the end of a request.
+        """在一个请求的最后被调用.
 
-        Override this method to perform cleanup, logging, etc.
-        This method is a counterpart to `prepare`.  ``on_finish`` may
-        not produce any output, as it is called after the response
-        has been sent to the client.
+        复写这个方法来执行清理, 日志记录等. 这个方法和 `prepare` 是相
+        对应的. ``on_finish`` 可能不产生任何输出, 因为它是在相应被送
+        到客户端后才被调用.
         """
         pass
 
@@ -362,24 +361,23 @@ class RequestHandler(object):
     _ARG_DEFAULT = []
 
     def get_argument(self, name, default=_ARG_DEFAULT, strip=True):
-        """Returns the value of the argument with the given name.
+        """返回指定的name参数的值.
 
-        If default is not provided, the argument is considered to be
-        required, and we raise a `MissingArgumentError` if it is missing.
+        如果没有提供默认值, 那么这个参数将被视为是必须的, 并且当
+        找不到这个参数的时候我们会抛出一个 `MissingArgumentError`.
 
-        If the argument appears in the url more than once, we return the
-        last value.
+        如果一个在url上出现多次, 我们返回最后一个值.
 
-        The returned value is always unicode.
+        返回值永远是unicode.
         """
         return self._get_argument(name, default, self.request.arguments, strip)
 
     def get_arguments(self, name, strip=True):
-        """Returns a list of the arguments with the given name.
+        """返回指定name的参数列表.
 
-        If the argument is not present, returns an empty list.
+        如果参数不存在, 返回一个空列表.
 
-        The returned values are always unicode.
+        返回值永远是unicode.
         """
 
         # Make sure `get_arguments` isn't accidentally being called with a
@@ -390,16 +388,14 @@ class RequestHandler(object):
         return self._get_arguments(name, self.request.arguments, strip)
 
     def get_body_argument(self, name, default=_ARG_DEFAULT, strip=True):
-        """Returns the value of the argument with the given name
-        from the request body.
+        """返回请求体中指定name的参数的值.
 
-        If default is not provided, the argument is considered to be
-        required, and we raise a `MissingArgumentError` if it is missing.
+        如果没有提供默认值, 那么这个参数将被视为是必须的, 并且当
+        找不到这个参数的时候我们会抛出一个 `MissingArgumentError`.
 
-        If the argument appears in the url more than once, we return the
-        last value.
+        如果一个在url上出现多次, 我们返回最后一个值.
 
-        The returned value is always unicode.
+        返回值永远是unicode.
 
         .. versionadded:: 3.2
         """
@@ -407,27 +403,25 @@ class RequestHandler(object):
                                   strip)
 
     def get_body_arguments(self, name, strip=True):
-        """Returns a list of the body arguments with the given name.
+        """返回由指定请求体中指定name的参数的列表.
 
-        If the argument is not present, returns an empty list.
+        如果参数不存在, 返回一个空列表.
 
-        The returned values are always unicode.
+        返回值永远是unicode.
 
         .. versionadded:: 3.2
         """
         return self._get_arguments(name, self.request.body_arguments, strip)
 
     def get_query_argument(self, name, default=_ARG_DEFAULT, strip=True):
-        """Returns the value of the argument with the given name
-        from the request query string.
+        """从请求的query string返回给定name的参数的值.
 
-        If default is not provided, the argument is considered to be
-        required, and we raise a `MissingArgumentError` if it is missing.
+        如果没有提供默认值, 这个参数将被视为必须的, 并且当找不到这个
+        参数的时候我们会抛出一个 `MissingArgumentError`.
 
-        If the argument appears in the url more than once, we return the
-        last value.
+        如果这个参数在url中多次出现, 我们将返回最后一次的值.
 
-        The returned value is always unicode.
+        返回值永远是unicode.
 
         .. versionadded:: 3.2
         """
@@ -435,11 +429,11 @@ class RequestHandler(object):
                                   self.request.query_arguments, strip)
 
     def get_query_arguments(self, name, strip=True):
-        """Returns a list of the query arguments with the given name.
+        """返回指定name的参数列表.
 
-        If the argument is not present, returns an empty list.
+        如果参数不存在, 将返回空列表.
 
-        The returned values are always unicode.
+        返回值永远是unicode.
 
         .. versionadded:: 3.2
         """
