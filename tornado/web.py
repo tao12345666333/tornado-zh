@@ -281,7 +281,7 @@ class RequestHandler(object):
         self._reason = httputil.responses[200]
 
     def set_default_headers(self):
-        """Override this to set HTTP headers at the beginning of the request.
+        """复写这个方法可以在请求开始的时候设置HTTP头.
 
         For example, this is the place to set a custom ``Server`` header.
         Note that setting such headers in the normal flow of request
