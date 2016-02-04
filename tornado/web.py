@@ -250,7 +250,7 @@ class RequestHandler(object):
         pass
 
     def on_connection_close(self):
-        """Called in async handlers if the client closed the connection.
+        """在异步处理中, 如果客户端关闭了连接将会被调用.
 
         Override this to clean up resources associated with
         long-lived connections.  Note that this method is called only if
