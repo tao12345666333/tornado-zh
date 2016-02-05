@@ -481,12 +481,12 @@ class RequestHandler(object):
 
     @property
     def cookies(self):
-        """An alias for
-        `self.request.cookies <.httputil.HTTPServerRequest.cookies>`."""
+        """ `self.request.cookies <.httputil.HTTPServerRequest.cookies>`
+        的别名."""
         return self.request.cookies
 
     def get_cookie(self, name, default=None):
-        """Gets the value of the cookie with the given name, else default."""
+        """获取给定name的cookie值, 未获取到则返回默认值."""
         if self.request.cookies is not None and name in self.request.cookies:
             return self.request.cookies[name].value
         return default
