@@ -283,10 +283,9 @@ class RequestHandler(object):
     def set_default_headers(self):
         """复写这个方法可以在请求开始的时候设置HTTP头.
 
-        For example, this is the place to set a custom ``Server`` header.
-        Note that setting such headers in the normal flow of request
-        processing may not do what you want, since headers may be reset
-        during error handling.
+        例如, 在这里可以设置一个自定义 ``Server`` 头. 注意在一般的
+        请求过程流里可能不会实现你预期的效果, 因为头部可能在错误处
+        理(error handling)中被重置.
         """
         pass
 
