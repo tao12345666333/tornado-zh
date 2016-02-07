@@ -308,7 +308,7 @@ class RequestHandler(object):
                 raise ValueError("unknown status code %d", status_code)
 
     def get_status(self):
-        """Returns the status code for our response."""
+        """返回响应的状态码."""
         return self._status_code
 
     def set_header(self, name, value):
@@ -321,7 +321,7 @@ class RequestHandler(object):
         self._headers[name] = self._convert_header_value(value)
 
     def add_header(self, name, value):
-        """Adds the given response header and value.
+        """添加指定的响应头和对应的值.
 
         Unlike `set_header`, `add_header` may be called multiple times
         to return multiple values for the same header.
