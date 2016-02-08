@@ -269,7 +269,7 @@ class RequestHandler(object):
                 self.request.body.exception()
 
     def clear(self):
-        """Resets all headers and content for this response."""
+        """重置这个响应的所有头部和内容."""
         self._headers = httputil.HTTPHeaders({
             "Server": "TornadoServer/%s" % tornado.version,
             "Content-Type": "text/html; charset=UTF-8",
@@ -290,7 +290,7 @@ class RequestHandler(object):
         pass
 
     def set_status(self, status_code, reason=None):
-        """Sets the status code for our response.
+        """设置响应的状态码.
 
         :arg int status_code: Response status code. If ``reason`` is ``None``,
             it must be present in `httplib.responses <http.client.responses>`.
@@ -312,11 +312,11 @@ class RequestHandler(object):
         return self._status_code
 
     def set_header(self, name, value):
-        """Sets the given response header name and value.
+        """给响应设置指定的头部和对应的值.
 
-        If a datetime is given, we automatically format it according to the
-        HTTP specification. If the value is not a string, we convert it to
-        a string. All header values are then encoded as UTF-8.
+        如果给定了一个datetime, 我们会根据HTTP 规范自动的对它格式化.
+        如果值不是一个字符串, 我们会把它转换成字符串. 之后所有头部的值
+        都将用UTF-8 编码.
         """
         self._headers[name] = self._convert_header_value(value)
 
