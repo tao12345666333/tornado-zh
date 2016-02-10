@@ -623,9 +623,9 @@ class RequestHandler(object):
                                    min_version=min_version)
 
     def get_secure_cookie_key_version(self, name, value=None):
-        """Returns the signing key version of the secure cookie.
+        """返回安全cookie(secure cookie)的签名key版本.
 
-        The version is returned as int.
+        返回的版本号是int型的.
         """
         self.require_setting("cookie_secret", "secure cookies")
         if value is None:
@@ -633,7 +633,7 @@ class RequestHandler(object):
         return get_signature_key_version(value)
 
     def redirect(self, url, permanent=False, status=None):
-        """Sends a redirect to the given (optionally relative) URL.
+        """重定向到给定的URL(可以选择相对路径).
 
         If the ``status`` argument is specified, that value is used as the
         HTTP status code; otherwise either 301 (permanent) or 302
