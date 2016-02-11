@@ -460,7 +460,7 @@ class RequestHandler(object):
         return values
 
     def decode_argument(self, value, name=None):
-        """Decodes an argument from the request.
+        """从请求中解码一个参数.
 
         The argument has been percent-decoded and is now a byte string.
         By default, this method decodes the argument as utf-8 and returns
@@ -651,7 +651,7 @@ class RequestHandler(object):
         self.finish()
 
     def write(self, chunk):
-        """Writes the given chunk to the output buffer.
+        """把给定块写到输出buffer.
 
         To write the output to the network, use the flush() method below.
 
