@@ -680,7 +680,7 @@ class RequestHandler(object):
         self._write_buffer.append(chunk)
 
     def render(self, template_name, **kwargs):
-        """Renders the template with the given arguments as the response."""
+        """使用给定参数渲染模板并作为响应."""
         html = self.render_string(template_name, **kwargs)
 
         # Insert the additional JS and CSS added by the modules on the page
@@ -883,7 +883,7 @@ class RequestHandler(object):
                 return future
 
     def finish(self, chunk=None):
-        """Finishes this response, ending the HTTP request."""
+        """完成响应, 结束HTTP 请求."""
         if self._finished:
             raise RuntimeError("finish() called twice")
 
@@ -924,7 +924,7 @@ class RequestHandler(object):
         self.ui = None
 
     def send_error(self, status_code=500, **kwargs):
-        """Sends the given HTTP error code to the browser.
+        """给浏览器发送给定的HTTP 错误码.
 
         If `flush()` has already been called, it is not possible to send
         an error, so this method will simply terminate the response.
@@ -963,10 +963,10 @@ class RequestHandler(object):
             self.finish()
 
     def write_error(self, status_code, **kwargs):
-        """Override to implement custom error pages.
+        """复写这个方法来实现自定义错误页.
 
-        ``write_error`` may call `write`, `render`, `set_header`, etc
-        to produce output as usual.
+        ``write_error`` 可能调用 `write`, `render`, `set_header`,等
+        来产生一般的输出.
 
         If this error was caused by an uncaught exception (including
         HTTPError), an ``exc_info`` triple will be available as
@@ -989,7 +989,7 @@ class RequestHandler(object):
 
     @property
     def locale(self):
-        """The locale for the current session.
+        """返回当前session的位置.
 
         Determined by either `get_user_locale`, which you can override to
         set the locale based on, e.g., a user preference stored in a
@@ -1011,12 +1011,12 @@ class RequestHandler(object):
         self._locale = value
 
     def get_user_locale(self):
-        """Override to determine the locale from the authenticated user.
+        """复写这个方法确定认证过的用户所在位置.
 
-        If None is returned, we fall back to `get_browser_locale()`.
+        如果返回了None , 我们退回选择 `get_browser_locale()`.
 
-        This method should return a `tornado.locale.Locale` object,
-        most likely obtained via a call like ``tornado.locale.get("en")``
+        这个方法应该返回一个 `tornado.locale.Locale` 对象,
+        就像调用 ``tornado.locale.get("en")`` 得到的那样
         """
         return None
 
