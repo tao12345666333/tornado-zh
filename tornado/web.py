@@ -1046,9 +1046,9 @@ class RequestHandler(object):
 
     @property
     def current_user(self):
-        """The authenticated user for this request.
+        """返回请求中被认证的用户.
 
-        This is set in one of two ways:
+        可以使用以下两者之一的方式来设置:
 
         * A subclass may override `get_current_user()`, which will be called
           automatically the first time ``self.current_user`` is accessed.
