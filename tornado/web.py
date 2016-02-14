@@ -1092,9 +1092,9 @@ class RequestHandler(object):
         return None
 
     def get_login_url(self):
-        """Override to customize the login URL based on the request.
+        """复写这个方法自定义基于请求的登陆URL.
 
-        By default, we use the ``login_url`` application setting.
+        默认情况下, 我们使用application设置中的 ``login_url`` 值.
         """
         self.require_setting("login_url", "@tornado.web.authenticated")
         return self.application.settings["login_url"]
