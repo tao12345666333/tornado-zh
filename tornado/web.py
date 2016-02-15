@@ -2531,7 +2531,7 @@ class StaticFileHandler(RequestHandler):
         return modified
 
     def get_content_type(self):
-        """Returns the ``Content-Type`` header to be used for this request.
+        """返回这个请求使用的 ``Content-Type`` 头.
 
         .. versionadded:: 3.1
         """
@@ -2986,10 +2986,10 @@ class URLSpec(object):
              self.handler_class, self.kwargs, self.name)
 
     def _find_groups(self):
-        """Returns a tuple (reverse string, group count) for a url.
+        """返回一个基于url的元组(reverse string, group count).
 
-        For example: Given the url pattern /([0-9]{4})/([a-z-]+)/, this method
-        would return ('/%s/%s/', 2).
+        例如: 给定一个url 模式 /([0-9]{4})/([a-z-]+)/, 这个方法
+        将会返回('/%s/%s/', 2).
         """
         pattern = self.regex.pattern
         if pattern.startswith('^'):
