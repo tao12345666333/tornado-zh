@@ -2863,7 +2863,7 @@ class _xsrf_form_html(UIModule):
 
 
 class TemplateModule(UIModule):
-    """UIModule that simply renders the given template.
+    """UIModule 简便的渲染给定的模板.
 
     {% module Template("foo.html") %} is similar to {% include "foo.html" %},
     but the module version gets its own namespace (with kwargs passed to
