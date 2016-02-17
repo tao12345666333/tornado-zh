@@ -292,11 +292,11 @@ class RequestHandler(object):
     def set_status(self, status_code, reason=None):
         """设置响应的状态码.
 
-        :arg int status_code: Response status code. If ``reason`` is ``None``,
-            it must be present in `httplib.responses <http.client.responses>`.
-        :arg string reason: Human-readable reason phrase describing the status
-            code. If ``None``, it will be filled in from
-            `httplib.responses <http.client.responses>`.
+        :arg int status_code: 响应状态码. 如果 ``reason`` 是 ``None``,
+            它必须在 `httplib.responses <http.client.responses>`.
+        :arg string reason: 用人类可读的原因短语来描述状态码.
+            如果是 ``None``, 它会由来自
+            `httplib.responses <http.client.responses>` 的reason填满.
         """
         self._status_code = status_code
         if reason is not None:
