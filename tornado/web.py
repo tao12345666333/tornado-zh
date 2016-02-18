@@ -550,13 +550,12 @@ class RequestHandler(object):
 
     def set_secure_cookie(self, name, value, expires_days=30, version=None,
                           **kwargs):
-        """Signs and timestamps a cookie so it cannot be forged.
+        """给cookie签名和时间戳以防被伪造.
 
-        You must specify the ``cookie_secret`` setting in your Application
-        to use this method. It should be a long, random sequence of bytes
-        to be used as the HMAC secret for the signature.
+        你必须在你的Application设置中指定 ``cookie_secret`` 来使用这个方法.
+        它应该是一个长的, 字节随机序列作为HMAC 密钥来做签名.
 
-        To read a cookie set with this method, use `get_secure_cookie()`.
+        使用 `get_secure_cookie()` 方法来阅读通过这个方法设置的cookie.
 
         Note that the ``expires_days`` parameter sets the lifetime of the
         cookie in the browser, but is independent of the ``max_age_days``
