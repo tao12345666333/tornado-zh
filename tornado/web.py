@@ -108,33 +108,33 @@ except ImportError:
 
 
 MIN_SUPPORTED_SIGNED_VALUE_VERSION = 1
-"""The oldest signed value version supported by this version of Tornado.
+"""这个Tornado版本所支持的最旧的签名值版本.
 
-Signed values older than this version cannot be decoded.
+比这个签名值更旧的版本将不能被解码.
 
 .. versionadded:: 3.2.1
 """
 
 MAX_SUPPORTED_SIGNED_VALUE_VERSION = 2
-"""The newest signed value version supported by this version of Tornado.
+"""这个Tornado版本所支持的最新的签名值版本.
 
-Signed values newer than this version cannot be decoded.
+比这个签名值更新的版本将不能被解码.
 
 .. versionadded:: 3.2.1
 """
 
 DEFAULT_SIGNED_VALUE_VERSION = 2
-"""The signed value version produced by `.RequestHandler.create_signed_value`.
+"""签名值版本通过 `.RequestHandler.create_signed_value` 产生.
 
-May be overridden by passing a ``version`` keyword argument.
+可通过传递一个 ``version`` 关键字参数复写.
 
 .. versionadded:: 3.2.1
 """
 
 DEFAULT_SIGNED_VALUE_MIN_VERSION = 1
-"""The oldest signed value accepted by `.RequestHandler.get_secure_cookie`.
+"""最旧的可以被 `.RequestHandler.get_secure_cookie` 接受的签名值.
 
-May be overridden by passing a ``min_version`` keyword argument.
+可通过传递一个 ``min_version`` 关键字参数复写.
 
 .. versionadded:: 3.2.1
 """
@@ -252,16 +252,12 @@ class RequestHandler(object):
     def on_connection_close(self):
         """在异步处理中, 如果客户端关闭了连接将会被调用.
 
-        Override this to clean up resources associated with
-        long-lived connections.  Note that this method is called only if
-        the connection was closed during asynchronous processing; if you
-        need to do cleanup after every request override `on_finish`
-        instead.
+        复写这个方法来清除与长连接相关的资源. 注意这个方法只有当在异步处理
+        连接被关闭才会被调用; 如果你需要在每个请求之后做清理, 请复写
+        `on_finish` 方法来代替.
 
-        Proxies may keep a connection open for a time (perhaps
-        indefinitely) after the client has gone away, so this method
-        may not be called promptly after the end user closes their
-        connection.
+        在客户端离开后, 代理可能会保持连接一段时间 (也可能是无限期),
+        所以这个方法可能不会被立即执行当终端用户关闭他们的连接.
         """
         if _has_stream_request_body(self.__class__):
             if not self.request.body.done():
@@ -323,16 +319,15 @@ class RequestHandler(object):
     def add_header(self, name, value):
         """添加指定的响应头和对应的值.
 
-        Unlike `set_header`, `add_header` may be called multiple times
-        to return multiple values for the same header.
+        不像是 `set_header`, `add_header` 可以被多次调用来为相同的头
+        返回多个值.
         """
         self._headers.add(name, self._convert_header_value(value))
 
     def clear_header(self, name):
-        """Clears an outgoing header, undoing a previous `set_header` call.
+        """清除输出头, 取消之前的 `set_header` 调用.
 
-        Note that this method does not apply to multi-valued headers
-        set by `add_header`.
+        注意这个方法不适用于被 `add_header` 设置了多个值的头.
         """
         if name in self._headers:
             del self._headers[name]
@@ -462,15 +457,15 @@ class RequestHandler(object):
     def decode_argument(self, value, name=None):
         """从请求中解码一个参数.
 
-        The argument has been percent-decoded and is now a byte string.
-        By default, this method decodes the argument as utf-8 and returns
-        a unicode string, but this may be overridden in subclasses.
+        这个参数已经被解码现在是一个字节字符串(byte string) . 默认情况下,
+        这个方法会把参数解码成utf-8 并且返回一个unicode 字符串, 但是它可以
+        被子类复写.
 
-        This method is used as a filter for both `get_argument()` and for
-        values extracted from the url and passed to `get()`/`post()`/etc.
+        这个方法既可以在 `get_argument()` 中被用作过滤器, 也可以用来从url
+        总提取值并传递给 `get()`/`post()`/等.
 
-        The name of the argument is provided if known, but may be None
-        (e.g. for unnamed groups in the url regex).
+        如果知道的话可以提供参数的name, 但是可能会为None
+        (e.g. 在url正则表达式中未命名的组).
         """
         try:
             return _unicode(value)
@@ -492,12 +487,11 @@ class RequestHandler(object):
 
     def set_cookie(self, name, value, domain=None, expires=None, path="/",
                    expires_days=None, **kwargs):
-        """Sets the given cookie name/value with the given options.
+        """设置给定的cookie 名称/值还有给定的选项.
 
-        Additional keyword arguments are set on the Cookie.Morsel
-        directly.
-        See http://docs.python.org/library/cookie.html#morsel-objects
-        for available attributes.
+        另外的关键字参数在Cookie.Morsel直接设置.
+        参见 http://docs.python.org/library/cookie.html#morsel-objects
+        查看可用的属性.
         """
         # The cookie library only accepts type str, in both python 2 and 3
         name = escape.native_str(name)
