@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# coding: utf-8
 """WebSocket 协议的实现
 
 `WebSockets <http://dev.w3.org/html5/websockets/>`_ 允许浏览器和服务器之间进行
