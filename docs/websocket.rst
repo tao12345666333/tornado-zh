@@ -1,4 +1,4 @@
-``tornado.websocket`` --- Bidirectional communication to the browser
+``tornado.websocket`` --- 浏览器与服务器双向通信
 ====================================================================
 
 .. testsetup::
