@@ -1,4 +1,4 @@
-""" WebSocket 协议的实现
+"""WebSocket 协议的实现
 
 `WebSockets <http://dev.w3.org/html5/websockets/>`_ 允许浏览器和服务器之间进行
 双向通信
@@ -47,9 +47,9 @@ except NameError:
 class WebSocketError(Exception):
     pass
 
+
 class WebSocketClosedError(WebSocketError):
-    """
-    出现关闭连接错误触发.
+    """出现关闭连接错误触发.
 
     .. versionadded:: 3.2
     """
@@ -57,8 +57,7 @@ class WebSocketClosedError(WebSocketError):
 
 
 class WebSocketHandler(tornado.web.RequestHandler):
-    """
-    通过继承该类来创建一个基本的 WebSocket handler.
+    """通过继承该类来创建一个基本的 WebSocket handler.
 
     重写 `on_message` 来处理收到的消息, 使用 `write_message` 来发送消息到客户端.
     你也可以重写 `open` 和 `on_close` 来处理连接打开和关闭这两个动作.
@@ -187,8 +186,7 @@ class WebSocketHandler(tornado.web.RequestHandler):
                 self.stream.close()
 
     def write_message(self, message, binary=False):
-        """
-        将给出的 message 发送到客户端
+        """将给出的 message 发送到客户端
 
         message 可以是 string 或者 dict（将会被编码成 json ) 如果 ``binary`` 为
         false, message 将会以 utf8 的编码发送; 在 binary 模式下 message 可以是
@@ -220,8 +218,7 @@ class WebSocketHandler(tornado.web.RequestHandler):
         return None
 
     def get_compression_options(self):
-        """
-        重写该方法返回当前连接的 compression 选项
+        """重写该方法返回当前连接的 compression 选项
 
         如果这个方法返回 None (默认), compression 将会被禁用. 如果它返回 dict (即使
         是空的),compression 都会被开启. dict 的内容将会被用来控制 compression 所
@@ -232,8 +229,7 @@ class WebSocketHandler(tornado.web.RequestHandler):
         return None
 
     def open(self, *args, **kwargs):
-        """
-        当打开一个新的 WebSocket 时调用
+        """当打开一个新的 WebSocket 时调用
 
         `open` 的参数是从 `tornado.web.URLSpec` 通过正则表达式获取的, 就像获取
         `tornado.web.RequestHandler.get` 的参数一样
@@ -241,8 +237,7 @@ class WebSocketHandler(tornado.web.RequestHandler):
         pass
 
     def on_message(self, message):
-        """
-        处理在 WebSocket 中收到的消息
+        """处理在 WebSocket 中收到的消息
 
         这个方法必须被重写
         """
@@ -272,8 +267,7 @@ class WebSocketHandler(tornado.web.RequestHandler):
         pass
 
     def close(self, code=None, reason=None):
-        """
-        关闭当前 WebSocket
+        """关闭当前 WebSocket
 
         一旦挥手动作成功,socket将会被关闭.
 
@@ -993,8 +987,8 @@ class WebSocketClientConnection(simple_httpclient._HTTPConnection):
 def websocket_connect(url, io_loop=None, callback=None, connect_timeout=None,
                       on_message_callback=None, compression_options=None):
 
-    """作为客户端的 WebSocket
-    需要指定 url, 返回一个结果为 `WebSocketClientConnection`的 Future 对象
+    """客户端 WebSocket 支持
+    需要指定 url, 返回一个结果为 `WebSocketClientConnection` 的 Future 对象
 
     ``compression_options`` 作为 `.WebSocketHandler.get_compression_options` 的
     返回值, 将会以同样的方式执行.
