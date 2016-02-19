@@ -64,14 +64,8 @@ class WebSocketHandler(tornado.web.RequestHandler):
     重写 `on_message` 来处理收到的消息, 使用 `write_message` 来发送消息到客户端.
     你也可以重写 `open` 和 `on_close` 来处理连接打开和关闭这两个动作.
 
-    See http://dev.w3.org/html5/websockets/ for details on the
-    JavaScript interface.  The protocol is specified at
-    http://tools.ietf.org/html/rfc6455.
-
     有关JavaScript 接口的详细信息： http://dev.w3.org/html5/websockets/
-
     具体的协议： http://tools.ietf.org/html/rfc6455
-
 
     一个简单的 WebSocket handler 的实例： 服务端直接返回所有收到的消息给客户端
 
@@ -1011,9 +1005,9 @@ def websocket_connect(url, io_loop=None, callback=None, connect_timeout=None,
     .. versionchanged:: 3.2
        允许使用 ``HTTPRequest`` 对象来代替 urls.
     .. versionchanged:: 4.1
-       添加 ``compression_options`` 和``on_message_callback``.
+       添加 ``compression_options`` 和 ``on_message_callback`` .
 
-       不赞成使用``compression_options``.
+       不赞成使用 ``compression_options`` .
     """
     if io_loop is None:
         io_loop = IOLoop.current()
