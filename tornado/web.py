@@ -557,33 +557,32 @@ class RequestHandler(object):
 
         使用 `get_secure_cookie()` 方法来阅读通过这个方法设置的cookie.
 
-        Note that the ``expires_days`` parameter sets the lifetime of the
-        cookie in the browser, but is independent of the ``max_age_days``
-        parameter to `get_secure_cookie`.
+        注意 ``expires_days`` 参数设置cookie在浏览器中的有效期, 并且它是
+        独立于 `get_secure_cookie` 的 ``max_age_days`` 参数的.
 
-        Secure cookies may contain arbitrary byte values, not just unicode
-        strings (unlike regular cookies)
+        安全cookie(cooSecure cookies)可以包含任意的字节的值, 而不只是unicode
+        字符串(不像是普通cookie)
 
         .. versionchanged:: 3.2.1
 
-           Added the ``version`` argument.  Introduced cookie version 2
-           and made it the default.
+           添加 ``version`` 参数. 提出cookie version 2
+           并将它作为默认设置.
         """
         self.set_cookie(name, self.create_signed_value(name, value,
                                                        version=version),
                         expires_days=expires_days, **kwargs)
 
     def create_signed_value(self, name, value, version=None):
-        """Signs and timestamps a string so it cannot be forged.
+        """产生用时间戳签名的字符串, 防止被伪造.
 
-        Normally used via set_secure_cookie, but provided as a separate
-        method for non-cookie uses.  To decode a value not stored
-        as a cookie use the optional value argument to get_secure_cookie.
+        一般通过set_secure_cookie 使用, 但对于无cookie使用来说就
+        作为独立的方法来提供. 为了编码不作为cookie存储的值, 可以
+        在 get_secure_cookie 使用可选的value参数.
 
         .. versionchanged:: 3.2.1
 
-           Added the ``version`` argument.  Introduced cookie version 2
-           and made it the default.
+           添加 ``version`` 参数. 提出cookie version 2
+           并将它作为默认设置.
         """
         self.require_setting("cookie_secret", "secure cookies")
         secret = self.application.settings["cookie_secret"]
