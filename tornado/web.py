@@ -560,7 +560,7 @@ class RequestHandler(object):
         注意 ``expires_days`` 参数设置cookie在浏览器中的有效期, 并且它是
         独立于 `get_secure_cookie` 的 ``max_age_days`` 参数的.
 
-        安全cookie(cooSecure cookies)可以包含任意的字节的值, 而不只是unicode
+        安全cookie(Secure cookies)可以包含任意的字节的值, 而不只是unicode
         字符串(不像是普通cookie)
 
         .. versionchanged:: 3.2.1
@@ -576,7 +576,7 @@ class RequestHandler(object):
         """产生用时间戳签名的字符串, 防止被伪造.
 
         一般通过set_secure_cookie 使用, 但对于无cookie使用来说就
-        作为独立的方法来提供. 为了编码不作为cookie存储的值, 可以
+        作为独立的方法来提供. 为了解码不作为cookie存储的值, 可以
         在 get_secure_cookie 使用可选的value参数.
 
         .. versionchanged:: 3.2.1
@@ -597,15 +597,14 @@ class RequestHandler(object):
 
     def get_secure_cookie(self, name, value=None, max_age_days=31,
                           min_version=None):
-        """Returns the given signed cookie if it validates, or None.
+        """如果给定的签名过的cookie是有效的,则返回，否则返回None.
 
-        The decoded cookie value is returned as a byte string (unlike
-        `get_cookie`).
+        解码后的cookie值作为字节字符串返回(不像 `get_cookie` ).
 
         .. versionchanged:: 3.2.1
 
-           Added the ``min_version`` argument.  Introduced cookie version 2;
-           both versions 1 and 2 are accepted by default.
+           添加 ``min_version`` 参数. 引进cookie version 2;
+           默认版本 1 和 2 都可以接受.
         """
         self.require_setting("cookie_secret", "secure cookies")
         if value is None:
@@ -627,10 +626,9 @@ class RequestHandler(object):
     def redirect(self, url, permanent=False, status=None):
         """重定向到给定的URL(可以选择相对路径).
 
-        If the ``status`` argument is specified, that value is used as the
-        HTTP status code; otherwise either 301 (permanent) or 302
-        (temporary) is chosen based on the ``permanent`` argument.
-        The default is 302 (temporary).
+        如果指定了 ``status`` 参数, 这个值将作为HTTP状态码; 否则
+        将通过 ``permanent`` 参数选择301 (永久) 或者 302 (临时).
+        默认是 302 (临时重定向).
         """
         if self._headers_written:
             raise Exception("Cannot redirect after headers have been written")
