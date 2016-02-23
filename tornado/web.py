@@ -643,17 +643,15 @@ class RequestHandler(object):
     def write(self, chunk):
         """把给定块写到输出buffer.
 
-        To write the output to the network, use the flush() method below.
+        为了把输出写到网络, 使用下面的flush() 方法.
 
-        If the given chunk is a dictionary, we write it as JSON and set
-        the Content-Type of the response to be ``application/json``.
-        (if you want to send JSON as a different ``Content-Type``, call
-        set_header *after* calling write()).
+        如果给定的块是一个字典, 我们会把它作为JSON来写同时会把响应头
+        设置为 ``application/json``. (如果你写JSON但是设置不同的
+        ``Content-Type``,  可以调用 set_header *在调用write() 之后* ).
 
-        Note that lists are not converted to JSON because of a potential
-        cross-site security vulnerability.  All JSON output should be
-        wrapped in a dictionary.  More details at
-        http://haacked.com/archive/2009/06/25/json-hijacking.aspx/ and
+        注意列表不能转换为JSON 因为一个潜在的跨域安全漏洞. 所有的JSON
+        输出应该包在一个字典中. 更多细节参考
+        http://haacked.com/archive/2009/06/25/json-hijacking.aspx/ 和
         https://github.com/facebook/tornado/issues/1009
         """
         if self._finished:
