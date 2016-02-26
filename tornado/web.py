@@ -779,13 +779,12 @@ class RequestHandler(object):
         return t.generate(**namespace)
 
     def get_template_namespace(self):
-        """Returns a dictionary to be used as the default template namespace.
+        """返回一个字典被用做默认的模板命名空间.
 
-        May be overridden by subclasses to add or modify values.
+        可以被子类复写来添加或修改值.
 
-        The results of this method will be combined with additional
-        defaults in the `tornado.template` module and keyword arguments
-        to `render` or `render_string`.
+        这个方法的结果将与 `tornado.template` 模块中其他的默认值
+        还有 `render` 或 `render_string` 的关键字参数相结合.
         """
         namespace = dict(
             handler=self,
