@@ -1168,8 +1168,7 @@ class RequestHandler(object):
         return self._raw_xsrf_token
 
     def _decode_xsrf_token(self, cookie):
-        """Convert a cookie string into a the tuple form returned by
-        _get_raw_xsrf_token.
+        """把_get_raw_xsrf_token返回的cookie字符串转换成元组形式.
         """
 
         try:
@@ -1290,22 +1289,22 @@ class RequestHandler(object):
         return base + get_url(self.settings, path, **kwargs)
 
     def require_setting(self, name, feature="this feature"):
-        """Raises an exception if the given app setting is not defined."""
+        """抛出一个异常如果给定的app设置未定义."""
         if not self.application.settings.get(name):
             raise Exception("You must define the '%s' setting in your "
                             "application to use %s" % (name, feature))
 
     def reverse_url(self, name, *args):
-        """Alias for `Application.reverse_url`."""
+        """ `Application.reverse_url` 的别名."""
         return self.application.reverse_url(name, *args)
 
     def compute_etag(self):
-        """Computes the etag header to be used for this request.
+        """计算被用于这个请求的etag头.
 
-        By default uses a hash of the content written so far.
+        到目前为止默认使用输入内容的hash值.
 
-        May be overridden to provide custom etag implementations,
-        or may return None to disable tornado's default etag support.
+        可以被复写来提供自定义的etag实现, 或者可以返回None来禁止
+        tornado 默认的etag支持.
         """
         hasher = hashlib.sha1()
         for part in self._write_buffer:
@@ -1313,11 +1312,11 @@ class RequestHandler(object):
         return '"%s"' % hasher.hexdigest()
 
     def set_etag_header(self):
-        """Sets the response's Etag header using ``self.compute_etag()``.
+        """设置响应的Etag头使用 ``self.compute_etag()`` 计算.
 
-        Note: no header will be set if ``compute_etag()`` returns ``None``.
+        注意: 如果 ``compute_etag()`` 返回 ``None`` 将不会设置头.
 
-        This method is called automatically when the request is finished.
+        这个方法在请求结束的时候自动调用.
         """
         etag = self.compute_etag()
         if etag is not None:
@@ -1435,7 +1434,7 @@ class RequestHandler(object):
         raise NotImplementedError()
 
     def _log(self):
-        """Logs the current request.
+        """记录当前请求.
 
         Sort of deprecated since this functionality was moved to the
         Application, but left in place for the benefit of existing apps
@@ -1474,7 +1473,7 @@ class RequestHandler(object):
             self.send_error(500, exc_info=sys.exc_info())
 
     def log_exception(self, typ, value, tb):
-        """Override to customize logging of uncaught exceptions.
+        """复写来自定义未捕获异常的日志.
 
         By default logs instances of `HTTPError` as warnings without
         stack traces (on the ``tornado.general`` logger), and all
@@ -1652,7 +1651,7 @@ def removeslash(method):
 
 
 def addslash(method):
-    """Use this decorator to add a missing trailing slash to the request path.
+    """使用这个装饰器给请求路径中添加丢失的slash.
 
     For example, a request to ``/foo`` would redirect to ``/foo/`` with this
     decorator. Your request handler mapping should use a regular expression
@@ -1796,7 +1795,7 @@ class Application(httputil.HTTPServerConnectionDelegate):
         return server
 
     def add_handlers(self, host_pattern, host_handlers):
-        """Appends the given handlers to our handler list.
+        """添加给定的handler到我们的handler表.
 
         Host patterns are processed sequentially in the order they were
         added. All matching patterns will be considered.
@@ -1882,7 +1881,7 @@ class Application(httputil.HTTPServerConnectionDelegate):
         return dispatcher.execute()
 
     def reverse_url(self, name, *args):
-        """Returns a URL path for handler named ``name``
+        """返回名字是 ``name`` 的handler的URL路径
 
         The handler must be added to the application as a named `URLSpec`.
 
@@ -2302,7 +2301,7 @@ class StaticFileHandler(RequestHandler):
             assert self.request.method == "HEAD"
 
     def compute_etag(self):
-        """Sets the ``Etag`` header based on static url version.
+        """设置 ``Etag`` 头基于static url版本.
 
         This allows efficient ``If-None-Match`` checks against cached
         versions, and sends the correct ``Etag`` for a partial response
@@ -2316,7 +2315,7 @@ class StaticFileHandler(RequestHandler):
         return '"%s"' % (version_hash, )
 
     def set_headers(self):
-        """Sets the content and caching headers on the response.
+        """设置响应的内容和缓存头.
 
         .. versionadded:: 3.1
         """
@@ -2340,7 +2339,7 @@ class StaticFileHandler(RequestHandler):
         self.set_extra_headers(self.path)
 
     def should_return_304(self):
-        """Returns True if the headers indicate that we should return 304.
+        """如果头部表明我们应该返回304则返回True.
 
         .. versionadded:: 3.1
         """
@@ -2467,10 +2466,9 @@ class StaticFileHandler(RequestHandler):
 
     @classmethod
     def get_content_version(cls, abspath):
-        """Returns a version string for the resource at the given path.
+        """返回给定路径资源的一个版本字符串.
 
-        This class method may be overridden by subclasses.  The
-        default implementation is a hash of the file's contents.
+        这个类方法可以被子类复写. 默认的实现是对文件内容的hash.
 
         .. versionadded:: 3.1
         """
@@ -2536,7 +2534,7 @@ class StaticFileHandler(RequestHandler):
             return "application/octet-stream"
 
     def set_extra_headers(self, path):
-        """For subclass to add extra headers to the response"""
+        """为了子类给响应添加额外的头部"""
         pass
 
     def get_cache_time(self, path, modified, mime_type):
