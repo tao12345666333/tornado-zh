@@ -801,13 +801,12 @@ class RequestHandler(object):
         return namespace
 
     def create_template_loader(self, template_path):
-        """Returns a new template loader for the given path.
+        """返回给定路径的新模板装载器.
 
-        May be overridden by subclasses.  By default returns a
-        directory-based loader on the given path, using the
-        ``autoescape`` and ``template_whitespace`` application
-        settings.  If a ``template_loader`` application setting is
-        supplied, uses that instead.
+        可以被子类复写. 默认返回一个在给定路径上基于目录的装载器,
+        使用应用程序的 ``autoescape`` 和 ``template_whitespace``
+        设置. 如果应用设置中提供了一个 ``template_loader`` ,
+        则使用它来替代.
         """
         settings = self.application.settings
         if "template_loader" in settings:
@@ -822,16 +821,15 @@ class RequestHandler(object):
         return template.Loader(template_path, **kwargs)
 
     def flush(self, include_footers=False, callback=None):
-        """Flushes the current output buffer to the network.
+        """将当前输出缓冲区写到网络.
 
-        The ``callback`` argument, if given, can be used for flow control:
-        it will be run when all flushed data has been written to the socket.
-        Note that only one flush callback can be outstanding at a time;
-        if another flush occurs before the previous flush's callback
-        has been run, the previous callback will be discarded.
+        ``callback`` 参数, 如果给定, 可用于流控制: 它会在所有数据被写到
+        socket后执行. 注意同一时间只能有一个flush callback停留; 如果另
+        一个flush在前一个flush的callback运行之前发生, 那么前一个callback
+        将会被丢弃.
 
         .. versionchanged:: 4.0
-           Now returns a `.Future` if no callback is given.
+           现在如果没有给定callback, 会返回一个 `.Future` 对象.
         """
         chunk = b"".join(self._write_buffer)
         self._write_buffer = []
@@ -1072,9 +1070,9 @@ class RequestHandler(object):
         self._current_user = value
 
     def get_current_user(self):
-        """Override to determine the current user from, e.g., a cookie.
+        """复写来实现获取当前用户, e.g., 从cookie得到.
 
-        This method may not be a coroutine.
+        这个方法可能不是一个协程.
         """
         return None
 
@@ -1087,10 +1085,10 @@ class RequestHandler(object):
         return self.application.settings["login_url"]
 
     def get_template_path(self):
-        """Override to customize template path for each handler.
+        """可以复写给每个handler指定自定义模板路径.
 
-        By default, we use the ``template_path`` application setting.
-        Return None to load templates relative to the calling file.
+        默认情况下, 我们使用应用设置中的 ``template_path`` . 返回
+        None相对于调用文件来加载模板.
         """
         return self.application.settings.get("template_path")
 
