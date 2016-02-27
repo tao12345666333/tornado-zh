@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding: utf-8
 #
 # Copyright 2009 Facebook
 #
@@ -2487,24 +2488,23 @@ class StaticFileHandler(RequestHandler):
         return self._stat_result
 
     def get_content_size(self):
-        """Retrieve the total size of the resource at the given path.
+        """检索给定路径中资源的总大小.
 
-        This method may be overridden by subclasses.
+        这个方法可以被子类复写.
 
         .. versionadded:: 3.1
 
         .. versionchanged:: 4.0
-           This method is now always called, instead of only when
-           partial results are requested.
+           这个方法总是被调用, 而不是仅在部分结果被请求时.
         """
         stat_result = self._stat()
         return stat_result[stat.ST_SIZE]
 
     def get_modified_time(self):
-        """Returns the time that ``self.absolute_path`` was last modified.
+        """返回 ``self.absolute_path`` 的最后修改时间.
 
-        May be overridden in subclasses.  Should return a `~datetime.datetime`
-        object or None.
+        可以被子类复写. 应当返回一个 `~datetime.datetime`
+        对象或None.
 
         .. versionadded:: 3.1
         """
@@ -2538,36 +2538,29 @@ class StaticFileHandler(RequestHandler):
         pass
 
     def get_cache_time(self, path, modified, mime_type):
-        """Override to customize cache control behavior.
+        """复写来自定义缓存控制行为.
 
-        Return a positive number of seconds to make the result
-        cacheable for that amount of time or 0 to mark resource as
-        cacheable for an unspecified amount of time (subject to
-        browser heuristics).
+        返回一个正的秒数作为结果可缓存的时间的量或者返回0标记资源
+        可以被缓存一个未指定的时间段(受浏览器自身的影响).
 
-        By default returns cache expiry of 10 years for resources requested
-        with ``v`` argument.
+        默认情况下带有 ``v`` 请求参数的资源返回的缓存过期时间是10年.
         """
         return self.CACHE_MAX_AGE if "v" in self.request.arguments else 0
 
     @classmethod
     def make_static_url(cls, settings, path, include_version=True):
-        """Constructs a versioned url for the given path.
+        """为给定路径构造一个的有版本的url.
 
-        This method may be overridden in subclasses (but note that it
-        is a class method rather than an instance method).  Subclasses
-        are only required to implement the signature
-        ``make_static_url(cls, settings, path)``; other keyword
-        arguments may be passed through `~RequestHandler.static_url`
-        but are not standard.
+        这个方法可以在子类中被复写(但是注意他是一个类方法而不是一个
+        实例方法). 子类只需实现签名
+        ``make_static_url(cls, settings, path)``; 其他关键字参数可
+        以通过 `~RequestHandler.static_url` 传递, 但这不是标准.
 
-        ``settings`` is the `Application.settings` dictionary.  ``path``
-        is the static path being requested.  The url returned should be
-        relative to the current host.
+        ``settings`` 是 `Application.settings` 字典.  ``path``
+        是被请求的静态路径. 返回的url应该是相对于当前host的.
 
-        ``include_version`` determines whether the generated URL should
-        include the query string containing the version hash of the
-        file corresponding to the given ``path``.
+        ``include_version`` 决定生成的URL是否应该包含含有给定
+        ``path`` 相对应文件的hash版本查询字符串.
 
         """
         url = settings.get('static_url_prefix', '/static/') + path
@@ -2581,13 +2574,12 @@ class StaticFileHandler(RequestHandler):
         return '%s?v=%s' % (url, version_hash)
 
     def parse_url_path(self, url_path):
-        """Converts a static URL path into a filesystem path.
+        """将静态URL路径转换成文件系统路径.
 
-        ``url_path`` is the path component of the URL with
-        ``static_url_prefix`` removed.  The return value should be
-        filesystem path relative to ``static_path``.
+        ``url_path`` 是由去掉 ``static_url_prefix`` 的URL组成.
+        返回值应该是相对于 ``static_path`` 的文件系统路径.
 
-        This is the inverse of `make_static_url`.
+        这是逆 `make_static_url` .
         """
         if os.path.sep != "/":
             url_path = url_path.replace("/", os.path.sep)
@@ -2595,17 +2587,15 @@ class StaticFileHandler(RequestHandler):
 
     @classmethod
     def get_version(cls, settings, path):
-        """Generate the version string to be used in static URLs.
+        """生成用于静态URL的版本字符串.
 
-        ``settings`` is the `Application.settings` dictionary and ``path``
-        is the relative location of the requested asset on the filesystem.
-        The returned value should be a string, or ``None`` if no version
-        could be determined.
+        ``settings`` 是 `Application.settings` 字典并且 ``path``
+        是请求资源在文件系统中的相对位置. 返回值应该是一个字符串
+        或 ``None`` 如果没有版本可以被确定.
 
         .. versionchanged:: 3.1
-           This method was previously recommended for subclasses to override;
-           `get_content_version` is now preferred as it allows the base
-           class to handle caching of the result.
+           这个方法之前建议在子类中复写; `get_content_version`
+           现在是首选因为它允许基类来处理结果的缓存.
         """
         abs_path = cls.get_absolute_path(settings['static_path'], path)
         return cls._get_cached_version(abs_path)
