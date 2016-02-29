@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding: utf-8
 #
 # Copyright 2009 Facebook
 #
@@ -14,16 +15,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-"""A non-blocking, single-threaded HTTP server.
+u"""非阻塞，单线程 HTTP server。
 
-Typical applications have little direct interaction with the `HTTPServer`
-class except to start a server at the beginning of the process
-(and even that is often done indirectly via `tornado.web.Application.listen`).
+典型的应用很少与`HTTPServer`类直接交互，除非在进程开始时开启server
+（尽管这经常间接的通过`tornado.web.Application.listen`来完成）。
 
 .. versionchanged:: 4.0
 
-   The ``HTTPRequest`` class that used to live in this module has been moved
-   to `tornado.httputil.HTTPServerRequest`.  The old name remains as an alias.
+   曾经在此模块中的``HTTPRequest``类已经被移到`tornado.httputil.HTTPServerRequest`。
+   它的旧名保留为一个同义名。
 """
 
 from __future__ import absolute_import, division, print_function, with_statement
@@ -42,30 +42,26 @@ from tornado.util import Configurable
 
 class HTTPServer(TCPServer, Configurable,
                  httputil.HTTPServerConnectionDelegate):
-    r"""A non-blocking, single-threaded HTTP server.
+    ur"""非阻塞，单线程 HTTP server。
 
-    A server is defined by a subclass of `.HTTPServerConnectionDelegate`,
-    or, for backwards compatibility, a callback that takes an
-    `.HTTPServerRequest` as an argument. The delegate is usually a
-    `tornado.web.Application`.
+    一个server可以由一个`.HTTPServerConnectionDelegate`的子类定义，
+    或者，为了向后兼容，由一个以`.HTTPServerRequest`为参数的callback定义。
+    它的委托对象(delegate)通常是`tornado.web.Application`。
 
-    `HTTPServer` supports keep-alive connections by default
-    (automatically for HTTP/1.1, or for HTTP/1.0 when the client
-    requests ``Connection: keep-alive``).
+    `HTTPServer`默认支持keep-alive链接（对于HTTP/1.1自动开启，而对于HTTP/1.0，
+    需要client发起``Connection: keep-alive``请求）。
 
-    If ``xheaders`` is ``True``, we support the
-    ``X-Real-Ip``/``X-Forwarded-For`` and
-    ``X-Scheme``/``X-Forwarded-Proto`` headers, which override the
-    remote IP and URI scheme/protocol for all requests.  These headers
-    are useful when running Tornado behind a reverse proxy or load
-    balancer.  The ``protocol`` argument can also be set to ``https``
-    if Tornado is run behind an SSL-decoding proxy that does not set one of
-    the supported ``xheaders``.
+    如果``xheaders``是``True``，我们支持
+    ``X-Real-Ip``/``X-Forwarded-For``和
+    ``X-Scheme``/``X-Forwarded-Proto``首部字段，这将会使
+    remote IP 与 URI scheme/protocal 对所有请求无效。
+    当Tornado运行在反向代理或者负载均衡(load balancer)之后时，
+    这些首部字段非常有用。如果Tornado运行在一个不设置任何一个支持的
+    ``xheaders``的SSL-decoding代理之后，``protocol``参数也能设置为``https``。
 
-    To make this server serve SSL traffic, send the ``ssl_options`` keyword
-    argument with an `ssl.SSLContext` object. For compatibility with older
-    versions of Python ``ssl_options`` may also be a dictionary of keyword
-    arguments for the `ssl.wrap_socket` method.::
+    要使server可以服务于SSL加密的流量，需要把``ssl_option``参数
+    设置为一个`ssl.SSLContext`对象。为了兼容旧版本的Python``ssl_options``
+    可能也是一个字典(dictionary)，其中包含传给`ssl.wrap_socket`方法的keyword arguments。
 
        ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
        ssl_ctx.load_cert_chain(os.path.join(data_dir, "mydomain.crt"),
@@ -74,29 +70,31 @@ class HTTPServer(TCPServer, Configurable,
 
     `HTTPServer` initialization follows one of three patterns (the
     initialization methods are defined on `tornado.tcpserver.TCPServer`):
+    `HTTPServer`的初始化依照以下三种模式之一（初始化方法定义
+    在`tornado.tcpserver.TCPServer`）：
 
-    1. `~tornado.tcpserver.TCPServer.listen`: simple single-process::
+    1. `~tornado.tcpserver.TCPServer.listen`: 简单的单进程::
 
             server = HTTPServer(app)
             server.listen(8888)
             IOLoop.current().start()
 
-       In many cases, `tornado.web.Application.listen` can be used to avoid
-       the need to explicitly create the `HTTPServer`.
+       在很多情形下，`tornado.web.Application.listen`可以用来避免显式的
+       创建`HTTPServer`。
 
     2. `~tornado.tcpserver.TCPServer.bind`/`~tornado.tcpserver.TCPServer.start`:
-       simple multi-process::
+       简单的多进程::
 
             server = HTTPServer(app)
             server.bind(8888)
-            server.start(0)  # Forks multiple sub-processes
+            server.start(0)  # Fork 多个子进程
             IOLoop.current().start()
 
-       When using this interface, an `.IOLoop` must *not* be passed
-       to the `HTTPServer` constructor.  `~.TCPServer.start` will always start
-       the server on the default singleton `.IOLoop`.
+       当使用这个接口时，一个`.IOLoop`不能被传给`HTTPServer`
+       的构造方法(constructor)。`~.TCPServer.start`将默认
+       在单例`.IOLoop`上开启server。
 
-    3. `~tornado.tcpserver.TCPServer.add_sockets`: advanced multi-process::
+    3. `~tornado.tcpserver.TCPServer.add_sockets`: 高级多进程::
 
             sockets = tornado.netutil.bind_sockets(8888)
             tornado.process.fork_processes(0)
@@ -104,26 +102,23 @@ class HTTPServer(TCPServer, Configurable,
             server.add_sockets(sockets)
             IOLoop.current().start()
 
-       The `~.TCPServer.add_sockets` interface is more complicated,
-       but it can be used with `tornado.process.fork_processes` to
-       give you more flexibility in when the fork happens.
-       `~.TCPServer.add_sockets` can also be used in single-process
-       servers if you want to create your listening sockets in some
-       way other than `tornado.netutil.bind_sockets`.
+       `~.TCPServer.add_sockets`接口更加复杂，
+       但是，当fork发生的时候，它可以与`tornado.process.fork_processes`
+       一起使用来提供更好的灵活性。
+       如果你想使用其他的方法，而不是`tornado.netutil.bind_sockets`，
+       来创建监听socket，`~.TCPServer.add_sockets`也可以被用在单进程server中。
 
     .. versionchanged:: 4.0
-       Added ``decompress_request``, ``chunk_size``, ``max_header_size``,
+       增加了``decompress_request``, ``chunk_size``, ``max_header_size``,
        ``idle_connection_timeout``, ``body_timeout``, ``max_body_size``
-       arguments.  Added support for `.HTTPServerConnectionDelegate`
-       instances as ``request_callback``.
+       参数。支持`.HTTPServerConnectionDelegate`实例化为``request_callback``。
 
     .. versionchanged:: 4.1
-       `.HTTPServerConnectionDelegate.start_request` is now called with
-       two arguments ``(server_conn, request_conn)`` (in accordance with the
-       documentation) instead of one ``(request_conn)``.
+       `.HTTPServerConnectionDelegate.start_request`现在需要传入两个参数来调用
+       ``(server_conn, request_conn)``（根据文档内容）而不是一个``(request_conn)``.
 
     .. versionchanged:: 4.2
-       `HTTPServer` is now a subclass of `tornado.util.Configurable`.
+       `HTTPServer`现在是`tornado.util.Configurable`的一个子类。
     """
     def __init__(self, *args, **kwargs):
         # Ignore args to __init__; real initialization belongs in
