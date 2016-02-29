@@ -912,13 +912,11 @@ class RequestHandler(object):
     def send_error(self, status_code=500, **kwargs):
         """给浏览器发送给定的HTTP 错误码.
 
-        If `flush()` has already been called, it is not possible to send
-        an error, so this method will simply terminate the response.
-        If output has been written but not yet flushed, it will be discarded
-        and replaced with the error page.
+        如果 `flush()` 已经被调用, 它是不可能发送错误的, 所以这个方法将终止
+        响应. 如果输出已经被写但尚未flush, 它将被丢弃并被错误页代替.
 
-        Override `write_error()` to customize the error page that is returned.
-        Additional keyword arguments are passed through to `write_error`.
+        复写 `write_error()` 来自定义它返回的错误页. 额外的关键字参数将
+        被传递给 `write_error`.
         """
         if self._headers_written:
             gen_log.error("Cannot send error response after headers written")
