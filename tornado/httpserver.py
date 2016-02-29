@@ -68,8 +68,6 @@ class HTTPServer(TCPServer, Configurable,
                                os.path.join(data_dir, "mydomain.key"))
        HTTPServer(applicaton, ssl_options=ssl_ctx)
 
-    `HTTPServer` initialization follows one of three patterns (the
-    initialization methods are defined on `tornado.tcpserver.TCPServer`):
     `HTTPServer`的初始化依照以下三种模式之一（初始化方法定义
     在`tornado.tcpserver.TCPServer`）：
 
