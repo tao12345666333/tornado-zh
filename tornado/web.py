@@ -245,7 +245,7 @@ class RequestHandler(object):
         """在一个请求的最后被调用.
 
         复写这个方法来执行清理, 日志记录等. 这个方法和 `prepare` 是相
-        对应的. ``on_finish`` 可能不产生任何输出, 因为它是在相应被送
+        对应的. ``on_finish`` 可能不产生任何输出, 因为它是在响应被送
         到客户端后才被调用.
         """
         pass
@@ -303,7 +303,7 @@ class RequestHandler(object):
                 self._reason = httputil.responses[status_code]
             except KeyError:
                 raise ValueError("unknown status code %d", status_code)
-
+应
     def get_status(self):
         """返回响应的状态码."""
         return self._status_code
@@ -1005,9 +1005,9 @@ class RequestHandler(object):
         return None
 
     def get_browser_locale(self, default="en_US"):
-        """Determines the user's locale from ``Accept-Language`` header.
+        """从 ``Accept-Language`` 头决定用户的位置.
 
-        See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4
+        参考 http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4
         """
         if "Accept-Language" in self.request.headers:
             languages = self.request.headers["Accept-Language"].split(",")
