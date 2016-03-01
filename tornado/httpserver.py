@@ -62,7 +62,8 @@ class HTTPServer(TCPServer, Configurable,
 
     要使server可以服务于SSL加密的流量，需要把 ``ssl_option`` 参数
     设置为一个 `ssl.SSLContext` 对象。为了兼容旧版本的Python ``ssl_options``
-    可能也是一个字典(dictionary)，其中包含传给 `ssl.wrap_socket` 方法的keyword arguments。
+    可能也是一个字典(dictionary)，其中包含传给 `ssl.wrap_socket` 方法的关键
+    字参数。::
 
        ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
        ssl_ctx.load_cert_chain(os.path.join(data_dir, "mydomain.crt"),
