@@ -303,7 +303,7 @@ class RequestHandler(object):
                 self._reason = httputil.responses[status_code]
             except KeyError:
                 raise ValueError("unknown status code %d", status_code)
-应
+
     def get_status(self):
         """返回响应的状态码."""
         return self._status_code
@@ -952,11 +952,10 @@ class RequestHandler(object):
         ``write_error`` 可能调用 `write`, `render`, `set_header`,等
         来产生一般的输出.
 
-        If this error was caused by an uncaught exception (including
-        HTTPError), an ``exc_info`` triple will be available as
-        ``kwargs["exc_info"]``.  Note that this exception may not be
-        the "current" exception for purposes of methods like
-        ``sys.exc_info()`` or ``traceback.format_exc``.
+        如果错误是由未捕获的异常造成的(包括HTTPError), 三个一组的
+        ``exc_info`` 将变成可用的通过 ``kwargs["exc_info"]``.
+        注意这个异常可能不是"当前(current)" 目的或方法的异常就像
+        ``sys.exc_info()`` 或 ``traceback.format_exc``.
         """
         if self.settings.get("serve_traceback") and "exc_info" in kwargs:
             # in debug mode, try to send a traceback
@@ -975,13 +974,12 @@ class RequestHandler(object):
     def locale(self):
         """返回当前session的位置.
 
-        Determined by either `get_user_locale`, which you can override to
-        set the locale based on, e.g., a user preference stored in a
-        database, or `get_browser_locale`, which uses the ``Accept-Language``
-        header.
+        通过 `get_user_locale` 来确定, 你可以复写这个方法设置
+        获取locale的条件, e.g., 记录在数据库中的用户偏好, 或
+        `get_browser_locale`, 使用 ``Accept-Language`` 头部.
 
         .. versionchanged: 4.1
-           Added a property setter.
+           添加setter属性.
         """
         if not hasattr(self, "_locale"):
             self._locale = self.get_user_locale()
