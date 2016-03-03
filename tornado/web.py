@@ -1032,19 +1032,18 @@ class RequestHandler(object):
 
         可以使用以下两者之一的方式来设置:
 
-        * A subclass may override `get_current_user()`, which will be called
-          automatically the first time ``self.current_user`` is accessed.
-          `get_current_user()` will only be called once per request,
-          and is cached for future access::
+        * 子类可以复写 `get_current_user()`, 这将会在第一次访问
+          ``self.current_user`` 时自动被调用.
+          `get_current_user()` 在每次请求时只会被调用一次, 并为
+          将来访问做缓存::
 
               def get_current_user(self):
                   user_cookie = self.get_secure_cookie("user")
-                      if user_cookie:
-                          return json.loads(user_cookie)
+                  if user_cookie:
+                      return json.loads(user_cookie)
                   return None
 
-        * It may be set as a normal variable, typically from an overridden
-          `prepare()`::
+        * 它可以被设置为一个普通的变量, 通常在来自被复写的 `prepare()`::
 
               @gen.coroutine
               def prepare(self):
@@ -1052,11 +1051,10 @@ class RequestHandler(object):
                   if user_id_cookie:
                       self.current_user = yield load_user(user_id_cookie)
 
-        Note that `prepare()` may be a coroutine while `get_current_user()`
-        may not, so the latter form is necessary if loading the user requires
-        asynchronous operations.
+        注意 `prepare()` 可能是一个协程, 尽管 `get_current_user()`
+        可能不是, 所以后面的形式是必要的如果加载用户需要异步操作.
 
-        The user object may any type of the application's choosing.
+        用户对象可以是任意application选择的类型.
         """
         if not hasattr(self, "_current_user"):
             self._current_user = self.get_current_user()
