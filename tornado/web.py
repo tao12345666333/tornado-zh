@@ -1431,9 +1431,8 @@ class RequestHandler(object):
     def _log(self):
         """记录当前请求.
 
-        Sort of deprecated since this functionality was moved to the
-        Application, but left in place for the benefit of existing apps
-        that have overridden this method.
+        可以说这是过时的因为这个功能已经被移动到了Application, 留在这里
+        是为了已经复写这个方法的现有app.
         """
         self.application.log_request(self)
 
@@ -1470,10 +1469,9 @@ class RequestHandler(object):
     def log_exception(self, typ, value, tb):
         """复写来自定义未捕获异常的日志.
 
-        By default logs instances of `HTTPError` as warnings without
-        stack traces (on the ``tornado.general`` logger), and all
-        other exceptions as errors with stack traces (on the
-        ``tornado.application`` logger).
+        默认情况下 `HTTPError` 的日志实例作为警告(warning)没有堆栈追踪(在
+        ``tornado.general`` logger), 其他作为错误(error)的异常带有堆栈
+        追踪(在 ``tornado.application`` logger).
 
         .. versionadded:: 3.1
         """
@@ -1623,11 +1621,11 @@ def _has_stream_request_body(cls):
 
 
 def removeslash(method):
-    """Use this decorator to remove trailing slashes from the request path.
+    """使用这个装饰器移除请求路径尾部的斜杠(slashes).
 
-    For example, a request to ``/foo/`` would redirect to ``/foo`` with this
-    decorator. Your request handler mapping should use a regular expression
-    like ``r'/foo/*'`` in conjunction with using the decorator.
+    例如, 使用这个装饰器请求 ``/foo/`` 将被重定向到 ``/foo`` .
+    你的请求处理映射应该使用正则表达式类似 ``r'/foo/*'``
+    和使用装饰器相结合.
     """
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
