@@ -1623,7 +1623,7 @@ def _has_stream_request_body(cls):
 def removeslash(method):
     """使用这个装饰器移除请求路径尾部的斜杠(slashes).
 
-    例如, 使用这个装饰器请求 ``/foo/`` 将被重定向到 ``/foo`` .
+    例如, 使用了这个装饰器请求 ``/foo/`` 将被重定向到 ``/foo`` .
     你的请求处理映射应该使用正则表达式类似 ``r'/foo/*'``
     和使用装饰器相结合.
     """
@@ -1646,9 +1646,9 @@ def removeslash(method):
 def addslash(method):
     """使用这个装饰器给请求路径中添加丢失的slash.
 
-    For example, a request to ``/foo`` would redirect to ``/foo/`` with this
-    decorator. Your request handler mapping should use a regular expression
-    like ``r'/foo/?'`` in conjunction with using the decorator.
+    例如, 使用了这个装饰器请求 ``/foo`` 将被重定向到 ``/foo/`` .
+    你的请求处理映射应该使用正则表达式类似 ``r'/foo/?'``
+    和使用装饰器相结合.
     """
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
@@ -1790,8 +1790,8 @@ class Application(httputil.HTTPServerConnectionDelegate):
     def add_handlers(self, host_pattern, host_handlers):
         """添加给定的handler到我们的handler表.
 
-        Host patterns are processed sequentially in the order they were
-        added. All matching patterns will be considered.
+        Host patterns将按照它们的添加顺序进行处理.
+        All matching patterns 将被考虑.
         """
         if not host_pattern.endswith("$"):
             host_pattern += "$"
@@ -1876,23 +1876,22 @@ class Application(httputil.HTTPServerConnectionDelegate):
     def reverse_url(self, name, *args):
         """返回名字是 ``name`` 的handler的URL路径
 
-        The handler must be added to the application as a named `URLSpec`.
+        处理程序必须作为 `URLSpec` 添加到应用程序.
 
-        Args will be substituted for capturing groups in the `URLSpec` regex.
-        They will be converted to strings if necessary, encoded as utf8,
-        and url-escaped.
+        捕获组的参数将在 `URLSpec` 的正则表达式被替换.
+        如有必要它们将被转换成string, 编码成utf8,及
+        网址转义(url-escaped).
         """
         if name in self.named_handlers:
             return self.named_handlers[name].reverse(*args)
         raise KeyError("%s not found in named urls" % name)
 
     def log_request(self, handler):
-        """Writes a completed HTTP request to the logs.
+        """写一个完成的HTTP 请求到日志中.
 
-        By default writes to the python root logger.  To change
-        this behavior either subclass Application and override this method,
-        or pass a function in the application settings dictionary as
-        ``log_function``.
+        默认情况下会写到python 根(root)logger. 要改变这种行为
+        无论是子类应用和复写这个方法, 或者传递一个函数到应用
+        设置字典中作为 ``log_function``.
         """
         if "log_function" in self.settings:
             self.settings["log_function"](handler)
@@ -2089,10 +2088,10 @@ class Finish(Exception):
 
 
 class MissingArgumentError(HTTPError):
-    """Exception raised by `RequestHandler.get_argument`.
+    """由 `RequestHandler.get_argument` 抛出的异常.
 
-    This is a subclass of `HTTPError`, so if it is uncaught a 400 response
-    code will be used instead of 500 (and a stack trace will not be logged).
+    这是 `HTTPError` 的一个子类, 所以如果它未捕获400响应码将被
+    用来代替500(并且栈追踪不会被记录到日志).
 
     .. versionadded:: 3.1
     """
