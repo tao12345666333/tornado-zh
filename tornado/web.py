@@ -2102,7 +2102,7 @@ class MissingArgumentError(HTTPError):
 
 
 class ErrorHandler(RequestHandler):
-    """Generates an error response with ``status_code`` for all requests."""
+    """为所有请求生成一个带有 ``status_code`` 的错误响应."""
     def initialize(self, status_code):
         self.set_status(status_code)
 
@@ -2117,9 +2117,9 @@ class ErrorHandler(RequestHandler):
 
 
 class RedirectHandler(RequestHandler):
-    """Redirects the client to the given URL for all GET requests.
+    """将所有GET请求重定向到给定的URL.
 
-    You should provide the keyword argument ``url`` to the handler, e.g.::
+    你需要为处理程序提供 ``url`` 关键字参数, e.g.::
 
         application = web.Application([
             (r"/oldpath", web.RedirectHandler, {"url": "/newpath"}),
@@ -2295,9 +2295,9 @@ class StaticFileHandler(RequestHandler):
     def compute_etag(self):
         """设置 ``Etag`` 头基于static url版本.
 
-        This allows efficient ``If-None-Match`` checks against cached
-        versions, and sends the correct ``Etag`` for a partial response
-        (i.e. the same ``Etag`` as the full file).
+        这允许高效的针对缓存版本的 ``If-None-Match`` 检查,
+        并发送正确的 ``Etag`` 给局部的响应(i.e. 相同的
+        ``Etag`` 为完整的文件).
 
         .. versionadded:: 3.1
         """
@@ -2352,15 +2352,14 @@ class StaticFileHandler(RequestHandler):
 
     @classmethod
     def get_absolute_path(cls, root, path):
-        """Returns the absolute location of ``path`` relative to ``root``.
+        """返回 ``path`` 相对于 ``root`` 的绝对路径.
 
-        ``root`` is the path configured for this `StaticFileHandler`
-        (in most cases the ``static_path`` `Application` setting).
+        ``root`` 是这个 `StaticFileHandler` 配置的路径(在大多数情
+        况下是 `Application` 的 ``static_path``设置).
 
-        This class method may be overridden in subclasses.  By default
-        it returns a filesystem path, but other strings may be used
-        as long as they are unique and understood by the subclass's
-        overridden `get_content`.
+        这个类方法可能在子类中被复写. 默认情况下它返回一个文件系统
+        路径, 但其他字符串可以被使用, 只要它们是独特的并且被
+        子类复写的 `get_content` 理解.
 
         .. versionadded:: 3.1
         """
@@ -2368,16 +2367,15 @@ class StaticFileHandler(RequestHandler):
         return abspath
 
     def validate_absolute_path(self, root, absolute_path):
-        """Validate and return the absolute path.
+        """验证并返回绝对路径.
 
-        ``root`` is the configured path for the `StaticFileHandler`,
-        and ``path`` is the result of `get_absolute_path`
+        ``root`` 是 `StaticFileHandler` 配置的路径,并且
+        ``path`` 是 `get_absolute_path` 的结果.
 
-        This is an instance method called during request processing,
-        so it may raise `HTTPError` or use methods like
-        `RequestHandler.redirect` (return None after redirecting to
-        halt further processing).  This is where 404 errors for missing files
-        are generated.
+        这是一个实例方法在请求过程中被调用, 所以它可能抛出
+        `HTTPError` 或者使用类似 `RequestHandler.redirect`
+        (返回None在重定向到停止进一步处理之后) 这种方法.
+        如果丢失文件将会生成404错误.
 
         This method may modify the path before returning it, but note that
         any such modifications will not be understood by `make_static_url`.
