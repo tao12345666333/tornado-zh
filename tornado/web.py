@@ -2377,11 +2377,11 @@ class StaticFileHandler(RequestHandler):
         (返回None在重定向到停止进一步处理之后) 这种方法.
         如果丢失文件将会生成404错误.
 
-        This method may modify the path before returning it, but note that
-        any such modifications will not be understood by `make_static_url`.
+        这个方法可能在返回路径之前修改它, 但是注意任何这样的
+        修改将不会被 `make_static_url` 理解.
 
-        In instance methods, this method's result is available as
-        ``self.absolute_path``.
+        在实例方法, 这个方法的结果对 ``self.absolute_path``
+        是可用的.
 
         .. versionadded:: 3.1
         """
