@@ -1089,23 +1089,20 @@ class RequestHandler(object):
 
     @property
     def xsrf_token(self):
-        """The XSRF-prevention token for the current user/session.
+        """当前用户/会话的XSRF-prevention token.
 
-        To prevent cross-site request forgery, we set an '_xsrf' cookie
-        and include the same '_xsrf' value as an argument with all POST
-        requests. If the two do not match, we reject the form submission
-        as a potential forgery.
+        为了防止伪造跨站请求, 我们设置一个 '_xsrf' cookie 并在所有POST
+        请求中包含相同的 '_xsrf' 值作为一个参数. 如果这两个不匹配,
+        我们会把这个提交当作潜在的伪造请求而拒绝掉.
 
-        See http://en.wikipedia.org/wiki/Cross-site_request_forgery
+        查看 http://en.wikipedia.org/wiki/Cross-site_request_forgery
 
         .. versionchanged:: 3.2.2
-           The xsrf token will now be have a random mask applied in every
-           request, which makes it safe to include the token in pages
-           that are compressed.  See http://breachattack.com for more
-           information on the issue fixed by this change.  Old (version 1)
-           cookies will be converted to version 2 when this method is called
-           unless the ``xsrf_cookie_version`` `Application` setting is
-           set to 1.
+           该xsrf token现在已经在每个请求都有一个随机mask这使得它
+           可以简洁的把token包含在页面中是安全的. 查看
+           http://breachattack.com 浏览更多信息关于这个更改修复的
+           问题. 旧(版本1)cookies 将被转换到版本2 当这个方法被调用
+           除非 ``xsrf_cookie_version`` `Application` 被设置为1.
 
         .. versionchanged:: 4.3
            The ``xsrf_cookie_kwargs`` `Application` setting may be
