@@ -1105,12 +1105,10 @@ class RequestHandler(object):
            除非 ``xsrf_cookie_version`` `Application` 被设置为1.
 
         .. versionchanged:: 4.3
-           The ``xsrf_cookie_kwargs`` `Application` setting may be
-           used to supply additional cookie options (which will be
-           passed directly to `set_cookie`). For example,
-           ``xsrf_cookie_kwargs=dict(httponly=True, secure=True)``
-           will set the ``secure`` and ``httponly`` flags on the
-           ``_xsrf`` cookie.
+           该 ``xsrf_cookie_kwargs`` `Application` 设置可能被用来
+           补充额外的cookie 选项(将会直接传递给 `set_cookie`).
+           例如, ``xsrf_cookie_kwargs=dict(httponly=True, secure=True)``
+           将设置 ``secure`` 和 ``httponly`` 标志在 ``_xsrf`` cookie.
         """
         if not hasattr(self, "_xsrf_token"):
             version, token, timestamp = self._get_raw_xsrf_token()
@@ -1136,15 +1134,14 @@ class RequestHandler(object):
         return self._xsrf_token
 
     def _get_raw_xsrf_token(self):
-        """Read or generate the xsrf token in its raw form.
+        """读取或生成xsrf token 用它原本的格式.
 
-        The raw_xsrf_token is a tuple containing:
+        该raw_xsrf_token是一个tuple 包含:
 
-        * version: the version of the cookie from which this token was read,
-          or None if we generated a new token in this request.
-        * token: the raw token data; random (non-ascii) bytes.
-        * timestamp: the time this token was generated (will not be accurate
-          for version 1 cookies)
+        * version: 读到这个token的cookie的版本,或None如果我们在该请求
+          中生成一个新token.
+        * token: 原生的token数据; 随机(non-ascii) bytes.
+        * timestamp: 该token生成的时间(对于版本1的cookie将不准确)
         """
         if not hasattr(self, '_raw_xsrf_token'):
             cookie = self.get_cookie("_xsrf")
@@ -1195,12 +1192,12 @@ class RequestHandler(object):
             return None, None, None
 
     def check_xsrf_cookie(self):
-        """Verifies that the ``_xsrf`` cookie matches the ``_xsrf`` argument.
+        """确认 ``_xsrf`` cookie 匹配 ``_xsrf`` 参数.
 
-        To prevent cross-site request forgery, we set an ``_xsrf``
-        cookie and include the same value as a non-cookie
-        field with all ``POST`` requests. If the two do not match, we
-        reject the form submission as a potential forgery.
+        为了预防cross-site请求伪造, 我们设置一个 ``_xsrf``
+        cookie和包含相同值的一个non-cookie字段在所有
+        ``POST`` 请求中. 如果这两个不匹配, 我们拒绝这个
+        表单提交作为一个潜在的伪造请求.
 
         The ``_xsrf`` value may be set as either a form field named ``_xsrf``
         or in a custom HTTP header named ``X-XSRFToken`` or ``X-CSRFToken``
