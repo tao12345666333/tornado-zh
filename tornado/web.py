@@ -1199,22 +1199,20 @@ class RequestHandler(object):
         ``POST`` 请求中. 如果这两个不匹配, 我们拒绝这个
         表单提交作为一个潜在的伪造请求.
 
-        The ``_xsrf`` value may be set as either a form field named ``_xsrf``
-        or in a custom HTTP header named ``X-XSRFToken`` or ``X-CSRFToken``
-        (the latter is accepted for compatibility with Django).
+        ``_xsrf`` 的值可以被设置为一个名为 ``_xsrf`` 的表单字段或
+        在一个名为 ``X-XSRFToken`` 或 ``X-CSRFToken`` 的自定义
+        HTTP头部(后者被接受为了兼容Django).
 
-        See http://en.wikipedia.org/wiki/Cross-site_request_forgery
+        查看 http://en.wikipedia.org/wiki/Cross-site_request_forgery
 
-        Prior to release 1.1.1, this check was ignored if the HTTP header
-        ``X-Requested-With: XMLHTTPRequest`` was present.  This exception
-        has been shown to be insecure and has been removed.  For more
-        information please see
+        发布1.1.1 之前, 这个检查会被忽略如果当前的HTTP头部是
+        ``X-Requested-With: XMLHTTPRequest`` . 这个异常已被证明是
+        不安全的并且已经被移除. 更多信息请查看
         http://www.djangoproject.com/weblog/2011/feb/08/security/
         http://weblog.rubyonrails.org/2011/2/8/csrf-protection-bypass-in-ruby-on-rails
 
         .. versionchanged:: 3.2.2
-           Added support for cookie version 2.  Both versions 1 and 2 are
-           supported.
+           添加cookie 2版本的支持. 支持版本1和2.
         """
         token = (self.get_argument("_xsrf", None) or
                  self.request.headers.get("X-Xsrftoken") or
