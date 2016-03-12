@@ -1225,17 +1225,16 @@ class RequestHandler(object):
             raise HTTPError(403, "XSRF cookie does not match POST argument")
 
     def xsrf_form_html(self):
-        """An HTML ``<input/>`` element to be included with all POST forms.
+        """一个将被包含在所有POST表单中的HTML ``<input/>`` 标签.
 
-        It defines the ``_xsrf`` input value, which we check on all POST
-        requests to prevent cross-site request forgery. If you have set
-        the ``xsrf_cookies`` application setting, you must include this
-        HTML within all of your HTML forms.
+        它定义了我们在所有POST请求中为了预防伪造跨站请求所检查的
+        ``_xsrf`` 的输入值. 如果你设置了 ``xsrf_cookies`` application设置,
+        你必须包含这个HTML 在你所有的HTML表单.
 
-        In a template, this method should be called with ``{% module
-        xsrf_form_html() %}``
+        在一个模板中, 这个方法应该使用 ``{% module xsrf_form_html() %}``
+        这种方式调用
 
-        See `check_xsrf_cookie()` above for more information.
+        查看上面的 `check_xsrf_cookie()` 了解更多信息.
         """
         return '<input type="hidden" name="_xsrf" value="' + \
             escape.xhtml_escape(self.xsrf_token) + '"/>'
