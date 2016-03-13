@@ -1240,24 +1240,21 @@ class RequestHandler(object):
             escape.xhtml_escape(self.xsrf_token) + '"/>'
 
     def static_url(self, path, include_host=None, **kwargs):
-        """Returns a static URL for the given relative static file path.
+        """为给定的相对路径的静态文件返回一个静态URL.
 
-        This method requires you set the ``static_path`` setting in your
-        application (which specifies the root directory of your static
-        files).
+        这个方法需要你在你的应用中设置 ``static_path`` (既你
+        静态文件的根目录).
 
-        This method returns a versioned url (by default appending
-        ``?v=<signature>``), which allows the static files to be
-        cached indefinitely.  This can be disabled by passing
-        ``include_version=False`` (in the default implementation;
-        other static file implementations are not required to support
-        this, but they may support other options).
+        这个方法返回一个带有版本的url (默认情况下会添加
+        ``?v=<signature>``), 这会允许静态文件被无限期缓存. 这可以被
+        禁用通过传递 ``include_version=False`` (默认已经实现;
+        其他静态文件的实现不需要支持这一点, 但它们可能支持其他选项).
 
-        By default this method returns URLs relative to the current
-        host, but if ``include_host`` is true the URL returned will be
-        absolute.  If this handler has an ``include_host`` attribute,
-        that value will be used as the default for all `static_url`
-        calls that do not pass ``include_host`` as a keyword argument.
+        默认情况下这个方法返回当前host的相对URL, 但是如果
+        ``include_host`` 为true则返回的将是绝对路径的URL.
+        如果这个处理函数有一个 ``include_host`` 属性, 该值将被所有的
+        `static_url` 调用默认使用, 而不需要传递 ``include_host``
+        作为一个关键字参数.
 
         """
         self.require_setting("static_path", "static_url")
