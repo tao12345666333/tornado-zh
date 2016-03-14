@@ -1272,7 +1272,7 @@ class RequestHandler(object):
         return base + get_url(self.settings, path, **kwargs)
 
     def require_setting(self, name, feature="this feature"):
-        """抛出一个异常如果给定的app设置未定义."""
+        """如果给定的app设置未定义则抛出一个异常."""
         if not self.application.settings.get(name):
             raise Exception("You must define the '%s' setting in your "
                             "application to use %s" % (name, feature))
@@ -1284,7 +1284,7 @@ class RequestHandler(object):
     def compute_etag(self):
         """计算被用于这个请求的etag头.
 
-        到目前为止默认使用输入内容的hash值.
+        到目前为止默认使用输出内容的hash值.
 
         可以被复写来提供自定义的etag实现, 或者可以返回None来禁止
         tornado 默认的etag支持.
@@ -1306,21 +1306,19 @@ class RequestHandler(object):
             self.set_header("Etag", etag)
 
     def check_etag_header(self):
-        """Checks the ``Etag`` header against requests's ``If-None-Match``.
+        """针对请求的 ``If-None-Match`` 头检查 ``Etag`` 头.
 
-        Returns ``True`` if the request's Etag matches and a 304 should be
-        returned. For example::
+        如果请求的ETag 匹配则返回 ``True`` 并将返回一个304. 例如::
 
             self.set_etag_header()
             if self.check_etag_header():
                 self.set_status(304)
                 return
 
-        This method is called automatically when the request is finished,
-        but may be called earlier for applications that override
-        `compute_etag` and want to do an early check for ``If-None-Match``
-        before completing the request.  The ``Etag`` header should be set
-        (perhaps with `set_etag_header`) before calling this method.
+        这个方法在请求结束的时候会被自动调用, 但也可以被更早的调用
+        当复写了 `compute_etag` 并且想在请求完成之前先做一个
+        ``If-None-Match`` 检查. ``Etag`` 头应该在这个方法被调用前设置
+        (可以使用 `set_etag_header`).
         """
         computed_etag = utf8(self._headers.get("Etag", ""))
         # Find all weak and strong etag values from If-None-Match header
@@ -1357,7 +1355,7 @@ class RequestHandler(object):
 
     @gen.coroutine
     def _execute(self, transforms, *args, **kwargs):
-        """Executes this request with the given output transforms."""
+        """使用给定的输出转换器执行这个请求."""
         self._transforms = transforms
         try:
             if self.request.method not in self.SUPPORTED_METHODS:
@@ -1410,9 +1408,9 @@ class RequestHandler(object):
                 self._prepared_future.set_result(None)
 
     def data_received(self, chunk):
-        """Implement this method to handle streamed request data.
+        """实现这个方法来处理请求数据流.
 
-        Requires the `.stream_request_body` decorator.
+        需要 `.stream_request_body` 装饰器.
         """
         raise NotImplementedError()
 
