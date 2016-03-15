@@ -1573,26 +1573,26 @@ def asynchronous(method):
 
 
 def stream_request_body(cls):
-    """Apply to `RequestHandler` subclasses to enable streaming body support.
+    """适用于 `RequestHandler` 子类以开启流式body支持.
 
-    This decorator implies the following changes:
+    这个装饰器意味着以下变化:
 
-    * `.HTTPServerRequest.body` is undefined, and body arguments will not
-      be included in `RequestHandler.get_argument`.
-    * `RequestHandler.prepare` is called when the request headers have been
-      read instead of after the entire body has been read.
-    * The subclass must define a method ``data_received(self, data):``, which
-      will be called zero or more times as data is available.  Note that
-      if the request has an empty body, ``data_received`` may not be called.
-    * ``prepare`` and ``data_received`` may return Futures (such as via
-      ``@gen.coroutine``, in which case the next method will not be called
-      until those futures have completed.
-    * The regular HTTP method (``post``, ``put``, etc) will be called after
-      the entire body has been read.
+    * `.HTTPServerRequest.body` 变成了未定义, 并且body参数将不再被
+      `RequestHandler.get_argument` 所包含.
+    * `RequestHandler.prepare` 被调用当读到请求头而不是在整个请求体
+      都被读到之后.
+    * 子类必须定义一个方法 ``data_received(self, data):``, 这将被调
+      用0次或多次当数据是可用状态时. 注意如果该请求的body是空的,
+      ``data_received`` 可能不会被调用.
+    * ``prepare`` 和 ``data_received`` 可能返回Futures对象(就像通过
+      ``@gen.coroutine``, 在这种情况下下一个方法将不会被调用直到这些
+      futures完成.
+    * 常规的HTTP方法 (``post``, ``put``, 等)将在整个body被读取后被
+      调用.
 
-    There is a subtle interaction between ``data_received`` and asynchronous
-    ``prepare``: The first call to ``data_received`` may occur at any point
-    after the call to ``prepare`` has returned *or yielded*.
+    在 ``data_received`` 和asynchronous之间有一个微妙的互动
+    ``prepare``: ``data_received`` 的第一次调用可能出现在任何地方
+    在调用 ``prepare`` 已经返回 *或 yielded*.
     """
     if not issubclass(cls, RequestHandler):
         raise TypeError("expected subclass of RequestHandler, got %r", cls)
@@ -1776,8 +1776,8 @@ class Application(httputil.HTTPServerConnectionDelegate):
     def add_handlers(self, host_pattern, host_handlers):
         """添加给定的handler到我们的handler表.
 
-        Host patterns将按照它们的添加顺序进行处理.
-        All matching patterns 将被考虑.
+        Host 模式将按照它们的添加顺序进行处理.
+        所有匹配模式将被考虑.
         """
         if not host_pattern.endswith("$"):
             host_pattern += "$"
@@ -2047,12 +2047,11 @@ class HTTPError(Exception):
 
 
 class Finish(Exception):
-    """An exception that ends the request without producing an error response.
+    """一个为了结束请求的异常但不会产生错误响应.
 
-    When `Finish` is raised in a `RequestHandler`, the request will
-    end (calling `RequestHandler.finish` if it hasn't already been
-    called), but the error-handling methods (including
-    `RequestHandler.write_error`) will not be called.
+    当 `Finish` 被抛出在一个 `RequestHandler`, 该请求将会结束(调用
+    `RequestHandler.finish` 如果该方法尚未被调用), 但是错误处理方法
+    (包括 `RequestHandler.write_error`)将不会被调用.
 
     If `Finish()` was created with no arguments, the pending response
     will be sent as-is. If `Finish()` was given an argument, that
@@ -2120,7 +2119,7 @@ class RedirectHandler(RequestHandler):
 
 
 class StaticFileHandler(RequestHandler):
-    """A simple handler that can serve static content from a directory.
+    """可以为一个目录提供静态内容服务的简单处理程序.
 
     A `StaticFileHandler` is configured automatically if you pass the
     ``static_path`` keyword argument to `Application`.  This handler
