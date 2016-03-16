@@ -1497,26 +1497,23 @@ class RequestHandler(object):
 
 
 def asynchronous(method):
-    """Wrap request handler methods with this if they are asynchronous.
+    """用这个包装请求处理方法如果它们是异步的.
 
-    This decorator is for callback-style asynchronous methods; for
-    coroutines, use the ``@gen.coroutine`` decorator without
-    ``@asynchronous``. (It is legal for legacy reasons to use the two
-    decorators together provided ``@asynchronous`` is first, but
-    ``@asynchronous`` will be ignored in this case)
+    这个装饰器适用于回调式异步方法; 对于协程, 使用 ``@gen.coroutine``
+    装饰器而没有 ``@asynchronous``. (这是合理的, 因为遗留原因使用两个
+    装饰器一起来提供 ``@asynchronous`` 在第一个, 但是在这种情况下
+    ``@asynchronous`` 将被忽略)
 
-    This decorator should only be applied to the :ref:`HTTP verb
-    methods <verbs>`; its behavior is undefined for any other method.
-    This decorator does not *make* a method asynchronous; it tells
-    the framework that the method *is* asynchronous.  For this decorator
-    to be useful the method must (at least sometimes) do something
-    asynchronous.
+    这个装饰器应仅适用于 :ref:`HTTP verb
+    methods <verbs>`; 它的行为是未定义的对于任何其他方法.
+    这个装饰器不会 *使* 一个方法异步; 它告诉框架该方法 *是*
+    异步(执行)的. 对于这个装饰器, 该方法必须(至少有时)异步的做一
+    些事情这是有用的.
 
-    If this decorator is given, the response is not finished when the
-    method returns. It is up to the request handler to call
-    `self.finish() <RequestHandler.finish>` to finish the HTTP
-    request. Without this decorator, the request is automatically
-    finished when the ``get()`` or ``post()`` method returns. Example:
+    如果给定了这个装饰器, 当方法返回的时候响应并没有结束.
+    它是由请求处理程序调用 `self.finish() <RequestHandler.finish>`
+    来结束该HTTP请求的. 没有这个装饰器, 请求会自动结束当
+    ``get()`` 或 ``post()`` 方法返回时. 例如:
 
     .. testcode::
 
@@ -1534,11 +1531,11 @@ def asynchronous(method):
        :hide:
 
     .. versionchanged:: 3.1
-       The ability to use ``@gen.coroutine`` without ``@asynchronous``.
+       可以使用 ``@gen.coroutine`` 而不需 ``@asynchronous``.
 
-    .. versionchanged:: 4.3 Returning anything but ``None`` or a
-       yieldable object from a method decorated with ``@asynchronous``
-       is an error. Such return values were previously ignored silently.
+    .. versionchanged:: 4.3 可以返回任何东西但 ``None`` 或者一个
+       yieldable 对象来自于被 ``@asynchronous`` 装饰的方法是错误的.
+       这样的返回值之前是忽略的.
     """
     # Delay the IOLoop import because it's not available on app engine.
     from tornado.ioloop import IOLoop
