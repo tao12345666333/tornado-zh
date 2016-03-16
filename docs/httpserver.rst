@@ -1,4 +1,4 @@
-``tornado.httpserver`` --- Non-blocking HTTP server
+``tornado.httpserver`` --- 非阻塞 HTTP server
 ===================================================
 
 .. automodule:: tornado.httpserver
