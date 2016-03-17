@@ -1650,8 +1650,8 @@ def addslash(method):
 class Application(httputil.HTTPServerConnectionDelegate):
     """组成一个web应用程序的请求处理程序的集合.
 
-    Instances of this class are callable and can be passed directly to
-    HTTPServer to serve the application::
+    该类的实例是可调用的并且可以被直接传递给HTTPServer为应用程序
+    提供服务::
 
         application = web.Application([
             (r"/", MainPageHandler),
@@ -1660,42 +1660,35 @@ class Application(httputil.HTTPServerConnectionDelegate):
         http_server.listen(8080)
         ioloop.IOLoop.current().start()
 
-    The constructor for this class takes in a list of `URLSpec` objects
-    or (regexp, request_class) tuples. When we receive requests, we
-    iterate over the list in order and instantiate an instance of the
-    first request class whose regexp matches the request path.
-    The request class can be specified as either a class object or a
-    (fully-qualified) name.
+    这个类的构造器带有一个列表包含 `URLSpec` 对象或
+    (正则表达式, 请求类)元组. 当我们接收到请求, 我们按顺序迭代该列表
+    并且实例化和请求路径相匹配的正则表达式所对应的第一个请求类.
+    请求类可以被指定为一个类对象或一个(完全有资格的)名字.
 
-    Each tuple can contain additional elements, which correspond to the
-    arguments to the `URLSpec` constructor.  (Prior to Tornado 3.2,
-    only tuples of two or three elements were allowed).
+    每个元组可以包含另外的部分, 只要符合 `URLSpec` 构造器参数的条件.
+    (在Tornado 3.2之前, 只允许包含两个或三个元素的元组).
 
-    A dictionary may be passed as the third element of the tuple,
-    which will be used as keyword arguments to the handler's
-    constructor and `~RequestHandler.initialize` method.  This pattern
-    is used for the `StaticFileHandler` in this example (note that a
-    `StaticFileHandler` can be installed automatically with the
-    static_path setting described below)::
+    一个字典可以作为该元组的第三个元素被传递, 它将被用作处理程序
+    构造器的关键字参数和 `~RequestHandler.initialize` 方法.
+    这种模式也被用于例子中的 `StaticFileHandler` (注意一个
+    `StaticFileHandler` 可以被自动挂载连带下面的static_path设置)::
 
         application = web.Application([
             (r"/static/(.*)", web.StaticFileHandler, {"path": "/var/www"}),
         ])
 
-    We support virtual hosts with the `add_handlers` method, which takes in
-    a host regular expression as the first argument::
+    我们支持虚拟主机通过 `add_handlers` 方法, 该方法带有一个主机
+    正则表达式作为第一个参数::
 
         application.add_handlers(r"www\.myhost\.com", [
             (r"/article/([0-9]+)", ArticleHandler),
         ])
 
-    You can serve static files by sending the ``static_path`` setting
-    as a keyword argument. We will serve those files from the
-    ``/static/`` URI (this is configurable with the
-    ``static_url_prefix`` setting), and we will serve ``/favicon.ico``
-    and ``/robots.txt`` from the same directory.  A custom subclass of
-    `StaticFileHandler` can be specified with the
-    ``static_handler_class`` setting.
+    你可以提供静态文件服务通过传递 ``static_path`` 配置作为关键字
+    参数. 我们将提供这些文件从 ``/static/`` URI (这是可配置的通过
+    ``static_url_prefix`` 配置), 并且我们将提供 ``/favicon.ico``
+    和 ``/robots.txt`` 从相同目录下. 一个 `StaticFileHandler` 的
+    自定义子类可以被指定, 通过 ``static_handler_class`` 设置.
 
     """
     def __init__(self, handlers=None, default_host="", transforms=None,
