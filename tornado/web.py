@@ -1534,8 +1534,8 @@ def asynchronous(method):
        可以使用 ``@gen.coroutine`` 而不需 ``@asynchronous``.
 
     .. versionchanged:: 4.3 可以返回任何东西但 ``None`` 或者一个
-       yieldable 对象来自于被 ``@asynchronous`` 装饰的方法是错误的.
-       这样的返回值之前是忽略的.
+       可yield的对象来自于被 ``@asynchronous`` 装饰的方法是错误的.
+       这样的返回值之前是默认忽略的.
     """
     # Delay the IOLoop import because it's not available on app engine.
     from tornado.ioloop import IOLoop
@@ -1648,7 +1648,7 @@ def addslash(method):
 
 
 class Application(httputil.HTTPServerConnectionDelegate):
-    """A collection of request handlers that make up a web application.
+    """组成一个web应用程序的请求处理程序的集合.
 
     Instances of this class are callable and can be passed directly to
     HTTPServer to serve the application::
