@@ -1738,23 +1738,22 @@ class Application(httputil.HTTPServerConnectionDelegate):
             autoreload.start()
 
     def listen(self, port, address="", **kwargs):
-        """Starts an HTTP server for this application on the given port.
+        """为应用程序在给定端口上启动一个HTTP server.
 
-        This is a convenience alias for creating an `.HTTPServer`
-        object and calling its listen method.  Keyword arguments not
-        supported by `HTTPServer.listen <.TCPServer.listen>` are passed to the
-        `.HTTPServer` constructor.  For advanced uses
-        (e.g. multi-process mode), do not use this method; create an
-        `.HTTPServer` and call its
-        `.TCPServer.bind`/`.TCPServer.start` methods directly.
+        这是一个方便的别名用来创建一个 `.HTTPServer` 对象并调用它
+        的listen方法. `HTTPServer.listen <.TCPServer.listen>`
+        不支持传递关键字参数给 `.HTTPServer` 构造器. 对于高级用途
+        (e.g. 多进程模式), 不要使用这个方法; 创建一个
+        `.HTTPServer` 并直接调用它的
+        `.TCPServer.bind`/`.TCPServer.start` 方法.
 
-        Note that after calling this method you still need to call
-        ``IOLoop.current().start()`` to start the server.
+        注意在调用这个方法之后你仍然需要调用
+        ``IOLoop.current().start()`` 来启动该服务.
 
-        Returns the `.HTTPServer` object.
+        返回 `.HTTPServer` 对象.
 
         .. versionchanged:: 4.3
-           Now returns the `.HTTPServer` object.
+           现在返回 `.HTTPServer` 对象.
         """
         # import is here rather than top level because HTTPServer
         # is not importable on appengine
