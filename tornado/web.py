@@ -2033,18 +2033,18 @@ class HTTPError(Exception):
 
 
 class Finish(Exception):
-    """一个为了结束请求的异常但不会产生错误响应.
+    """一个会结束请求但不会产生错误响应的异常.
 
-    当 `Finish` 被抛出在一个 `RequestHandler`, 该请求将会结束(调用
+    当一个 `RequestHandler` 抛出 `Finish` , 该请求将会结束(调用
     `RequestHandler.finish` 如果该方法尚未被调用), 但是错误处理方法
     (包括 `RequestHandler.write_error`)将不会被调用.
 
-    If `Finish()` was created with no arguments, the pending response
-    will be sent as-is. If `Finish()` was given an argument, that
-    argument will be passed to `RequestHandler.finish()`.
+    如果 `Finish()` 创建的时候没有携带参数, 则会发送一个pending响应.
+    如果 `Finish()` 给定了参数, 则参数将会传递给
+    `RequestHandler.finish()`.
 
-    This can be a more convenient way to implement custom error pages
-    than overriding ``write_error`` (especially in library code)::
+    这是比复写 ``write_error`` 更加便利的方式用来实现自定义错误页
+    (尤其是在library代码中)::
 
         if self.current_user is None:
             self.set_status(401)
@@ -2052,7 +2052,7 @@ class Finish(Exception):
             raise Finish()
 
     .. versionchanged:: 4.3
-       Arguments passed to ``Finish()`` will be passed on to
+       传递给 ``Finish()`` 的参数将被传递给
        `RequestHandler.finish`.
     """
     pass
@@ -2061,7 +2061,7 @@ class Finish(Exception):
 class MissingArgumentError(HTTPError):
     """由 `RequestHandler.get_argument` 抛出的异常.
 
-    这是 `HTTPError` 的一个子类, 所以如果它未捕获400响应码将被
+    这是 `HTTPError` 的一个子类, 所以如果是未捕获的400响应码将被
     用来代替500(并且栈追踪不会被记录到日志).
 
     .. versionadded:: 3.1
