@@ -1418,7 +1418,7 @@ class RequestHandler(object):
         """记录当前请求.
 
         可以说这是过时的因为这个功能已经被移动到了Application, 留在这里
-        是为了已经复写这个方法的现有app.
+        是为了兼容已经复写这个方法的现有app.
         """
         self.application.log_request(self)
 
@@ -1849,7 +1849,7 @@ class Application(httputil.HTTPServerConnectionDelegate):
         return dispatcher.execute()
 
     def reverse_url(self, name, *args):
-        """返回名字是 ``name`` 的handler的URL路径
+        """返回名为 ``name`` 的handler的URL路径
 
         处理程序必须作为 `URLSpec` 添加到应用程序.
 
@@ -1865,7 +1865,7 @@ class Application(httputil.HTTPServerConnectionDelegate):
         """写一个完成的HTTP 请求到日志中.
 
         默认情况下会写到python 根(root)logger. 要改变这种行为
-        无论是子类应用和复写这个方法, 或者传递一个函数到应用
+        无论是子类应用和复写这个方法, 或者传递一个函数到应用的
         设置字典中作为 ``log_function``.
         """
         if "log_function" in self.settings:
@@ -1996,26 +1996,23 @@ class _RequestDispatcher(httputil.HTTPMessageDelegate):
 
 
 class HTTPError(Exception):
-    """An exception that will turn into an HTTP error response.
+    """一个将会成为HTTP错误响应的异常.
 
-    Raising an `HTTPError` is a convenient alternative to calling
-    `RequestHandler.send_error` since it automatically ends the
-    current function.
+    抛出一个 `HTTPError` 是一个更方便的选择比起调用
+    `RequestHandler.send_error` 因为它自动结束当前的函数.
 
-    To customize the response sent with an `HTTPError`, override
+    为了自定义 `HTTPError` 的响应, 复写
     `RequestHandler.write_error`.
 
-    :arg int status_code: HTTP status code.  Must be listed in
-        `httplib.responses <http.client.responses>` unless the ``reason``
-        keyword argument is given.
-    :arg string log_message: Message to be written to the log for this error
-        (will not be shown to the user unless the `Application` is in debug
-        mode).  May contain ``%s``-style placeholders, which will be filled
-        in with remaining positional parameters.
-    :arg string reason: Keyword-only argument.  The HTTP "reason" phrase
-        to pass in the status line along with ``status_code``.  Normally
-        determined automatically from ``status_code``, but can be used
-        to use a non-standard numeric code.
+    :arg int status_code: HTTP状态码. 必须列在
+        `httplib.responses <http.client.responses>` 之中除非给定了
+        ``reason`` 关键字参数.
+    :arg string log_message: 这个错误将会被写入日志的信息(除非该
+        `Application` 是debug模式否则不会展示给用户). 可能含有
+        ``%s``-风格的占位符, 它将填补剩余的位置参数.
+    :arg string reason: 唯一的关键字参数. HTTP "reason" 短语
+        将随着 ``status_code`` 传递给状态行. 通常从 ``status_code``,
+        自动确定但可以使用一个非标准的数字代码.
     """
     def __init__(self, status_code=500, log_message=None, *args, **kwargs):
         self.status_code = status_code
