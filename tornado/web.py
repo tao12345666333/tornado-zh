@@ -47,7 +47,7 @@
 -------------------
 
 一般情况下, 在 `RequestHandler` 中的方法和Tornado 中其他的方法不是
-线程安全的. 尤其是, 一些方法例如 `~RequestHandler.write()`,
+线程安全的. 尤其是一些方法, 例如 `~RequestHandler.write()`,
 `~RequestHandler.finish()`, 和 `~RequestHandler.flush()` 要求只能从
 主线程调用. 如果你使用多线程, 那么在结束请求之前, 使用
 `.IOLoop.add_callback` 来把控制权传送回主线程是很重要的.
@@ -133,7 +133,7 @@ DEFAULT_SIGNED_VALUE_VERSION = 2
 """
 
 DEFAULT_SIGNED_VALUE_MIN_VERSION = 1
-"""最旧的可以被 `.RequestHandler.get_secure_cookie` 接受的签名值.
+"""可以被 `.RequestHandler.get_secure_cookie` 接受的最旧的签名值.
 
 可通过传递一个 ``min_version`` 关键字参数复写.
 
@@ -242,7 +242,7 @@ class RequestHandler(object):
         pass
 
     def on_finish(self):
-        """在一个请求的最后被调用.
+        """在一个请求结束后被调用.
 
         复写这个方法来执行清理, 日志记录等. 这个方法和 `prepare` 是相
         对应的. ``on_finish`` 可能不产生任何输出, 因为它是在响应被送
@@ -258,7 +258,7 @@ class RequestHandler(object):
         `on_finish` 方法来代替.
 
         在客户端离开后, 代理可能会保持连接一段时间 (也可能是无限期),
-        所以这个方法可能不会被立即执行当终端用户关闭他们的连接.
+        所以这个方法在终端用户关闭他们的连接时可能不会被立即执行.
         """
         if _has_stream_request_body(self.__class__):
             if not self.request.body.done():
@@ -290,7 +290,7 @@ class RequestHandler(object):
         """设置响应的状态码.
 
         :arg int status_code: 响应状态码. 如果 ``reason`` 是 ``None``,
-            它必须在 `httplib.responses <http.client.responses>`.
+            它必须存在于 `httplib.responses <http.client.responses>`.
         :arg string reason: 用人类可读的原因短语来描述状态码.
             如果是 ``None``, 它会由来自
             `httplib.responses <http.client.responses>` 的reason填满.
@@ -311,7 +311,7 @@ class RequestHandler(object):
     def set_header(self, name, value):
         """给响应设置指定的头部和对应的值.
 
-        如果给定了一个datetime, 我们会根据HTTP 规范自动的对它格式化.
+        如果给定了一个datetime, 我们会根据HTTP规范自动的对它格式化.
         如果值不是一个字符串, 我们会把它转换成字符串. 之后所有头部的值
         都将用UTF-8 编码.
         """
@@ -361,7 +361,7 @@ class RequestHandler(object):
         如果没有提供默认值, 那么这个参数将被视为是必须的, 并且当
         找不到这个参数的时候我们会抛出一个 `MissingArgumentError`.
 
-        如果一个在url上出现多次, 我们返回最后一个值.
+        如果一个参数在url上出现多次, 我们返回最后一个值.
 
         返回值永远是unicode.
         """
@@ -388,7 +388,7 @@ class RequestHandler(object):
         如果没有提供默认值, 那么这个参数将被视为是必须的, 并且当
         找不到这个参数的时候我们会抛出一个 `MissingArgumentError`.
 
-        如果一个在url上出现多次, 我们返回最后一个值.
+        如果一个参数在url上出现多次, 我们返回最后一个值.
 
         返回值永远是unicode.
 
@@ -412,7 +412,7 @@ class RequestHandler(object):
         """从请求的query string返回给定name的参数的值.
 
         如果没有提供默认值, 这个参数将被视为必须的, 并且当找不到这个
-        参数的时候我们会抛出一个 `MissingArgumentError`.
+        参数的时候我们会抛出一个 `MissingArgumentError` 异常.
 
         如果这个参数在url中多次出现, 我们将返回最后一次的值.
 
@@ -458,14 +458,14 @@ class RequestHandler(object):
     def decode_argument(self, value, name=None):
         """从请求中解码一个参数.
 
-        这个参数已经被解码现在是一个字节字符串(byte string) . 默认情况下,
-        这个方法会把参数解码成utf-8 并且返回一个unicode 字符串, 但是它可以
+        这个参数已经被解码现在是一个字节字符串(byte string). 默认情况下,
+        这个方法会把参数解码成utf-8并且返回一个unicode字符串, 但是它可以
         被子类复写.
 
         这个方法既可以在 `get_argument()` 中被用作过滤器, 也可以用来从url
-        总提取值并传递给 `get()`/`post()`/等.
+        中提取值并传递给 `get()`/`post()`/等.
 
-        如果知道的话可以提供参数的name, 但是可能会为None
+        如果知道的话参数的name会被提供, 但也可能为None
         (e.g. 在url正则表达式中未命名的组).
         """
         try:
@@ -481,14 +481,14 @@ class RequestHandler(object):
         return self.request.cookies
 
     def get_cookie(self, name, default=None):
-        """获取给定name的cookie值, 未获取到则返回默认值."""
+        """获取给定name的cookie值, 如果未获取到则返回默认值."""
         if self.request.cookies is not None and name in self.request.cookies:
             return self.request.cookies[name].value
         return default
 
     def set_cookie(self, name, value, domain=None, expires=None, path="/",
                    expires_days=None, **kwargs):
-        """设置给定的cookie 名称/值还有给定的选项.
+        """设置给定的cookie 名称/值还有其他给定的选项.
 
         另外的关键字参数在Cookie.Morsel直接设置.
         参见 http://docs.python.org/library/cookie.html#morsel-objects
@@ -531,7 +531,7 @@ class RequestHandler(object):
 
         受cookie协议的限制, 必须传递和设置该名称cookie时候相同的path
         和domain来清除这个cookie(但是这里没有方法来找出在服务端所使
-        用的给定cookie的值).
+        用的该cookie的值).
         """
         expires = datetime.datetime.utcnow() - datetime.timedelta(days=365)
         self.set_cookie(name, value="", path=path, expires=expires,
@@ -554,14 +554,14 @@ class RequestHandler(object):
         """给cookie签名和时间戳以防被伪造.
 
         你必须在你的Application设置中指定 ``cookie_secret`` 来使用这个方法.
-        它应该是一个长的, 字节随机序列作为HMAC 密钥来做签名.
+        它应该是一个长的, 随机的字节序列作为HMAC密钥来做签名.
 
         使用 `get_secure_cookie()` 方法来阅读通过这个方法设置的cookie.
 
         注意 ``expires_days`` 参数设置cookie在浏览器中的有效期, 并且它是
         独立于 `get_secure_cookie` 的 ``max_age_days`` 参数的.
 
-        安全cookie(Secure cookies)可以包含任意的字节的值, 而不只是unicode
+        安全cookie(Secure cookies)可以包含任意字节的值, 而不只是unicode
         字符串(不像是普通cookie)
 
         .. versionchanged:: 3.2.1
@@ -644,11 +644,11 @@ class RequestHandler(object):
     def write(self, chunk):
         """把给定块写到输出buffer.
 
-        为了把输出写到网络, 使用下面的flush() 方法.
+        为了把输出写到网络, 使用下面的flush()方法.
 
         如果给定的块是一个字典, 我们会把它作为JSON来写同时会把响应头
         设置为 ``application/json``. (如果你写JSON但是设置不同的
-        ``Content-Type``,  可以调用 set_header *在调用write() 之后* ).
+        ``Content-Type``,  可以调用set_header *在调用write()之后* ).
 
         注意列表不能转换为JSON 因为一个潜在的跨域安全漏洞. 所有的JSON
         输出应该包在一个字典中. 更多细节参考
@@ -824,7 +824,7 @@ class RequestHandler(object):
     def flush(self, include_footers=False, callback=None):
         """将当前输出缓冲区写到网络.
 
-        ``callback`` 参数, 如果给定, 可用于流控制: 它会在所有数据被写到
+        ``callback`` 参数, 如果给定则可用于流控制: 它会在所有数据被写到
         socket后执行. 注意同一时间只能有一个flush callback停留; 如果另
         一个flush在前一个flush的callback运行之前发生, 那么前一个callback
         将会被丢弃.
@@ -1052,9 +1052,9 @@ class RequestHandler(object):
                       self.current_user = yield load_user(user_id_cookie)
 
         注意 `prepare()` 可能是一个协程, 尽管 `get_current_user()`
-        可能不是, 所以后面的形式是必要的如果加载用户需要异步操作.
+        可能不是, 所以如果加载用户需要异步操作后面的形式是必要的.
 
-        用户对象可以是任意application选择的类型.
+        用户对象可以是application选择的任意类型.
         """
         if not hasattr(self, "_current_user"):
             self._current_user = self.get_current_user()
@@ -1080,10 +1080,10 @@ class RequestHandler(object):
         return self.application.settings["login_url"]
 
     def get_template_path(self):
-        """可以复写给每个handler指定自定义模板路径.
+        """可以复写为每个handler指定自定义模板路径.
 
-        默认情况下, 我们使用应用设置中的 ``template_path`` . 返回
-        None相对于调用文件来加载模板.
+        默认情况下, 我们使用应用设置中的 ``template_path`` .
+        如果返回None则使用调用文件的相对路径加载模板.
         """
         return self.application.settings.get("template_path")
 
@@ -1192,7 +1192,7 @@ class RequestHandler(object):
             return None, None, None
 
     def check_xsrf_cookie(self):
-        """确认 ``_xsrf`` cookie 匹配 ``_xsrf`` 参数.
+        """确认 ``_xsrf`` cookie匹配 ``_xsrf`` 参数.
 
         为了预防cross-site请求伪造, 我们设置一个 ``_xsrf``
         cookie和包含相同值的一个non-cookie字段在所有
@@ -2516,7 +2516,7 @@ class StaticFileHandler(RequestHandler):
         ``make_static_url(cls, settings, path)``; 其他关键字参数可
         以通过 `~RequestHandler.static_url` 传递, 但这不是标准.
 
-        ``settings`` 是 `Application.settings` 字典.  ``path``
+        ``settings`` 是 `Application.settings` 字典. ``path``
         是被请求的静态路径. 返回的url应该是相对于当前host的.
 
         ``include_version`` 决定生成的URL是否应该包含含有给定
@@ -2577,13 +2577,12 @@ class StaticFileHandler(RequestHandler):
 
 
 class FallbackHandler(RequestHandler):
-    """A `RequestHandler` that wraps another HTTP server callback.
+    """包装其他HTTP server回调的 `RequestHandler` .
 
-    The fallback is a callable object that accepts an
-    `~.httputil.HTTPServerRequest`, such as an `Application` or
-    `tornado.wsgi.WSGIContainer`.  This is most useful to use both
-    Tornado ``RequestHandlers`` and WSGI in the same server.  Typical
-    usage::
+    fallback是一个可调用的对象, 它接收一个
+    `~.httputil.HTTPServerRequest`, 诸如一个 `Application` 或
+    `tornado.wsgi.WSGIContainer`. 这对于在相同server中同时使用
+    Tornado ``RequestHandlers`` 和WSGI是非常有用的. 用法::
 
         wsgi_app = tornado.wsgi.WSGIContainer(
             django.core.handlers.wsgi.WSGIHandler())
@@ -2601,11 +2600,10 @@ class FallbackHandler(RequestHandler):
 
 
 class OutputTransform(object):
-    """A transform modifies the result of an HTTP request (e.g., GZip encoding)
+    """一个修改HTTP请求结果的transform(e.g., GZip encoding)
 
-    Applications are not expected to create their own OutputTransforms
-    or interact with them directly; the framework chooses which transforms
-    (if any) to apply.
+    Applications预计不会创建它们自己的OutputTransforms
+    或不会和它们直接交互; 由框架选择哪个transforms(如果有的话)适用.
     """
     def __init__(self, request):
         pass
@@ -2618,14 +2616,13 @@ class OutputTransform(object):
 
 
 class GZipContentEncoding(OutputTransform):
-    """Applies the gzip content encoding to the response.
+    """适用gzip内容编码到响应.
 
-    See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.11
+    参加 http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.11
 
     .. versionchanged:: 4.0
-        Now compresses all mime types beginning with ``text/``, instead
-        of just a whitelist. (the whitelist is still used for certain
-        non-text mime types).
+        现在压缩所有mime类型以 ``text/`` 开头, 而不只是一个白名单.
+        (白名单仍用于某些非文本(non-text)mime类型).
     """
     # Whitelist of compressible mime types (in addition to any types
     # beginning with "text/").
@@ -2880,21 +2877,20 @@ class _UIModuleNamespace(object):
 
 
 class URLSpec(object):
-    """Specifies mappings between URLs and handlers."""
+    """指定URL和处理程序之间的映射."""
     def __init__(self, pattern, handler, kwargs=None, name=None):
         """Parameters:
 
-        * ``pattern``: Regular expression to be matched.  Any groups
-          in the regex will be passed in to the handler's get/post/etc
-          methods as arguments.
+        * ``pattern``: 被匹配的正则表达式. 任何在正则表达式的group
+          都将作为参数传递给处理程序的get/post/等方法.
 
-        * ``handler``: `RequestHandler` subclass to be invoked.
+        * ``handler``: 被调用的 `RequestHandler` 子类.
 
-        * ``kwargs`` (optional): A dictionary of additional arguments
-          to be passed to the handler's constructor.
+        * ``kwargs`` (optional): 将被传递给处理程序构造器的额外
+          参数组成的字典.
 
-        * ``name`` (optional): A name for this handler.  Used by
-          `Application.reverse_url`.
+        * ``name`` (optional): 该处理程序的名称. 被
+          `Application.reverse_url` 使用.
         """
         if not pattern.endswith('$'):
             pattern += '$'
