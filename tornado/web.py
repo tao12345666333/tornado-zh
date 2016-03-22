@@ -2390,17 +2390,14 @@ class StaticFileHandler(RequestHandler):
 
     @classmethod
     def get_content(cls, abspath, start=None, end=None):
-        """Retrieve the content of the requested resource which is located
-        at the given absolute path.
+        """检索位于所给定绝对路径的请求资源的内容.
 
-        This class method may be overridden by subclasses.  Note that its
-        signature is different from other overridable class methods
-        (no ``settings`` argument); this is deliberate to ensure that
-        ``abspath`` is able to stand on its own as a cache key.
+        这个类方法可以被子类复写. 注意它的特征不同于其他可复写
+        的类方法(没有 ``settings`` 参数); 这是经过深思熟虑的以
+        确保 ``abspath`` 能依靠自己作为缓存键(cache key) .
 
-        This method should either return a byte string or an iterator
-        of byte strings.  The latter is preferred for large files
-        as it helps reduce memory fragmentation.
+        这个方法返回一个字节串或一个可迭代的字节串. 对于大文件
+        后者是更优的选择因为它有助于减少内存碎片.
 
         .. versionadded:: 3.1
         """
