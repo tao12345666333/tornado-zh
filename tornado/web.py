@@ -2684,15 +2684,14 @@ class GZipContentEncoding(OutputTransform):
 
 
 def authenticated(method):
-    """Decorate methods with this to require that the user be logged in.
+    """使用这个装饰的方法要求用户必须登陆.
 
-    If the user is not logged in, they will be redirected to the configured
+    如果用户未登陆, 他们将被重定向到已经配置的
     `login url <RequestHandler.get_login_url>`.
 
-    If you configure a login url with a query parameter, Tornado will
-    assume you know what you're doing and use it as-is.  If not, it
-    will add a `next` parameter so the login page knows where to send
-    you once you're logged in.
+    如果你配置login url带有查询参数, Tornado将假设你知道你正在
+    做什么并使用它. 如果不是, 它将添加一个 `next` 参数这样登陆
+    页就会知道一旦你登陆后将把你送到哪里.
     """
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
@@ -2714,13 +2713,12 @@ def authenticated(method):
 
 
 class UIModule(object):
-    """A re-usable, modular UI unit on a page.
+    """一个在页面上可复用, 模块化的UI单元.
 
-    UI modules often execute additional queries, and they can include
-    additional CSS and JavaScript that will be included in the output
-    page, which is automatically inserted on page render.
+    UI模块经常执行附加的查询, 它们也可以包含额外的CSS和
+    JavaScript, 这些将包含在输出页面上, 在页面渲染的时候自动插入.
 
-    Subclasses of UIModule must override the `render` method.
+    UIModule的子类必须复写 `render` 方法.
     """
     def __init__(self, handler):
         self.handler = handler
@@ -2792,9 +2790,9 @@ class _xsrf_form_html(UIModule):
 class TemplateModule(UIModule):
     """UIModule 简便的渲染给定的模板.
 
-    {% module Template("foo.html") %} is similar to {% include "foo.html" %},
-    but the module version gets its own namespace (with kwargs passed to
-    Template()) instead of inheriting the outer template's namespace.
+    {% module Template("foo.html") %} 和 {% include "foo.html" %} 和相似,
+    但是module版本有它自己的命名空间(带着关键字传递给Template())
+    而不是继承外模板的命名空间.
 
     Templates rendered through this module also get access to UIModule's
     automatic javascript/css features.  Simply call set_resources
