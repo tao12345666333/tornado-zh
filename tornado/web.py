@@ -2794,13 +2794,11 @@ class TemplateModule(UIModule):
     但是module版本有它自己的命名空间(带着关键字传递给Template())
     而不是继承外模板的命名空间.
 
-    Templates rendered through this module also get access to UIModule's
-    automatic javascript/css features.  Simply call set_resources
-    inside the template and give it keyword arguments corresponding to
-    the methods on UIModule: {{ set_resources(js_files=static_url("my.js")) }}
-    Note that these resources are output once per template file, not once
-    per instantiation of the template, so they must not depend on
-    any arguments to the template.
+    通过这个模块渲染的模板也可以访问到UIModule的自动javascript/css功能.
+    只需在模板中调用set_resources并给它关键字参数对应的在UIModule上的
+    方法: {{ set_resources(js_files=static_url("my.js")) }}
+    注意这些资源只在每个模板文件中输出一次, 不是每次模板实例化一次,
+    所以它们不能依赖于模板的任何参数.
     """
     def __init__(self, handler):
         super(TemplateModule, self).__init__(handler)
