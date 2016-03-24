@@ -2107,68 +2107,59 @@ class RedirectHandler(RequestHandler):
 class StaticFileHandler(RequestHandler):
     """可以为一个目录提供静态内容服务的简单处理程序.
 
-    A `StaticFileHandler` is configured automatically if you pass the
-    ``static_path`` keyword argument to `Application`.  This handler
-    can be customized with the ``static_url_prefix``, ``static_handler_class``,
-    and ``static_handler_args`` settings.
+    `StaticFileHandler` 是自动配置的如果你传递了 ``static_path`` 关键字参数给
+    `Application`. 这个处理程序可以被自定义通过 ``static_url_prefix``,
+    ``static_handler_class``, 和 ``static_handler_args`` 配置.
 
-    To map an additional path to this handler for a static data directory
-    you would add a line to your application like::
+    为了将静态数据目录映射一个额外的路径给这个处理程序你可以在你应用程序中
+    添加一行例如::
 
         application = web.Application([
             (r"/content/(.*)", web.StaticFileHandler, {"path": "/var/www"}),
         ])
 
-    The handler constructor requires a ``path`` argument, which specifies the
-    local root directory of the content to be served.
+    处理程序构造器需要一个 ``path`` 参数, 该参数指定了将被服务内容的本地根
+    目录.
 
-    Note that a capture group in the regex is required to parse the value for
-    the ``path`` argument to the get() method (different than the constructor
-    argument above); see `URLSpec` for details.
+    注意在正则表达式的捕获组需要解析 ``path`` 参数的值给get()方法(不同于
+    上面的构造器的参数); 参见 `URLSpec` 了解细节.
 
-    To serve a file like ``index.html`` automatically when a directory is
-    requested, set ``static_handler_args=dict(default_filename="index.html")``
-    in your application settings, or add ``default_filename`` as an initializer
-    argument for your ``StaticFileHandler``.
+    为了自动的提供一个文件例如 ``index.html`` 当一个目录被请求的时候,
+    设置 ``static_handler_args=dict(default_filename="index.html")``
+    在你的应用程序设置中(application settings), 或添加
+    ``default_filename`` 作为你的 ``StaticFileHandler`` 的初始化参数.
 
-    To maximize the effectiveness of browser caching, this class supports
-    versioned urls (by default using the argument ``?v=``).  If a version
-    is given, we instruct the browser to cache this file indefinitely.
-    `make_static_url` (also available as `RequestHandler.static_url`) can
-    be used to construct a versioned url.
+    为了最大限度的提高浏览器缓存的有效性, 这个类支持版本化的url(默认情
+    况下使用 ``?v=`` 参数). 如果给定了一个版本, 我们指示浏览器无限期
+    的缓存该文件. `make_static_url` (也可作为 `RequestHandler.static_url`)
+    可以被用来构造一个版本化的url.
 
-    This handler is intended primarily for use in development and light-duty
-    file serving; for heavy traffic it will be more efficient to use
-    a dedicated static file server (such as nginx or Apache).  We support
-    the HTTP ``Accept-Ranges`` mechanism to return partial content (because
-    some browsers require this functionality to be present to seek in
-    HTML5 audio or video).
+    该处理程序主要用户开发和轻量级处理文件服务; 对重型传输,使用专用的
+    静态文件服务是更高效的(例如nginx或Apache). 我们支持HTTP
+    ``Accept-Ranges`` 机制来返回部分内容(因为一些浏览器需要此功能是
+    为了查找在HTML5音频或视频中).
 
-    **Subclassing notes**
+    **子类注意事项**
 
-    This class is designed to be extensible by subclassing, but because
-    of the way static urls are generated with class methods rather than
-    instance methods, the inheritance patterns are somewhat unusual.
-    Be sure to use the ``@classmethod`` decorator when overriding a
-    class method.  Instance methods may use the attributes ``self.path``
-    ``self.absolute_path``, and ``self.modified``.
+    这个类被设计是可以让子类继承的, 但由于静态url是被类方法生成的
+    而不是实例方法的方式, 继承模式有点不同寻常. 一定要使用
+    ``@classmethod`` 装饰器当复写一个类方法时. 实例方法可以使用
+    ``self.path`` ``self.absolute_path``, 和 ``self.modified`` 属性.
 
-    Subclasses should only override methods discussed in this section;
-    overriding other methods is error-prone.  Overriding
-    ``StaticFileHandler.get`` is particularly problematic due to the
-    tight coupling with ``compute_etag`` and other methods.
+    子类应该只复写在本节讨论的方法; 复写其他方法很容易出错. 最重要的
+    ``StaticFileHandler.get`` 问题尤其严重, 由于与 ``compute_etag``
+    还有其他方法紧密耦合.
 
-    To change the way static urls are generated (e.g. to match the behavior
-    of another server or CDN), override `make_static_url`, `parse_url_path`,
-    `get_cache_time`, and/or `get_version`.
+    为了改变静态url生成的方式(e.g. 匹配其他服务或CDN), 复写
+    `make_static_url`, `parse_url_path`,
+    `get_cache_time`, 和/或 `get_version`.
 
-    To replace all interaction with the filesystem (e.g. to serve
-    static content from a database), override `get_content`,
-    `get_content_size`, `get_modified_time`, `get_absolute_path`, and
-    `validate_absolute_path`.
+    为了代替所有与文件系统的相互作用(e.g. 从数据库提供静态内容服务),
+    复写 `get_content`, `get_content_size`, `get_modified_time`,
+    `get_absolute_path`, 和 `validate_absolute_path`.
 
     .. versionchanged:: 3.1
-       Many of the methods for subclasses were added in Tornado 3.1.
+       一些为子类设计的方法在Tornado 3.1 被添加.
     """
     CACHE_MAX_AGE = 86400 * 365 * 10  # 10 years
 
