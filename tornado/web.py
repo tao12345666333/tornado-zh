@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding: utf-8
 #
 # Copyright 2009 Facebook
 #
@@ -14,12 +15,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-"""``tornado.web`` provides a simple web framework with asynchronous
-features that allow it to scale to large numbers of open connections,
-making it ideal for `long polling
-<http://en.wikipedia.org/wiki/Push_technology#Long_polling>`_.
+"""``tornado.web`` 提供了一种带有异步功能并允许它扩展到大量开放连接的
+简单的web 框架, 使其成为处理 `长连接(long polling)
+<http://en.wikipedia.org/wiki/Push_technology#Long_polling>`_ 的一种理想选择.
 
-Here is a simple "Hello, world" example app:
+这里有一个简单的"Hello, world"示例应用:
 
 .. testcode::
 
@@ -41,18 +41,16 @@ Here is a simple "Hello, world" example app:
    :hide:
 
 
-See the :doc:`guide` for additional information.
+查看 :doc:`guide` 以了解更多信息.
 
-Thread-safety notes
+线程安全说明
 -------------------
 
-In general, methods on `RequestHandler` and elsewhere in Tornado are
-not thread-safe.  In particular, methods such as
-`~RequestHandler.write()`, `~RequestHandler.finish()`, and
-`~RequestHandler.flush()` must only be called from the main thread.  If
-you use multiple threads it is important to use `.IOLoop.add_callback`
-to transfer control back to the main thread before finishing the
-request.
+一般情况下, 在 `RequestHandler` 中的方法和Tornado 中其他的方法不是
+线程安全的. 尤其是一些方法, 例如 `~RequestHandler.write()`,
+`~RequestHandler.finish()`, 和 `~RequestHandler.flush()` 要求只能从
+主线程调用. 如果你使用多线程, 那么在结束请求之前, 使用
+`.IOLoop.add_callback` 来把控制权传送回主线程是很重要的.
 
 """
 
@@ -111,43 +109,42 @@ except ImportError:
 
 
 MIN_SUPPORTED_SIGNED_VALUE_VERSION = 1
-"""The oldest signed value version supported by this version of Tornado.
+"""这个Tornado版本所支持的最旧的签名值版本.
 
-Signed values older than this version cannot be decoded.
+比这个签名值更旧的版本将不能被解码.
 
 .. versionadded:: 3.2.1
 """
 
 MAX_SUPPORTED_SIGNED_VALUE_VERSION = 2
-"""The newest signed value version supported by this version of Tornado.
+"""这个Tornado版本所支持的最新的签名值版本.
 
-Signed values newer than this version cannot be decoded.
+比这个签名值更新的版本将不能被解码.
 
 .. versionadded:: 3.2.1
 """
 
 DEFAULT_SIGNED_VALUE_VERSION = 2
-"""The signed value version produced by `.RequestHandler.create_signed_value`.
+"""签名值版本通过 `.RequestHandler.create_signed_value` 产生.
 
-May be overridden by passing a ``version`` keyword argument.
+可通过传递一个 ``version`` 关键字参数复写.
 
 .. versionadded:: 3.2.1
 """
 
 DEFAULT_SIGNED_VALUE_MIN_VERSION = 1
-"""The oldest signed value accepted by `.RequestHandler.get_secure_cookie`.
+"""可以被 `.RequestHandler.get_secure_cookie` 接受的最旧的签名值.
 
-May be overridden by passing a ``min_version`` keyword argument.
+可通过传递一个 ``min_version`` 关键字参数复写.
 
 .. versionadded:: 3.2.1
 """
 
 
 class RequestHandler(object):
-    """Base class for HTTP request handlers.
+    """HTTP请求处理的基类.
 
-    Subclasses must define at least one of the methods defined in the
-    "Entry points" section below.
+    子类至少应该定义以下"Entry points" 部分中被定义的方法其中之一.
     """
     SUPPORTED_METHODS = ("GET", "HEAD", "POST", "DELETE", "PATCH", "PUT",
                          "OPTIONS")
@@ -183,12 +180,12 @@ class RequestHandler(object):
         self.initialize(**kwargs)
 
     def initialize(self):
-        """Hook for subclass initialization.
+        """子类初始化(Hook).
 
-        A dictionary passed as the third argument of a url spec will be
-        supplied as keyword arguments to initialize().
+        作为url spec的第三个参数传递的字典, 将作为关键字参数提供给
+        initialize().
 
-        Example::
+        例子::
 
             class ProfileHandler(RequestHandler):
                 def initialize(self, database):
@@ -205,7 +202,7 @@ class RequestHandler(object):
 
     @property
     def settings(self):
-        """An alias for `self.application.settings <Application.settings>`."""
+        """ `self.application.settings <Application.settings>` 的别名."""
         return self.application.settings
 
     def head(self, *args, **kwargs):
@@ -230,45 +227,38 @@ class RequestHandler(object):
         raise HTTPError(405)
 
     def prepare(self):
-        """Called at the beginning of a request before  `get`/`post`/etc.
+        """在每个请求的最开始被调用, 在 `get`/`post`/等方法之前.
 
-        Override this method to perform common initialization regardless
-        of the request method.
+        通过复写这个方法, 可以执行共同的初始化, 而不用考虑每个请求方法.
 
-        Asynchronous support: Decorate this method with `.gen.coroutine`
-        or `.return_future` to make it asynchronous (the
-        `asynchronous` decorator cannot be used on `prepare`).
-        If this method returns a `.Future` execution will not proceed
-        until the `.Future` is done.
+        异步支持: 这个方法使用 `.gen.coroutine` 或 `.return_future`
+        装饰器来使它异步( `asynchronous` 装饰器不能被用在 `prepare`).
+        如果这个方法返回一个 `.Future` 对象, 执行将不再进行, 直到
+        `.Future` 对象完成.
 
         .. versionadded:: 3.1
-           Asynchronous support.
+           异步支持.
         """
         pass
 
     def on_finish(self):
-        """Called after the end of a request.
+        """在一个请求结束后被调用.
 
-        Override this method to perform cleanup, logging, etc.
-        This method is a counterpart to `prepare`.  ``on_finish`` may
-        not produce any output, as it is called after the response
-        has been sent to the client.
+        复写这个方法来执行清理, 日志记录等. 这个方法和 `prepare` 是相
+        对应的. ``on_finish`` 可能不产生任何输出, 因为它是在响应被送
+        到客户端后才被调用.
         """
         pass
 
     def on_connection_close(self):
-        """Called in async handlers if the client closed the connection.
+        """在异步处理中, 如果客户端关闭了连接将会被调用.
 
-        Override this to clean up resources associated with
-        long-lived connections.  Note that this method is called only if
-        the connection was closed during asynchronous processing; if you
-        need to do cleanup after every request override `on_finish`
-        instead.
+        复写这个方法来清除与长连接相关的资源. 注意这个方法只有当在异步处理
+        连接被关闭才会被调用; 如果你需要在每个请求之后做清理, 请复写
+        `on_finish` 方法来代替.
 
-        Proxies may keep a connection open for a time (perhaps
-        indefinitely) after the client has gone away, so this method
-        may not be called promptly after the end user closes their
-        connection.
+        在客户端离开后, 代理可能会保持连接一段时间 (也可能是无限期),
+        所以这个方法在终端用户关闭他们的连接时可能不会被立即执行.
         """
         if _has_stream_request_body(self.__class__):
             if not self.request.body.done():
@@ -276,7 +266,7 @@ class RequestHandler(object):
                 self.request.body.exception()
 
     def clear(self):
-        """Resets all headers and content for this response."""
+        """重置这个响应的所有头部和内容."""
         self._headers = httputil.HTTPHeaders({
             "Server": "TornadoServer/%s" % tornado.version,
             "Content-Type": "text/html; charset=UTF-8",
@@ -288,23 +278,22 @@ class RequestHandler(object):
         self._reason = httputil.responses[200]
 
     def set_default_headers(self):
-        """Override this to set HTTP headers at the beginning of the request.
+        """复写这个方法可以在请求开始的时候设置HTTP头.
 
-        For example, this is the place to set a custom ``Server`` header.
-        Note that setting such headers in the normal flow of request
-        processing may not do what you want, since headers may be reset
-        during error handling.
+        例如, 在这里可以设置一个自定义 ``Server`` 头. 注意在一般的
+        请求过程流里可能不会实现你预期的效果, 因为头部可能在错误处
+        理(error handling)中被重置.
         """
         pass
 
     def set_status(self, status_code, reason=None):
-        """Sets the status code for our response.
+        """设置响应的状态码.
 
-        :arg int status_code: Response status code. If ``reason`` is ``None``,
-            it must be present in `httplib.responses <http.client.responses>`.
-        :arg string reason: Human-readable reason phrase describing the status
-            code. If ``None``, it will be filled in from
-            `httplib.responses <http.client.responses>`.
+        :arg int status_code: 响应状态码. 如果 ``reason`` 是 ``None``,
+            它必须存在于 `httplib.responses <http.client.responses>`.
+        :arg string reason: 用人类可读的原因短语来描述状态码.
+            如果是 ``None``, 它会由来自
+            `httplib.responses <http.client.responses>` 的reason填满.
         """
         self._status_code = status_code
         if reason is not None:
@@ -316,31 +305,30 @@ class RequestHandler(object):
                 raise ValueError("unknown status code %d", status_code)
 
     def get_status(self):
-        """Returns the status code for our response."""
+        """返回响应的状态码."""
         return self._status_code
 
     def set_header(self, name, value):
-        """Sets the given response header name and value.
+        """给响应设置指定的头部和对应的值.
 
-        If a datetime is given, we automatically format it according to the
-        HTTP specification. If the value is not a string, we convert it to
-        a string. All header values are then encoded as UTF-8.
+        如果给定了一个datetime, 我们会根据HTTP规范自动的对它格式化.
+        如果值不是一个字符串, 我们会把它转换成字符串. 之后所有头部的值
+        都将用UTF-8 编码.
         """
         self._headers[name] = self._convert_header_value(value)
 
     def add_header(self, name, value):
-        """Adds the given response header and value.
+        """添加指定的响应头和对应的值.
 
-        Unlike `set_header`, `add_header` may be called multiple times
-        to return multiple values for the same header.
+        不像是 `set_header`, `add_header` 可以被多次调用来为相同的头
+        返回多个值.
         """
         self._headers.add(name, self._convert_header_value(value))
 
     def clear_header(self, name):
-        """Clears an outgoing header, undoing a previous `set_header` call.
+        """清除输出头, 取消之前的 `set_header` 调用.
 
-        Note that this method does not apply to multi-valued headers
-        set by `add_header`.
+        注意这个方法不适用于被 `add_header` 设置了多个值的头.
         """
         if name in self._headers:
             del self._headers[name]
@@ -368,24 +356,23 @@ class RequestHandler(object):
     _ARG_DEFAULT = []
 
     def get_argument(self, name, default=_ARG_DEFAULT, strip=True):
-        """Returns the value of the argument with the given name.
+        """返回指定的name参数的值.
 
-        If default is not provided, the argument is considered to be
-        required, and we raise a `MissingArgumentError` if it is missing.
+        如果没有提供默认值, 那么这个参数将被视为是必须的, 并且当
+        找不到这个参数的时候我们会抛出一个 `MissingArgumentError`.
 
-        If the argument appears in the url more than once, we return the
-        last value.
+        如果一个参数在url上出现多次, 我们返回最后一个值.
 
-        The returned value is always unicode.
+        返回值永远是unicode.
         """
         return self._get_argument(name, default, self.request.arguments, strip)
 
     def get_arguments(self, name, strip=True):
-        """Returns a list of the arguments with the given name.
+        """返回指定name的参数列表.
 
-        If the argument is not present, returns an empty list.
+        如果参数不存在, 返回一个空列表.
 
-        The returned values are always unicode.
+        返回值永远是unicode.
         """
 
         # Make sure `get_arguments` isn't accidentally being called with a
@@ -396,16 +383,14 @@ class RequestHandler(object):
         return self._get_arguments(name, self.request.arguments, strip)
 
     def get_body_argument(self, name, default=_ARG_DEFAULT, strip=True):
-        """Returns the value of the argument with the given name
-        from the request body.
+        """返回请求体中指定name的参数的值.
 
-        If default is not provided, the argument is considered to be
-        required, and we raise a `MissingArgumentError` if it is missing.
+        如果没有提供默认值, 那么这个参数将被视为是必须的, 并且当
+        找不到这个参数的时候我们会抛出一个 `MissingArgumentError`.
 
-        If the argument appears in the url more than once, we return the
-        last value.
+        如果一个参数在url上出现多次, 我们返回最后一个值.
 
-        The returned value is always unicode.
+        返回值永远是unicode.
 
         .. versionadded:: 3.2
         """
@@ -413,27 +398,25 @@ class RequestHandler(object):
                                   strip)
 
     def get_body_arguments(self, name, strip=True):
-        """Returns a list of the body arguments with the given name.
+        """返回由指定请求体中指定name的参数的列表.
 
-        If the argument is not present, returns an empty list.
+        如果参数不存在, 返回一个空列表.
 
-        The returned values are always unicode.
+        返回值永远是unicode.
 
         .. versionadded:: 3.2
         """
         return self._get_arguments(name, self.request.body_arguments, strip)
 
     def get_query_argument(self, name, default=_ARG_DEFAULT, strip=True):
-        """Returns the value of the argument with the given name
-        from the request query string.
+        """从请求的query string返回给定name的参数的值.
 
-        If default is not provided, the argument is considered to be
-        required, and we raise a `MissingArgumentError` if it is missing.
+        如果没有提供默认值, 这个参数将被视为必须的, 并且当找不到这个
+        参数的时候我们会抛出一个 `MissingArgumentError` 异常.
 
-        If the argument appears in the url more than once, we return the
-        last value.
+        如果这个参数在url中多次出现, 我们将返回最后一次的值.
 
-        The returned value is always unicode.
+        返回值永远是unicode.
 
         .. versionadded:: 3.2
         """
@@ -441,11 +424,11 @@ class RequestHandler(object):
                                   self.request.query_arguments, strip)
 
     def get_query_arguments(self, name, strip=True):
-        """Returns a list of the query arguments with the given name.
+        """返回指定name的参数列表.
 
-        If the argument is not present, returns an empty list.
+        如果参数不存在, 将返回空列表.
 
-        The returned values are always unicode.
+        返回值永远是unicode.
 
         .. versionadded:: 3.2
         """
@@ -473,17 +456,17 @@ class RequestHandler(object):
         return values
 
     def decode_argument(self, value, name=None):
-        """Decodes an argument from the request.
+        """从请求中解码一个参数.
 
-        The argument has been percent-decoded and is now a byte string.
-        By default, this method decodes the argument as utf-8 and returns
-        a unicode string, but this may be overridden in subclasses.
+        这个参数已经被解码现在是一个字节字符串(byte string). 默认情况下,
+        这个方法会把参数解码成utf-8并且返回一个unicode字符串, 但是它可以
+        被子类复写.
 
-        This method is used as a filter for both `get_argument()` and for
-        values extracted from the url and passed to `get()`/`post()`/etc.
+        这个方法既可以在 `get_argument()` 中被用作过滤器, 也可以用来从url
+        中提取值并传递给 `get()`/`post()`/等.
 
-        The name of the argument is provided if known, but may be None
-        (e.g. for unnamed groups in the url regex).
+        如果知道的话参数的name会被提供, 但也可能为None
+        (e.g. 在url正则表达式中未命名的组).
         """
         try:
             return _unicode(value)
@@ -493,24 +476,23 @@ class RequestHandler(object):
 
     @property
     def cookies(self):
-        """An alias for
-        `self.request.cookies <.httputil.HTTPServerRequest.cookies>`."""
+        """ `self.request.cookies <.httputil.HTTPServerRequest.cookies>`
+        的别名."""
         return self.request.cookies
 
     def get_cookie(self, name, default=None):
-        """Gets the value of the cookie with the given name, else default."""
+        """获取给定name的cookie值, 如果未获取到则返回默认值."""
         if self.request.cookies is not None and name in self.request.cookies:
             return self.request.cookies[name].value
         return default
 
     def set_cookie(self, name, value, domain=None, expires=None, path="/",
                    expires_days=None, **kwargs):
-        """Sets the given cookie name/value with the given options.
+        """设置给定的cookie 名称/值还有其他给定的选项.
 
-        Additional keyword arguments are set on the Cookie.Morsel
-        directly.
-        See http://docs.python.org/library/cookie.html#morsel-objects
-        for available attributes.
+        另外的关键字参数在Cookie.Morsel直接设置.
+        参见 http://docs.python.org/library/cookie.html#morsel-objects
+        查看可用的属性.
         """
         # The cookie library only accepts type str, in both python 2 and 3
         name = escape.native_str(name)
@@ -545,67 +527,63 @@ class RequestHandler(object):
             morsel[k] = v
 
     def clear_cookie(self, name, path="/", domain=None):
-        """Deletes the cookie with the given name.
+        """删除给定名称的cookie.
 
-        Due to limitations of the cookie protocol, you must pass the same
-        path and domain to clear a cookie as were used when that cookie
-        was set (but there is no way to find out on the server side
-        which values were used for a given cookie).
+        受cookie协议的限制, 必须传递和设置该名称cookie时候相同的path
+        和domain来清除这个cookie(但是这里没有方法来找出在服务端所使
+        用的该cookie的值).
         """
         expires = datetime.datetime.utcnow() - datetime.timedelta(days=365)
         self.set_cookie(name, value="", path=path, expires=expires,
                         domain=domain)
 
     def clear_all_cookies(self, path="/", domain=None):
-        """Deletes all the cookies the user sent with this request.
+        """删除用户在本次请求中所有携带的cookie.
 
-        See `clear_cookie` for more information on the path and domain
-        parameters.
+        查看 `clear_cookie` 方法来获取关于path和domain参数的更多信息.
 
         .. versionchanged:: 3.2
 
-           Added the ``path`` and ``domain`` parameters.
+           添加 ``path`` 和 ``domain`` 参数.
         """
         for name in self.request.cookies:
             self.clear_cookie(name, path=path, domain=domain)
 
     def set_secure_cookie(self, name, value, expires_days=30, version=None,
                           **kwargs):
-        """Signs and timestamps a cookie so it cannot be forged.
+        """给cookie签名和时间戳以防被伪造.
 
-        You must specify the ``cookie_secret`` setting in your Application
-        to use this method. It should be a long, random sequence of bytes
-        to be used as the HMAC secret for the signature.
+        你必须在你的Application设置中指定 ``cookie_secret`` 来使用这个方法.
+        它应该是一个长的, 随机的字节序列作为HMAC密钥来做签名.
 
-        To read a cookie set with this method, use `get_secure_cookie()`.
+        使用 `get_secure_cookie()` 方法来阅读通过这个方法设置的cookie.
 
-        Note that the ``expires_days`` parameter sets the lifetime of the
-        cookie in the browser, but is independent of the ``max_age_days``
-        parameter to `get_secure_cookie`.
+        注意 ``expires_days`` 参数设置cookie在浏览器中的有效期, 并且它是
+        独立于 `get_secure_cookie` 的 ``max_age_days`` 参数的.
 
-        Secure cookies may contain arbitrary byte values, not just unicode
-        strings (unlike regular cookies)
+        安全cookie(Secure cookies)可以包含任意字节的值, 而不只是unicode
+        字符串(不像是普通cookie)
 
         .. versionchanged:: 3.2.1
 
-           Added the ``version`` argument.  Introduced cookie version 2
-           and made it the default.
+           添加 ``version`` 参数. 提出cookie version 2
+           并将它作为默认设置.
         """
         self.set_cookie(name, self.create_signed_value(name, value,
                                                        version=version),
                         expires_days=expires_days, **kwargs)
 
     def create_signed_value(self, name, value, version=None):
-        """Signs and timestamps a string so it cannot be forged.
+        """产生用时间戳签名的字符串, 防止被伪造.
 
-        Normally used via set_secure_cookie, but provided as a separate
-        method for non-cookie uses.  To decode a value not stored
-        as a cookie use the optional value argument to get_secure_cookie.
+        一般通过set_secure_cookie 使用, 但对于无cookie使用来说就
+        作为独立的方法来提供. 为了解码不作为cookie存储的值, 可以
+        在 get_secure_cookie 使用可选的value参数.
 
         .. versionchanged:: 3.2.1
 
-           Added the ``version`` argument.  Introduced cookie version 2
-           and made it the default.
+           添加 ``version`` 参数. 提出cookie version 2
+           并将它作为默认设置.
         """
         self.require_setting("cookie_secret", "secure cookies")
         secret = self.application.settings["cookie_secret"]
@@ -620,15 +598,14 @@ class RequestHandler(object):
 
     def get_secure_cookie(self, name, value=None, max_age_days=31,
                           min_version=None):
-        """Returns the given signed cookie if it validates, or None.
+        """如果给定的签名过的cookie是有效的,则返回，否则返回None.
 
-        The decoded cookie value is returned as a byte string (unlike
-        `get_cookie`).
+        解码后的cookie值作为字节字符串返回(不像 `get_cookie` ).
 
         .. versionchanged:: 3.2.1
 
-           Added the ``min_version`` argument.  Introduced cookie version 2;
-           both versions 1 and 2 are accepted by default.
+           添加 ``min_version`` 参数. 引进cookie version 2;
+           默认版本 1 和 2 都可以接受.
         """
         self.require_setting("cookie_secret", "secure cookies")
         if value is None:
@@ -638,9 +615,9 @@ class RequestHandler(object):
                                    min_version=min_version)
 
     def get_secure_cookie_key_version(self, name, value=None):
-        """Returns the signing key version of the secure cookie.
+        """返回安全cookie(secure cookie)的签名key版本.
 
-        The version is returned as int.
+        返回的版本号是int型的.
         """
         self.require_setting("cookie_secret", "secure cookies")
         if value is None:
@@ -648,12 +625,11 @@ class RequestHandler(object):
         return get_signature_key_version(value)
 
     def redirect(self, url, permanent=False, status=None):
-        """Sends a redirect to the given (optionally relative) URL.
+        """重定向到给定的URL(可以选择相对路径).
 
-        If the ``status`` argument is specified, that value is used as the
-        HTTP status code; otherwise either 301 (permanent) or 302
-        (temporary) is chosen based on the ``permanent`` argument.
-        The default is 302 (temporary).
+        如果指定了 ``status`` 参数, 这个值将作为HTTP状态码; 否则
+        将通过 ``permanent`` 参数选择301 (永久) 或者 302 (临时).
+        默认是 302 (临时重定向).
         """
         if self._headers_written:
             raise Exception("Cannot redirect after headers have been written")
@@ -666,19 +642,17 @@ class RequestHandler(object):
         self.finish()
 
     def write(self, chunk):
-        """Writes the given chunk to the output buffer.
+        """把给定块写到输出buffer.
 
-        To write the output to the network, use the flush() method below.
+        为了把输出写到网络, 使用下面的flush()方法.
 
-        If the given chunk is a dictionary, we write it as JSON and set
-        the Content-Type of the response to be ``application/json``.
-        (if you want to send JSON as a different ``Content-Type``, call
-        set_header *after* calling write()).
+        如果给定的块是一个字典, 我们会把它作为JSON来写同时会把响应头
+        设置为 ``application/json``. (如果你写JSON但是设置不同的
+        ``Content-Type``,  可以调用set_header *在调用write()之后* ).
 
-        Note that lists are not converted to JSON because of a potential
-        cross-site security vulnerability.  All JSON output should be
-        wrapped in a dictionary.  More details at
-        http://haacked.com/archive/2009/06/25/json-hijacking.aspx/ and
+        注意列表不能转换为JSON 因为一个潜在的跨域安全漏洞. 所有的JSON
+        输出应该包在一个字典中. 更多细节参考
+        http://haacked.com/archive/2009/06/25/json-hijacking.aspx/ 和
         https://github.com/facebook/tornado/issues/1009
         """
         if self._finished:
@@ -695,7 +669,7 @@ class RequestHandler(object):
         self._write_buffer.append(chunk)
 
     def render(self, template_name, **kwargs):
-        """Renders the template with the given arguments as the response."""
+        """使用给定参数渲染模板并作为响应."""
         html = self.render_string(template_name, **kwargs)
 
         # Insert the additional JS and CSS added by the modules on the page
@@ -781,10 +755,10 @@ class RequestHandler(object):
         self.finish(html)
 
     def render_string(self, template_name, **kwargs):
-        """Generate the given template with the given arguments.
+        """使用给定的参数生成指定模板.
 
-        We return the generated byte string (in utf8). To generate and
-        write a template as a response, use render() above.
+        我们返回生成的字节字符串(以utf8). 为了生成并写一个模板
+        作为响应, 使用上面的render().
         """
         # If no template_path is specified, use the path of the calling file
         template_path = self.get_template_path()
@@ -806,13 +780,12 @@ class RequestHandler(object):
         return t.generate(**namespace)
 
     def get_template_namespace(self):
-        """Returns a dictionary to be used as the default template namespace.
+        """返回一个字典被用做默认的模板命名空间.
 
-        May be overridden by subclasses to add or modify values.
+        可以被子类复写来添加或修改值.
 
-        The results of this method will be combined with additional
-        defaults in the `tornado.template` module and keyword arguments
-        to `render` or `render_string`.
+        这个方法的结果将与 `tornado.template` 模块中其他的默认值
+        还有 `render` 或 `render_string` 的关键字参数相结合.
         """
         namespace = dict(
             handler=self,
@@ -829,13 +802,12 @@ class RequestHandler(object):
         return namespace
 
     def create_template_loader(self, template_path):
-        """Returns a new template loader for the given path.
+        """返回给定路径的新模板装载器.
 
-        May be overridden by subclasses.  By default returns a
-        directory-based loader on the given path, using the
-        ``autoescape`` and ``template_whitespace`` application
-        settings.  If a ``template_loader`` application setting is
-        supplied, uses that instead.
+        可以被子类复写. 默认返回一个在给定路径上基于目录的装载器,
+        使用应用程序的 ``autoescape`` 和 ``template_whitespace``
+        设置. 如果应用设置中提供了一个 ``template_loader`` ,
+        则使用它来替代.
         """
         settings = self.application.settings
         if "template_loader" in settings:
@@ -850,16 +822,15 @@ class RequestHandler(object):
         return template.Loader(template_path, **kwargs)
 
     def flush(self, include_footers=False, callback=None):
-        """Flushes the current output buffer to the network.
+        """将当前输出缓冲区写到网络.
 
-        The ``callback`` argument, if given, can be used for flow control:
-        it will be run when all flushed data has been written to the socket.
-        Note that only one flush callback can be outstanding at a time;
-        if another flush occurs before the previous flush's callback
-        has been run, the previous callback will be discarded.
+        ``callback`` 参数, 如果给定则可用于流控制: 它会在所有数据被写到
+        socket后执行. 注意同一时间只能有一个flush callback停留; 如果另
+        一个flush在前一个flush的callback运行之前发生, 那么前一个callback
+        将会被丢弃.
 
         .. versionchanged:: 4.0
-           Now returns a `.Future` if no callback is given.
+           现在如果没有给定callback, 会返回一个 `.Future` 对象.
         """
         chunk = b"".join(self._write_buffer)
         self._write_buffer = []
@@ -898,7 +869,7 @@ class RequestHandler(object):
                 return future
 
     def finish(self, chunk=None):
-        """Finishes this response, ending the HTTP request."""
+        """完成响应, 结束HTTP 请求."""
         if self._finished:
             raise RuntimeError("finish() called twice")
 
@@ -939,15 +910,13 @@ class RequestHandler(object):
         self.ui = None
 
     def send_error(self, status_code=500, **kwargs):
-        """Sends the given HTTP error code to the browser.
+        """给浏览器发送给定的HTTP 错误码.
 
-        If `flush()` has already been called, it is not possible to send
-        an error, so this method will simply terminate the response.
-        If output has been written but not yet flushed, it will be discarded
-        and replaced with the error page.
+        如果 `flush()` 已经被调用, 它是不可能发送错误的, 所以这个方法将终止
+        响应. 如果输出已经被写但尚未flush, 它将被丢弃并被错误页代替.
 
-        Override `write_error()` to customize the error page that is returned.
-        Additional keyword arguments are passed through to `write_error`.
+        复写 `write_error()` 来自定义它返回的错误页. 额外的关键字参数将
+        被传递给 `write_error`.
         """
         if self._headers_written:
             gen_log.error("Cannot send error response after headers written")
@@ -978,16 +947,15 @@ class RequestHandler(object):
             self.finish()
 
     def write_error(self, status_code, **kwargs):
-        """Override to implement custom error pages.
+        """复写这个方法来实现自定义错误页.
 
-        ``write_error`` may call `write`, `render`, `set_header`, etc
-        to produce output as usual.
+        ``write_error`` 可能调用 `write`, `render`, `set_header`,等
+        来产生一般的输出.
 
-        If this error was caused by an uncaught exception (including
-        HTTPError), an ``exc_info`` triple will be available as
-        ``kwargs["exc_info"]``.  Note that this exception may not be
-        the "current" exception for purposes of methods like
-        ``sys.exc_info()`` or ``traceback.format_exc``.
+        如果错误是由未捕获的异常造成的(包括HTTPError), 三个一组的
+        ``exc_info`` 将变成可用的通过 ``kwargs["exc_info"]``.
+        注意这个异常可能不是"当前(current)" 目的或方法的异常就像
+        ``sys.exc_info()`` 或 ``traceback.format_exc``.
         """
         if self.settings.get("serve_traceback") and "exc_info" in kwargs:
             # in debug mode, try to send a traceback
@@ -1004,15 +972,14 @@ class RequestHandler(object):
 
     @property
     def locale(self):
-        """The locale for the current session.
+        """返回当前session的位置.
 
-        Determined by either `get_user_locale`, which you can override to
-        set the locale based on, e.g., a user preference stored in a
-        database, or `get_browser_locale`, which uses the ``Accept-Language``
-        header.
+        通过 `get_user_locale` 来确定, 你可以复写这个方法设置
+        获取locale的条件, e.g., 记录在数据库中的用户偏好, 或
+        `get_browser_locale`, 使用 ``Accept-Language`` 头部.
 
         .. versionchanged: 4.1
-           Added a property setter.
+           添加setter属性.
         """
         if not hasattr(self, "_locale"):
             self._locale = self.get_user_locale()
@@ -1026,19 +993,19 @@ class RequestHandler(object):
         self._locale = value
 
     def get_user_locale(self):
-        """Override to determine the locale from the authenticated user.
+        """复写这个方法确定认证过的用户所在位置.
 
-        If None is returned, we fall back to `get_browser_locale()`.
+        如果返回了None , 我们退回选择 `get_browser_locale()`.
 
-        This method should return a `tornado.locale.Locale` object,
-        most likely obtained via a call like ``tornado.locale.get("en")``
+        这个方法应该返回一个 `tornado.locale.Locale` 对象,
+        就像调用 ``tornado.locale.get("en")`` 得到的那样
         """
         return None
 
     def get_browser_locale(self, default="en_US"):
-        """Determines the user's locale from ``Accept-Language`` header.
+        """从 ``Accept-Language`` 头决定用户的位置.
 
-        See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4
+        参考 http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4
         """
         if "Accept-Language" in self.request.headers:
             languages = self.request.headers["Accept-Language"].split(",")
@@ -1061,23 +1028,22 @@ class RequestHandler(object):
 
     @property
     def current_user(self):
-        """The authenticated user for this request.
+        """返回请求中被认证的用户.
 
-        This is set in one of two ways:
+        可以使用以下两者之一的方式来设置:
 
-        * A subclass may override `get_current_user()`, which will be called
-          automatically the first time ``self.current_user`` is accessed.
-          `get_current_user()` will only be called once per request,
-          and is cached for future access::
+        * 子类可以复写 `get_current_user()`, 这将会在第一次访问
+          ``self.current_user`` 时自动被调用.
+          `get_current_user()` 在每次请求时只会被调用一次, 并为
+          将来访问做缓存::
 
               def get_current_user(self):
                   user_cookie = self.get_secure_cookie("user")
-                      if user_cookie:
-                          return json.loads(user_cookie)
+                  if user_cookie:
+                      return json.loads(user_cookie)
                   return None
 
-        * It may be set as a normal variable, typically from an overridden
-          `prepare()`::
+        * 它可以被设置为一个普通的变量, 通常在来自被复写的 `prepare()`::
 
               @gen.coroutine
               def prepare(self):
@@ -1085,11 +1051,10 @@ class RequestHandler(object):
                   if user_id_cookie:
                       self.current_user = yield load_user(user_id_cookie)
 
-        Note that `prepare()` may be a coroutine while `get_current_user()`
-        may not, so the latter form is necessary if loading the user requires
-        asynchronous operations.
+        注意 `prepare()` 可能是一个协程, 尽管 `get_current_user()`
+        可能不是, 所以如果加载用户需要异步操作后面的形式是必要的.
 
-        The user object may any type of the application's choosing.
+        用户对象可以是application选择的任意类型.
         """
         if not hasattr(self, "_current_user"):
             self._current_user = self.get_current_user()
@@ -1100,55 +1065,50 @@ class RequestHandler(object):
         self._current_user = value
 
     def get_current_user(self):
-        """Override to determine the current user from, e.g., a cookie.
+        """复写来实现获取当前用户, e.g., 从cookie得到.
 
-        This method may not be a coroutine.
+        这个方法可能不是一个协程.
         """
         return None
 
     def get_login_url(self):
-        """Override to customize the login URL based on the request.
+        """复写这个方法自定义基于请求的登陆URL.
 
-        By default, we use the ``login_url`` application setting.
+        默认情况下, 我们使用application设置中的 ``login_url`` 值.
         """
         self.require_setting("login_url", "@tornado.web.authenticated")
         return self.application.settings["login_url"]
 
     def get_template_path(self):
-        """Override to customize template path for each handler.
+        """可以复写为每个handler指定自定义模板路径.
 
-        By default, we use the ``template_path`` application setting.
-        Return None to load templates relative to the calling file.
+        默认情况下, 我们使用应用设置中的 ``template_path`` .
+        如果返回None则使用调用文件的相对路径加载模板.
         """
         return self.application.settings.get("template_path")
 
     @property
     def xsrf_token(self):
-        """The XSRF-prevention token for the current user/session.
+        """当前用户/会话的XSRF-prevention token.
 
-        To prevent cross-site request forgery, we set an '_xsrf' cookie
-        and include the same '_xsrf' value as an argument with all POST
-        requests. If the two do not match, we reject the form submission
-        as a potential forgery.
+        为了防止伪造跨站请求, 我们设置一个 '_xsrf' cookie 并在所有POST
+        请求中包含相同的 '_xsrf' 值作为一个参数. 如果这两个不匹配,
+        我们会把这个提交当作潜在的伪造请求而拒绝掉.
 
-        See http://en.wikipedia.org/wiki/Cross-site_request_forgery
+        查看 http://en.wikipedia.org/wiki/Cross-site_request_forgery
 
         .. versionchanged:: 3.2.2
-           The xsrf token will now be have a random mask applied in every
-           request, which makes it safe to include the token in pages
-           that are compressed.  See http://breachattack.com for more
-           information on the issue fixed by this change.  Old (version 1)
-           cookies will be converted to version 2 when this method is called
-           unless the ``xsrf_cookie_version`` `Application` setting is
-           set to 1.
+           该xsrf token现在已经在每个请求都有一个随机mask这使得它
+           可以简洁的把token包含在页面中是安全的. 查看
+           http://breachattack.com 浏览更多信息关于这个更改修复的
+           问题. 旧(版本1)cookies 将被转换到版本2 当这个方法被调用
+           除非 ``xsrf_cookie_version`` `Application` 被设置为1.
 
         .. versionchanged:: 4.3
-           The ``xsrf_cookie_kwargs`` `Application` setting may be
-           used to supply additional cookie options (which will be
-           passed directly to `set_cookie`). For example,
-           ``xsrf_cookie_kwargs=dict(httponly=True, secure=True)``
-           will set the ``secure`` and ``httponly`` flags on the
-           ``_xsrf`` cookie.
+           该 ``xsrf_cookie_kwargs`` `Application` 设置可能被用来
+           补充额外的cookie 选项(将会直接传递给 `set_cookie`).
+           例如, ``xsrf_cookie_kwargs=dict(httponly=True, secure=True)``
+           将设置 ``secure`` 和 ``httponly`` 标志在 ``_xsrf`` cookie.
         """
         if not hasattr(self, "_xsrf_token"):
             version, token, timestamp = self._get_raw_xsrf_token()
@@ -1174,15 +1134,14 @@ class RequestHandler(object):
         return self._xsrf_token
 
     def _get_raw_xsrf_token(self):
-        """Read or generate the xsrf token in its raw form.
+        """读取或生成xsrf token 用它原本的格式.
 
-        The raw_xsrf_token is a tuple containing:
+        该raw_xsrf_token是一个tuple 包含:
 
-        * version: the version of the cookie from which this token was read,
-          or None if we generated a new token in this request.
-        * token: the raw token data; random (non-ascii) bytes.
-        * timestamp: the time this token was generated (will not be accurate
-          for version 1 cookies)
+        * version: 读到这个token的cookie的版本,或None如果我们在该请求
+          中生成一个新token.
+        * token: 原生的token数据; 随机(non-ascii) bytes.
+        * timestamp: 该token生成的时间(对于版本1的cookie将不准确)
         """
         if not hasattr(self, '_raw_xsrf_token'):
             cookie = self.get_cookie("_xsrf")
@@ -1198,8 +1157,7 @@ class RequestHandler(object):
         return self._raw_xsrf_token
 
     def _decode_xsrf_token(self, cookie):
-        """Convert a cookie string into a the tuple form returned by
-        _get_raw_xsrf_token.
+        """把_get_raw_xsrf_token返回的cookie字符串转换成元组形式.
         """
 
         try:
@@ -1234,29 +1192,27 @@ class RequestHandler(object):
             return None, None, None
 
     def check_xsrf_cookie(self):
-        """Verifies that the ``_xsrf`` cookie matches the ``_xsrf`` argument.
+        """确认 ``_xsrf`` cookie匹配 ``_xsrf`` 参数.
 
-        To prevent cross-site request forgery, we set an ``_xsrf``
-        cookie and include the same value as a non-cookie
-        field with all ``POST`` requests. If the two do not match, we
-        reject the form submission as a potential forgery.
+        为了预防cross-site请求伪造, 我们设置一个 ``_xsrf``
+        cookie和包含相同值的一个non-cookie字段在所有
+        ``POST`` 请求中. 如果这两个不匹配, 我们拒绝这个
+        表单提交作为一个潜在的伪造请求.
 
-        The ``_xsrf`` value may be set as either a form field named ``_xsrf``
-        or in a custom HTTP header named ``X-XSRFToken`` or ``X-CSRFToken``
-        (the latter is accepted for compatibility with Django).
+        ``_xsrf`` 的值可以被设置为一个名为 ``_xsrf`` 的表单字段或
+        在一个名为 ``X-XSRFToken`` 或 ``X-CSRFToken`` 的自定义
+        HTTP头部(后者被接受为了兼容Django).
 
-        See http://en.wikipedia.org/wiki/Cross-site_request_forgery
+        查看 http://en.wikipedia.org/wiki/Cross-site_request_forgery
 
-        Prior to release 1.1.1, this check was ignored if the HTTP header
-        ``X-Requested-With: XMLHTTPRequest`` was present.  This exception
-        has been shown to be insecure and has been removed.  For more
-        information please see
+        发布1.1.1 之前, 这个检查会被忽略如果当前的HTTP头部是
+        ``X-Requested-With: XMLHTTPRequest`` . 这个异常已被证明是
+        不安全的并且已经被移除. 更多信息请查看
         http://www.djangoproject.com/weblog/2011/feb/08/security/
         http://weblog.rubyonrails.org/2011/2/8/csrf-protection-bypass-in-ruby-on-rails
 
         .. versionchanged:: 3.2.2
-           Added support for cookie version 2.  Both versions 1 and 2 are
-           supported.
+           添加cookie 2版本的支持. 支持版本1和2.
         """
         token = (self.get_argument("_xsrf", None) or
                  self.request.headers.get("X-Xsrftoken") or
@@ -1269,40 +1225,36 @@ class RequestHandler(object):
             raise HTTPError(403, "XSRF cookie does not match POST argument")
 
     def xsrf_form_html(self):
-        """An HTML ``<input/>`` element to be included with all POST forms.
+        """一个将被包含在所有POST表单中的HTML ``<input/>`` 标签.
 
-        It defines the ``_xsrf`` input value, which we check on all POST
-        requests to prevent cross-site request forgery. If you have set
-        the ``xsrf_cookies`` application setting, you must include this
-        HTML within all of your HTML forms.
+        它定义了我们在所有POST请求中为了预防伪造跨站请求所检查的
+        ``_xsrf`` 的输入值. 如果你设置了 ``xsrf_cookies`` application设置,
+        你必须包含这个HTML 在你所有的HTML表单.
 
-        In a template, this method should be called with ``{% module
-        xsrf_form_html() %}``
+        在一个模板中, 这个方法应该使用 ``{% module xsrf_form_html() %}``
+        这种方式调用
 
-        See `check_xsrf_cookie()` above for more information.
+        查看上面的 `check_xsrf_cookie()` 了解更多信息.
         """
         return '<input type="hidden" name="_xsrf" value="' + \
             escape.xhtml_escape(self.xsrf_token) + '"/>'
 
     def static_url(self, path, include_host=None, **kwargs):
-        """Returns a static URL for the given relative static file path.
+        """为给定的相对路径的静态文件返回一个静态URL.
 
-        This method requires you set the ``static_path`` setting in your
-        application (which specifies the root directory of your static
-        files).
+        这个方法需要你在你的应用中设置 ``static_path`` (既你
+        静态文件的根目录).
 
-        This method returns a versioned url (by default appending
-        ``?v=<signature>``), which allows the static files to be
-        cached indefinitely.  This can be disabled by passing
-        ``include_version=False`` (in the default implementation;
-        other static file implementations are not required to support
-        this, but they may support other options).
+        这个方法返回一个带有版本的url (默认情况下会添加
+        ``?v=<signature>``), 这会允许静态文件被无限期缓存. 这可以被
+        禁用通过传递 ``include_version=False`` (默认已经实现;
+        其他静态文件的实现不需要支持这一点, 但它们可能支持其他选项).
 
-        By default this method returns URLs relative to the current
-        host, but if ``include_host`` is true the URL returned will be
-        absolute.  If this handler has an ``include_host`` attribute,
-        that value will be used as the default for all `static_url`
-        calls that do not pass ``include_host`` as a keyword argument.
+        默认情况下这个方法返回当前host的相对URL, 但是如果
+        ``include_host`` 为true则返回的将是绝对路径的URL.
+        如果这个处理函数有一个 ``include_host`` 属性, 该值将被所有的
+        `static_url` 调用默认使用, 而不需要传递 ``include_host``
+        作为一个关键字参数.
 
         """
         self.require_setting("static_path", "static_url")
@@ -1320,22 +1272,22 @@ class RequestHandler(object):
         return base + get_url(self.settings, path, **kwargs)
 
     def require_setting(self, name, feature="this feature"):
-        """Raises an exception if the given app setting is not defined."""
+        """如果给定的app设置未定义则抛出一个异常."""
         if not self.application.settings.get(name):
             raise Exception("You must define the '%s' setting in your "
                             "application to use %s" % (name, feature))
 
     def reverse_url(self, name, *args):
-        """Alias for `Application.reverse_url`."""
+        """ `Application.reverse_url` 的别名."""
         return self.application.reverse_url(name, *args)
 
     def compute_etag(self):
-        """Computes the etag header to be used for this request.
+        """计算被用于这个请求的etag头.
 
-        By default uses a hash of the content written so far.
+        到目前为止默认使用输出内容的hash值.
 
-        May be overridden to provide custom etag implementations,
-        or may return None to disable tornado's default etag support.
+        可以被复写来提供自定义的etag实现, 或者可以返回None来禁止
+        tornado 默认的etag支持.
         """
         hasher = hashlib.sha1()
         for part in self._write_buffer:
@@ -1343,32 +1295,30 @@ class RequestHandler(object):
         return '"%s"' % hasher.hexdigest()
 
     def set_etag_header(self):
-        """Sets the response's Etag header using ``self.compute_etag()``.
+        """设置响应的Etag头使用 ``self.compute_etag()`` 计算.
 
-        Note: no header will be set if ``compute_etag()`` returns ``None``.
+        注意: 如果 ``compute_etag()`` 返回 ``None`` 将不会设置头.
 
-        This method is called automatically when the request is finished.
+        这个方法在请求结束的时候自动调用.
         """
         etag = self.compute_etag()
         if etag is not None:
             self.set_header("Etag", etag)
 
     def check_etag_header(self):
-        """Checks the ``Etag`` header against requests's ``If-None-Match``.
+        """针对请求的 ``If-None-Match`` 头检查 ``Etag`` 头.
 
-        Returns ``True`` if the request's Etag matches and a 304 should be
-        returned. For example::
+        如果请求的ETag 匹配则返回 ``True`` 并将返回一个304. 例如::
 
             self.set_etag_header()
             if self.check_etag_header():
                 self.set_status(304)
                 return
 
-        This method is called automatically when the request is finished,
-        but may be called earlier for applications that override
-        `compute_etag` and want to do an early check for ``If-None-Match``
-        before completing the request.  The ``Etag`` header should be set
-        (perhaps with `set_etag_header`) before calling this method.
+        这个方法在请求结束的时候会被自动调用, 但也可以被更早的调用
+        当复写了 `compute_etag` 并且想在请求完成之前先做一个
+        ``If-None-Match`` 检查. ``Etag`` 头应该在这个方法被调用前设置
+        (可以使用 `set_etag_header`).
         """
         computed_etag = utf8(self._headers.get("Etag", ""))
         # Find all weak and strong etag values from If-None-Match header
@@ -1405,7 +1355,7 @@ class RequestHandler(object):
 
     @gen.coroutine
     def _execute(self, transforms, *args, **kwargs):
-        """Executes this request with the given output transforms."""
+        """使用给定的输出转换器执行这个请求."""
         self._transforms = transforms
         try:
             if self.request.method not in self.SUPPORTED_METHODS:
@@ -1458,18 +1408,17 @@ class RequestHandler(object):
                 self._prepared_future.set_result(None)
 
     def data_received(self, chunk):
-        """Implement this method to handle streamed request data.
+        """实现这个方法来处理请求数据流.
 
-        Requires the `.stream_request_body` decorator.
+        需要 `.stream_request_body` 装饰器.
         """
         raise NotImplementedError()
 
     def _log(self):
-        """Logs the current request.
+        """记录当前请求.
 
-        Sort of deprecated since this functionality was moved to the
-        Application, but left in place for the benefit of existing apps
-        that have overridden this method.
+        可以说这是过时的因为这个功能已经被移动到了Application, 留在这里
+        是为了兼容已经复写这个方法的现有app.
         """
         self.application.log_request(self)
 
@@ -1504,12 +1453,11 @@ class RequestHandler(object):
             self.send_error(500, exc_info=sys.exc_info())
 
     def log_exception(self, typ, value, tb):
-        """Override to customize logging of uncaught exceptions.
+        """复写来自定义未捕获异常的日志.
 
-        By default logs instances of `HTTPError` as warnings without
-        stack traces (on the ``tornado.general`` logger), and all
-        other exceptions as errors with stack traces (on the
-        ``tornado.application`` logger).
+        默认情况下 `HTTPError` 的日志实例作为警告(warning)没有堆栈追踪(在
+        ``tornado.general`` logger), 其他作为错误(error)的异常带有堆栈
+        追踪(在 ``tornado.application`` logger).
 
         .. versionadded:: 3.1
         """
@@ -1549,26 +1497,23 @@ class RequestHandler(object):
 
 
 def asynchronous(method):
-    """Wrap request handler methods with this if they are asynchronous.
+    """用这个包装请求处理方法如果它们是异步的.
 
-    This decorator is for callback-style asynchronous methods; for
-    coroutines, use the ``@gen.coroutine`` decorator without
-    ``@asynchronous``. (It is legal for legacy reasons to use the two
-    decorators together provided ``@asynchronous`` is first, but
-    ``@asynchronous`` will be ignored in this case)
+    这个装饰器适用于回调式异步方法; 对于协程, 使用 ``@gen.coroutine``
+    装饰器而没有 ``@asynchronous``. (这是合理的, 因为遗留原因使用两个
+    装饰器一起来提供 ``@asynchronous`` 在第一个, 但是在这种情况下
+    ``@asynchronous`` 将被忽略)
 
-    This decorator should only be applied to the :ref:`HTTP verb
-    methods <verbs>`; its behavior is undefined for any other method.
-    This decorator does not *make* a method asynchronous; it tells
-    the framework that the method *is* asynchronous.  For this decorator
-    to be useful the method must (at least sometimes) do something
-    asynchronous.
+    这个装饰器应仅适用于 :ref:`HTTP verb
+    methods <verbs>`; 它的行为是未定义的对于任何其他方法.
+    这个装饰器不会 *使* 一个方法异步; 它告诉框架该方法 *是*
+    异步(执行)的. 对于这个装饰器, 该方法必须(至少有时)异步的做一
+    些事情这是有用的.
 
-    If this decorator is given, the response is not finished when the
-    method returns. It is up to the request handler to call
-    `self.finish() <RequestHandler.finish>` to finish the HTTP
-    request. Without this decorator, the request is automatically
-    finished when the ``get()`` or ``post()`` method returns. Example:
+    如果给定了这个装饰器, 当方法返回的时候响应并没有结束.
+    它是由请求处理程序调用 `self.finish() <RequestHandler.finish>`
+    来结束该HTTP请求的. 没有这个装饰器, 请求会自动结束当
+    ``get()`` 或 ``post()`` 方法返回时. 例如:
 
     .. testcode::
 
@@ -1586,11 +1531,11 @@ def asynchronous(method):
        :hide:
 
     .. versionchanged:: 3.1
-       The ability to use ``@gen.coroutine`` without ``@asynchronous``.
+       可以使用 ``@gen.coroutine`` 而不需 ``@asynchronous``.
 
-    .. versionchanged:: 4.3 Returning anything but ``None`` or a
-       yieldable object from a method decorated with ``@asynchronous``
-       is an error. Such return values were previously ignored silently.
+    .. versionchanged:: 4.3 可以返回任何东西但 ``None`` 或者一个
+       可yield的对象来自于被 ``@asynchronous`` 装饰的方法是错误的.
+       这样的返回值之前是默认忽略的.
     """
     # Delay the IOLoop import because it's not available on app engine.
     from tornado.ioloop import IOLoop
@@ -1625,26 +1570,26 @@ def asynchronous(method):
 
 
 def stream_request_body(cls):
-    """Apply to `RequestHandler` subclasses to enable streaming body support.
+    """适用于 `RequestHandler` 子类以开启流式body支持.
 
-    This decorator implies the following changes:
+    这个装饰器意味着以下变化:
 
-    * `.HTTPServerRequest.body` is undefined, and body arguments will not
-      be included in `RequestHandler.get_argument`.
-    * `RequestHandler.prepare` is called when the request headers have been
-      read instead of after the entire body has been read.
-    * The subclass must define a method ``data_received(self, data):``, which
-      will be called zero or more times as data is available.  Note that
-      if the request has an empty body, ``data_received`` may not be called.
-    * ``prepare`` and ``data_received`` may return Futures (such as via
-      ``@gen.coroutine``, in which case the next method will not be called
-      until those futures have completed.
-    * The regular HTTP method (``post``, ``put``, etc) will be called after
-      the entire body has been read.
+    * `.HTTPServerRequest.body` 变成了未定义, 并且body参数将不再被
+      `RequestHandler.get_argument` 所包含.
+    * `RequestHandler.prepare` 被调用当读到请求头而不是在整个请求体
+      都被读到之后.
+    * 子类必须定义一个方法 ``data_received(self, data):``, 这将被调
+      用0次或多次当数据是可用状态时. 注意如果该请求的body是空的,
+      ``data_received`` 可能不会被调用.
+    * ``prepare`` 和 ``data_received`` 可能返回Futures对象(就像通过
+      ``@gen.coroutine``, 在这种情况下下一个方法将不会被调用直到这些
+      futures完成.
+    * 常规的HTTP方法 (``post``, ``put``, 等)将在整个body被读取后被
+      调用.
 
-    There is a subtle interaction between ``data_received`` and asynchronous
-    ``prepare``: The first call to ``data_received`` may occur at any point
-    after the call to ``prepare`` has returned *or yielded*.
+    在 ``data_received`` 和asynchronous之间有一个微妙的互动
+    ``prepare``: ``data_received`` 的第一次调用可能出现在任何地方
+    在调用 ``prepare`` 已经返回 *或 yielded*.
     """
     if not issubclass(cls, RequestHandler):
         raise TypeError("expected subclass of RequestHandler, got %r", cls)
@@ -1659,11 +1604,11 @@ def _has_stream_request_body(cls):
 
 
 def removeslash(method):
-    """Use this decorator to remove trailing slashes from the request path.
+    """使用这个装饰器移除请求路径尾部的斜杠(slashes).
 
-    For example, a request to ``/foo/`` would redirect to ``/foo`` with this
-    decorator. Your request handler mapping should use a regular expression
-    like ``r'/foo/*'`` in conjunction with using the decorator.
+    例如, 使用了这个装饰器请求 ``/foo/`` 将被重定向到 ``/foo`` .
+    你的请求处理映射应该使用正则表达式类似 ``r'/foo/*'``
+    和使用装饰器相结合.
     """
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
@@ -1682,11 +1627,11 @@ def removeslash(method):
 
 
 def addslash(method):
-    """Use this decorator to add a missing trailing slash to the request path.
+    """使用这个装饰器给请求路径中添加丢失的slash.
 
-    For example, a request to ``/foo`` would redirect to ``/foo/`` with this
-    decorator. Your request handler mapping should use a regular expression
-    like ``r'/foo/?'`` in conjunction with using the decorator.
+    例如, 使用了这个装饰器请求 ``/foo`` 将被重定向到 ``/foo/`` .
+    你的请求处理映射应该使用正则表达式类似 ``r'/foo/?'``
+    和使用装饰器相结合.
     """
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
@@ -1703,10 +1648,10 @@ def addslash(method):
 
 
 class Application(httputil.HTTPServerConnectionDelegate):
-    """A collection of request handlers that make up a web application.
+    """组成一个web应用程序的请求处理程序的集合.
 
-    Instances of this class are callable and can be passed directly to
-    HTTPServer to serve the application::
+    该类的实例是可调用的并且可以被直接传递给HTTPServer为应用程序
+    提供服务::
 
         application = web.Application([
             (r"/", MainPageHandler),
@@ -1715,42 +1660,35 @@ class Application(httputil.HTTPServerConnectionDelegate):
         http_server.listen(8080)
         ioloop.IOLoop.current().start()
 
-    The constructor for this class takes in a list of `URLSpec` objects
-    or (regexp, request_class) tuples. When we receive requests, we
-    iterate over the list in order and instantiate an instance of the
-    first request class whose regexp matches the request path.
-    The request class can be specified as either a class object or a
-    (fully-qualified) name.
+    这个类的构造器带有一个列表包含 `URLSpec` 对象或
+    (正则表达式, 请求类)元组. 当我们接收到请求, 我们按顺序迭代该列表
+    并且实例化和请求路径相匹配的正则表达式所对应的第一个请求类.
+    请求类可以被指定为一个类对象或一个(完全有资格的)名字.
 
-    Each tuple can contain additional elements, which correspond to the
-    arguments to the `URLSpec` constructor.  (Prior to Tornado 3.2,
-    only tuples of two or three elements were allowed).
+    每个元组可以包含另外的部分, 只要符合 `URLSpec` 构造器参数的条件.
+    (在Tornado 3.2之前, 只允许包含两个或三个元素的元组).
 
-    A dictionary may be passed as the third element of the tuple,
-    which will be used as keyword arguments to the handler's
-    constructor and `~RequestHandler.initialize` method.  This pattern
-    is used for the `StaticFileHandler` in this example (note that a
-    `StaticFileHandler` can be installed automatically with the
-    static_path setting described below)::
+    一个字典可以作为该元组的第三个元素被传递, 它将被用作处理程序
+    构造器的关键字参数和 `~RequestHandler.initialize` 方法.
+    这种模式也被用于例子中的 `StaticFileHandler` (注意一个
+    `StaticFileHandler` 可以被自动挂载连带下面的static_path设置)::
 
         application = web.Application([
             (r"/static/(.*)", web.StaticFileHandler, {"path": "/var/www"}),
         ])
 
-    We support virtual hosts with the `add_handlers` method, which takes in
-    a host regular expression as the first argument::
+    我们支持虚拟主机通过 `add_handlers` 方法, 该方法带有一个主机
+    正则表达式作为第一个参数::
 
         application.add_handlers(r"www\.myhost\.com", [
             (r"/article/([0-9]+)", ArticleHandler),
         ])
 
-    You can serve static files by sending the ``static_path`` setting
-    as a keyword argument. We will serve those files from the
-    ``/static/`` URI (this is configurable with the
-    ``static_url_prefix`` setting), and we will serve ``/favicon.ico``
-    and ``/robots.txt`` from the same directory.  A custom subclass of
-    `StaticFileHandler` can be specified with the
-    ``static_handler_class`` setting.
+    你可以提供静态文件服务通过传递 ``static_path`` 配置作为关键字
+    参数. 我们将提供这些文件从 ``/static/`` URI (这是可配置的通过
+    ``static_url_prefix`` 配置), 并且我们将提供 ``/favicon.ico``
+    和 ``/robots.txt`` 从相同目录下. 一个 `StaticFileHandler` 的
+    自定义子类可以被指定, 通过 ``static_handler_class`` 设置.
 
     """
     def __init__(self, handlers=None, default_host="", transforms=None,
@@ -1800,23 +1738,22 @@ class Application(httputil.HTTPServerConnectionDelegate):
             autoreload.start()
 
     def listen(self, port, address="", **kwargs):
-        """Starts an HTTP server for this application on the given port.
+        """为应用程序在给定端口上启动一个HTTP server.
 
-        This is a convenience alias for creating an `.HTTPServer`
-        object and calling its listen method.  Keyword arguments not
-        supported by `HTTPServer.listen <.TCPServer.listen>` are passed to the
-        `.HTTPServer` constructor.  For advanced uses
-        (e.g. multi-process mode), do not use this method; create an
-        `.HTTPServer` and call its
-        `.TCPServer.bind`/`.TCPServer.start` methods directly.
+        这是一个方便的别名用来创建一个 `.HTTPServer` 对象并调用它
+        的listen方法. `HTTPServer.listen <.TCPServer.listen>`
+        不支持传递关键字参数给 `.HTTPServer` 构造器. 对于高级用途
+        (e.g. 多进程模式), 不要使用这个方法; 创建一个
+        `.HTTPServer` 并直接调用它的
+        `.TCPServer.bind`/`.TCPServer.start` 方法.
 
-        Note that after calling this method you still need to call
-        ``IOLoop.current().start()`` to start the server.
+        注意在调用这个方法之后你仍然需要调用
+        ``IOLoop.current().start()`` 来启动该服务.
 
-        Returns the `.HTTPServer` object.
+        返回 `.HTTPServer` 对象.
 
         .. versionchanged:: 4.3
-           Now returns the `.HTTPServer` object.
+           现在返回 `.HTTPServer` 对象.
         """
         # import is here rather than top level because HTTPServer
         # is not importable on appengine
@@ -1826,10 +1763,10 @@ class Application(httputil.HTTPServerConnectionDelegate):
         return server
 
     def add_handlers(self, host_pattern, host_handlers):
-        """Appends the given handlers to our handler list.
+        """添加给定的handler到我们的handler表.
 
-        Host patterns are processed sequentially in the order they were
-        added. All matching patterns will be considered.
+        Host 模式将按照它们的添加顺序进行处理.
+        所有匹配模式将被考虑.
         """
         if not host_pattern.endswith("$"):
             host_pattern += "$"
@@ -1912,25 +1849,24 @@ class Application(httputil.HTTPServerConnectionDelegate):
         return dispatcher.execute()
 
     def reverse_url(self, name, *args):
-        """Returns a URL path for handler named ``name``
+        """返回名为 ``name`` 的handler的URL路径
 
-        The handler must be added to the application as a named `URLSpec`.
+        处理程序必须作为 `URLSpec` 添加到应用程序.
 
-        Args will be substituted for capturing groups in the `URLSpec` regex.
-        They will be converted to strings if necessary, encoded as utf8,
-        and url-escaped.
+        捕获组的参数将在 `URLSpec` 的正则表达式被替换.
+        如有必要它们将被转换成string, 编码成utf8,及
+        网址转义(url-escaped).
         """
         if name in self.named_handlers:
             return self.named_handlers[name].reverse(*args)
         raise KeyError("%s not found in named urls" % name)
 
     def log_request(self, handler):
-        """Writes a completed HTTP request to the logs.
+        """写一个完成的HTTP 请求到日志中.
 
-        By default writes to the python root logger.  To change
-        this behavior either subclass Application and override this method,
-        or pass a function in the application settings dictionary as
-        ``log_function``.
+        默认情况下会写到python 根(root)logger. 要改变这种行为
+        无论是子类应用和复写这个方法, 或者传递一个函数到应用的
+        设置字典中作为 ``log_function``.
         """
         if "log_function" in self.settings:
             self.settings["log_function"](handler)
@@ -2060,26 +1996,23 @@ class _RequestDispatcher(httputil.HTTPMessageDelegate):
 
 
 class HTTPError(Exception):
-    """An exception that will turn into an HTTP error response.
+    """一个将会成为HTTP错误响应的异常.
 
-    Raising an `HTTPError` is a convenient alternative to calling
-    `RequestHandler.send_error` since it automatically ends the
-    current function.
+    抛出一个 `HTTPError` 是一个更方便的选择比起调用
+    `RequestHandler.send_error` 因为它自动结束当前的函数.
 
-    To customize the response sent with an `HTTPError`, override
+    为了自定义 `HTTPError` 的响应, 复写
     `RequestHandler.write_error`.
 
-    :arg int status_code: HTTP status code.  Must be listed in
-        `httplib.responses <http.client.responses>` unless the ``reason``
-        keyword argument is given.
-    :arg string log_message: Message to be written to the log for this error
-        (will not be shown to the user unless the `Application` is in debug
-        mode).  May contain ``%s``-style placeholders, which will be filled
-        in with remaining positional parameters.
-    :arg string reason: Keyword-only argument.  The HTTP "reason" phrase
-        to pass in the status line along with ``status_code``.  Normally
-        determined automatically from ``status_code``, but can be used
-        to use a non-standard numeric code.
+    :arg int status_code: HTTP状态码. 必须列在
+        `httplib.responses <http.client.responses>` 之中除非给定了
+        ``reason`` 关键字参数.
+    :arg string log_message: 这个错误将会被写入日志的信息(除非该
+        `Application` 是debug模式否则不会展示给用户). 可能含有
+        ``%s``-风格的占位符, 它将填补剩余的位置参数.
+    :arg string reason: 唯一的关键字参数. HTTP "reason" 短语
+        将随着 ``status_code`` 传递给状态行. 通常从 ``status_code``,
+        自动确定但可以使用一个非标准的数字代码.
     """
     def __init__(self, status_code=500, log_message=None, *args, **kwargs):
         self.status_code = status_code
@@ -2100,19 +2033,18 @@ class HTTPError(Exception):
 
 
 class Finish(Exception):
-    """An exception that ends the request without producing an error response.
+    """一个会结束请求但不会产生错误响应的异常.
 
-    When `Finish` is raised in a `RequestHandler`, the request will
-    end (calling `RequestHandler.finish` if it hasn't already been
-    called), but the error-handling methods (including
-    `RequestHandler.write_error`) will not be called.
+    当一个 `RequestHandler` 抛出 `Finish` , 该请求将会结束(调用
+    `RequestHandler.finish` 如果该方法尚未被调用), 但是错误处理方法
+    (包括 `RequestHandler.write_error`)将不会被调用.
 
-    If `Finish()` was created with no arguments, the pending response
-    will be sent as-is. If `Finish()` was given an argument, that
-    argument will be passed to `RequestHandler.finish()`.
+    如果 `Finish()` 创建的时候没有携带参数, 则会发送一个pending响应.
+    如果 `Finish()` 给定了参数, 则参数将会传递给
+    `RequestHandler.finish()`.
 
-    This can be a more convenient way to implement custom error pages
-    than overriding ``write_error`` (especially in library code)::
+    这是比复写 ``write_error`` 更加便利的方式用来实现自定义错误页
+    (尤其是在library代码中)::
 
         if self.current_user is None:
             self.set_status(401)
@@ -2120,17 +2052,17 @@ class Finish(Exception):
             raise Finish()
 
     .. versionchanged:: 4.3
-       Arguments passed to ``Finish()`` will be passed on to
+       传递给 ``Finish()`` 的参数将被传递给
        `RequestHandler.finish`.
     """
     pass
 
 
 class MissingArgumentError(HTTPError):
-    """Exception raised by `RequestHandler.get_argument`.
+    """由 `RequestHandler.get_argument` 抛出的异常.
 
-    This is a subclass of `HTTPError`, so if it is uncaught a 400 response
-    code will be used instead of 500 (and a stack trace will not be logged).
+    这是 `HTTPError` 的一个子类, 所以如果是未捕获的400响应码将被
+    用来代替500(并且栈追踪不会被记录到日志).
 
     .. versionadded:: 3.1
     """
@@ -2141,7 +2073,7 @@ class MissingArgumentError(HTTPError):
 
 
 class ErrorHandler(RequestHandler):
-    """Generates an error response with ``status_code`` for all requests."""
+    """为所有请求生成一个带有 ``status_code`` 的错误响应."""
     def initialize(self, status_code):
         self.set_status(status_code)
 
@@ -2156,9 +2088,9 @@ class ErrorHandler(RequestHandler):
 
 
 class RedirectHandler(RequestHandler):
-    """Redirects the client to the given URL for all GET requests.
+    """将所有GET请求重定向到给定的URL.
 
-    You should provide the keyword argument ``url`` to the handler, e.g.::
+    你需要为处理程序提供 ``url`` 关键字参数, e.g.::
 
         application = web.Application([
             (r"/oldpath", web.RedirectHandler, {"url": "/newpath"}),
@@ -2173,70 +2105,61 @@ class RedirectHandler(RequestHandler):
 
 
 class StaticFileHandler(RequestHandler):
-    """A simple handler that can serve static content from a directory.
+    """可以为一个目录提供静态内容服务的简单处理程序.
 
-    A `StaticFileHandler` is configured automatically if you pass the
-    ``static_path`` keyword argument to `Application`.  This handler
-    can be customized with the ``static_url_prefix``, ``static_handler_class``,
-    and ``static_handler_args`` settings.
+    `StaticFileHandler` 是自动配置的如果你传递了 ``static_path`` 关键字参数给
+    `Application`. 这个处理程序可以被自定义通过 ``static_url_prefix``,
+    ``static_handler_class``, 和 ``static_handler_args`` 配置.
 
-    To map an additional path to this handler for a static data directory
-    you would add a line to your application like::
+    为了将静态数据目录映射一个额外的路径给这个处理程序你可以在你应用程序中
+    添加一行例如::
 
         application = web.Application([
             (r"/content/(.*)", web.StaticFileHandler, {"path": "/var/www"}),
         ])
 
-    The handler constructor requires a ``path`` argument, which specifies the
-    local root directory of the content to be served.
+    处理程序构造器需要一个 ``path`` 参数, 该参数指定了将被服务内容的本地根
+    目录.
 
-    Note that a capture group in the regex is required to parse the value for
-    the ``path`` argument to the get() method (different than the constructor
-    argument above); see `URLSpec` for details.
+    注意在正则表达式的捕获组需要解析 ``path`` 参数的值给get()方法(不同于
+    上面的构造器的参数); 参见 `URLSpec` 了解细节.
 
-    To serve a file like ``index.html`` automatically when a directory is
-    requested, set ``static_handler_args=dict(default_filename="index.html")``
-    in your application settings, or add ``default_filename`` as an initializer
-    argument for your ``StaticFileHandler``.
+    为了自动的提供一个文件例如 ``index.html`` 当一个目录被请求的时候,
+    设置 ``static_handler_args=dict(default_filename="index.html")``
+    在你的应用程序设置中(application settings), 或添加
+    ``default_filename`` 作为你的 ``StaticFileHandler`` 的初始化参数.
 
-    To maximize the effectiveness of browser caching, this class supports
-    versioned urls (by default using the argument ``?v=``).  If a version
-    is given, we instruct the browser to cache this file indefinitely.
-    `make_static_url` (also available as `RequestHandler.static_url`) can
-    be used to construct a versioned url.
+    为了最大限度的提高浏览器缓存的有效性, 这个类支持版本化的url(默认情
+    况下使用 ``?v=`` 参数). 如果给定了一个版本, 我们指示浏览器无限期
+    的缓存该文件. `make_static_url` (也可作为 `RequestHandler.static_url`)
+    可以被用来构造一个版本化的url.
 
-    This handler is intended primarily for use in development and light-duty
-    file serving; for heavy traffic it will be more efficient to use
-    a dedicated static file server (such as nginx or Apache).  We support
-    the HTTP ``Accept-Ranges`` mechanism to return partial content (because
-    some browsers require this functionality to be present to seek in
-    HTML5 audio or video).
+    该处理程序主要用户开发和轻量级处理文件服务; 对重型传输,使用专用的
+    静态文件服务是更高效的(例如nginx或Apache). 我们支持HTTP
+    ``Accept-Ranges`` 机制来返回部分内容(因为一些浏览器需要此功能是
+    为了查找在HTML5音频或视频中).
 
-    **Subclassing notes**
+    **子类注意事项**
 
-    This class is designed to be extensible by subclassing, but because
-    of the way static urls are generated with class methods rather than
-    instance methods, the inheritance patterns are somewhat unusual.
-    Be sure to use the ``@classmethod`` decorator when overriding a
-    class method.  Instance methods may use the attributes ``self.path``
-    ``self.absolute_path``, and ``self.modified``.
+    这个类被设计是可以让子类继承的, 但由于静态url是被类方法生成的
+    而不是实例方法的方式, 继承模式有点不同寻常. 一定要使用
+    ``@classmethod`` 装饰器当复写一个类方法时. 实例方法可以使用
+    ``self.path`` ``self.absolute_path``, 和 ``self.modified`` 属性.
 
-    Subclasses should only override methods discussed in this section;
-    overriding other methods is error-prone.  Overriding
-    ``StaticFileHandler.get`` is particularly problematic due to the
-    tight coupling with ``compute_etag`` and other methods.
+    子类应该只复写在本节讨论的方法; 复写其他方法很容易出错. 最重要的
+    ``StaticFileHandler.get`` 问题尤其严重, 由于与 ``compute_etag``
+    还有其他方法紧密耦合.
 
-    To change the way static urls are generated (e.g. to match the behavior
-    of another server or CDN), override `make_static_url`, `parse_url_path`,
-    `get_cache_time`, and/or `get_version`.
+    为了改变静态url生成的方式(e.g. 匹配其他服务或CDN), 复写
+    `make_static_url`, `parse_url_path`,
+    `get_cache_time`, 和/或 `get_version`.
 
-    To replace all interaction with the filesystem (e.g. to serve
-    static content from a database), override `get_content`,
-    `get_content_size`, `get_modified_time`, `get_absolute_path`, and
-    `validate_absolute_path`.
+    为了代替所有与文件系统的相互作用(e.g. 从数据库提供静态内容服务),
+    复写 `get_content`, `get_content_size`, `get_modified_time`,
+    `get_absolute_path`, 和 `validate_absolute_path`.
 
     .. versionchanged:: 3.1
-       Many of the methods for subclasses were added in Tornado 3.1.
+       一些为子类设计的方法在Tornado 3.1 被添加.
     """
     CACHE_MAX_AGE = 86400 * 365 * 10  # 10 years
 
@@ -2332,11 +2255,11 @@ class StaticFileHandler(RequestHandler):
             assert self.request.method == "HEAD"
 
     def compute_etag(self):
-        """Sets the ``Etag`` header based on static url version.
+        """设置 ``Etag`` 头基于static url版本.
 
-        This allows efficient ``If-None-Match`` checks against cached
-        versions, and sends the correct ``Etag`` for a partial response
-        (i.e. the same ``Etag`` as the full file).
+        这允许高效的针对缓存版本的 ``If-None-Match`` 检查,
+        并发送正确的 ``Etag`` 给局部的响应(i.e. 相同的
+        ``Etag`` 为完整的文件).
 
         .. versionadded:: 3.1
         """
@@ -2346,7 +2269,7 @@ class StaticFileHandler(RequestHandler):
         return '"%s"' % (version_hash, )
 
     def set_headers(self):
-        """Sets the content and caching headers on the response.
+        """设置响应的内容和缓存头.
 
         .. versionadded:: 3.1
         """
@@ -2370,7 +2293,7 @@ class StaticFileHandler(RequestHandler):
         self.set_extra_headers(self.path)
 
     def should_return_304(self):
-        """Returns True if the headers indicate that we should return 304.
+        """如果头部表明我们应该返回304则返回True.
 
         .. versionadded:: 3.1
         """
@@ -2391,15 +2314,14 @@ class StaticFileHandler(RequestHandler):
 
     @classmethod
     def get_absolute_path(cls, root, path):
-        """Returns the absolute location of ``path`` relative to ``root``.
+        """返回 ``path`` 相对于 ``root`` 的绝对路径.
 
-        ``root`` is the path configured for this `StaticFileHandler`
-        (in most cases the ``static_path`` `Application` setting).
+        ``root`` 是这个 `StaticFileHandler` 配置的路径(在大多数情
+        况下是 `Application` 的 ``static_path``设置).
 
-        This class method may be overridden in subclasses.  By default
-        it returns a filesystem path, but other strings may be used
-        as long as they are unique and understood by the subclass's
-        overridden `get_content`.
+        这个类方法可能在子类中被复写. 默认情况下它返回一个文件系统
+        路径, 但其他字符串可以被使用, 只要它们是独特的并且被
+        子类复写的 `get_content` 理解.
 
         .. versionadded:: 3.1
         """
@@ -2407,22 +2329,21 @@ class StaticFileHandler(RequestHandler):
         return abspath
 
     def validate_absolute_path(self, root, absolute_path):
-        """Validate and return the absolute path.
+        """验证并返回绝对路径.
 
-        ``root`` is the configured path for the `StaticFileHandler`,
-        and ``path`` is the result of `get_absolute_path`
+        ``root`` 是 `StaticFileHandler` 配置的路径,并且
+        ``path`` 是 `get_absolute_path` 的结果.
 
-        This is an instance method called during request processing,
-        so it may raise `HTTPError` or use methods like
-        `RequestHandler.redirect` (return None after redirecting to
-        halt further processing).  This is where 404 errors for missing files
-        are generated.
+        这是一个实例方法在请求过程中被调用, 所以它可能抛出
+        `HTTPError` 或者使用类似 `RequestHandler.redirect`
+        (返回None在重定向到停止进一步处理之后) 这种方法.
+        如果丢失文件将会生成404错误.
 
-        This method may modify the path before returning it, but note that
-        any such modifications will not be understood by `make_static_url`.
+        这个方法可能在返回路径之前修改它, 但是注意任何这样的
+        修改将不会被 `make_static_url` 理解.
 
-        In instance methods, this method's result is available as
-        ``self.absolute_path``.
+        在实例方法, 这个方法的结果对 ``self.absolute_path``
+        是可用的.
 
         .. versionadded:: 3.1
         """
@@ -2460,17 +2381,14 @@ class StaticFileHandler(RequestHandler):
 
     @classmethod
     def get_content(cls, abspath, start=None, end=None):
-        """Retrieve the content of the requested resource which is located
-        at the given absolute path.
+        """检索位于所给定绝对路径的请求资源的内容.
 
-        This class method may be overridden by subclasses.  Note that its
-        signature is different from other overridable class methods
-        (no ``settings`` argument); this is deliberate to ensure that
-        ``abspath`` is able to stand on its own as a cache key.
+        这个类方法可以被子类复写. 注意它的特征不同于其他可复写
+        的类方法(没有 ``settings`` 参数); 这是经过深思熟虑的以
+        确保 ``abspath`` 能依靠自己作为缓存键(cache key) .
 
-        This method should either return a byte string or an iterator
-        of byte strings.  The latter is preferred for large files
-        as it helps reduce memory fragmentation.
+        这个方法返回一个字节串或一个可迭代的字节串. 对于大文件
+        后者是更优的选择因为它有助于减少内存碎片.
 
         .. versionadded:: 3.1
         """
@@ -2497,10 +2415,9 @@ class StaticFileHandler(RequestHandler):
 
     @classmethod
     def get_content_version(cls, abspath):
-        """Returns a version string for the resource at the given path.
+        """返回给定路径资源的一个版本字符串.
 
-        This class method may be overridden by subclasses.  The
-        default implementation is a hash of the file's contents.
+        这个类方法可以被子类复写. 默认的实现是对文件内容的hash.
 
         .. versionadded:: 3.1
         """
@@ -2519,24 +2436,23 @@ class StaticFileHandler(RequestHandler):
         return self._stat_result
 
     def get_content_size(self):
-        """Retrieve the total size of the resource at the given path.
+        """检索给定路径中资源的总大小.
 
-        This method may be overridden by subclasses.
+        这个方法可以被子类复写.
 
         .. versionadded:: 3.1
 
         .. versionchanged:: 4.0
-           This method is now always called, instead of only when
-           partial results are requested.
+           这个方法总是被调用, 而不是仅在部分结果被请求时.
         """
         stat_result = self._stat()
         return stat_result[stat.ST_SIZE]
 
     def get_modified_time(self):
-        """Returns the time that ``self.absolute_path`` was last modified.
+        """返回 ``self.absolute_path`` 的最后修改时间.
 
-        May be overridden in subclasses.  Should return a `~datetime.datetime`
-        object or None.
+        可以被子类复写. 应当返回一个 `~datetime.datetime`
+        对象或None.
 
         .. versionadded:: 3.1
         """
@@ -2546,7 +2462,7 @@ class StaticFileHandler(RequestHandler):
         return modified
 
     def get_content_type(self):
-        """Returns the ``Content-Type`` header to be used for this request.
+        """返回这个请求使用的 ``Content-Type`` 头.
 
         .. versionadded:: 3.1
         """
@@ -2566,40 +2482,33 @@ class StaticFileHandler(RequestHandler):
             return "application/octet-stream"
 
     def set_extra_headers(self, path):
-        """For subclass to add extra headers to the response"""
+        """为了子类给响应添加额外的头部"""
         pass
 
     def get_cache_time(self, path, modified, mime_type):
-        """Override to customize cache control behavior.
+        """复写来自定义缓存控制行为.
 
-        Return a positive number of seconds to make the result
-        cacheable for that amount of time or 0 to mark resource as
-        cacheable for an unspecified amount of time (subject to
-        browser heuristics).
+        返回一个正的秒数作为结果可缓存的时间的量或者返回0标记资源
+        可以被缓存一个未指定的时间段(受浏览器自身的影响).
 
-        By default returns cache expiry of 10 years for resources requested
-        with ``v`` argument.
+        默认情况下带有 ``v`` 请求参数的资源返回的缓存过期时间是10年.
         """
         return self.CACHE_MAX_AGE if "v" in self.request.arguments else 0
 
     @classmethod
     def make_static_url(cls, settings, path, include_version=True):
-        """Constructs a versioned url for the given path.
+        """为给定路径构造一个的有版本的url.
 
-        This method may be overridden in subclasses (but note that it
-        is a class method rather than an instance method).  Subclasses
-        are only required to implement the signature
-        ``make_static_url(cls, settings, path)``; other keyword
-        arguments may be passed through `~RequestHandler.static_url`
-        but are not standard.
+        这个方法可以在子类中被复写(但是注意他是一个类方法而不是一个
+        实例方法). 子类只需实现签名
+        ``make_static_url(cls, settings, path)``; 其他关键字参数可
+        以通过 `~RequestHandler.static_url` 传递, 但这不是标准.
 
-        ``settings`` is the `Application.settings` dictionary.  ``path``
-        is the static path being requested.  The url returned should be
-        relative to the current host.
+        ``settings`` 是 `Application.settings` 字典. ``path``
+        是被请求的静态路径. 返回的url应该是相对于当前host的.
 
-        ``include_version`` determines whether the generated URL should
-        include the query string containing the version hash of the
-        file corresponding to the given ``path``.
+        ``include_version`` 决定生成的URL是否应该包含含有给定
+        ``path`` 相对应文件的hash版本查询字符串.
 
         """
         url = settings.get('static_url_prefix', '/static/') + path
@@ -2613,13 +2522,12 @@ class StaticFileHandler(RequestHandler):
         return '%s?v=%s' % (url, version_hash)
 
     def parse_url_path(self, url_path):
-        """Converts a static URL path into a filesystem path.
+        """将静态URL路径转换成文件系统路径.
 
-        ``url_path`` is the path component of the URL with
-        ``static_url_prefix`` removed.  The return value should be
-        filesystem path relative to ``static_path``.
+        ``url_path`` 是由去掉 ``static_url_prefix`` 的URL组成.
+        返回值应该是相对于 ``static_path`` 的文件系统路径.
 
-        This is the inverse of `make_static_url`.
+        这是逆 `make_static_url` .
         """
         if os.path.sep != "/":
             url_path = url_path.replace("/", os.path.sep)
@@ -2627,17 +2535,15 @@ class StaticFileHandler(RequestHandler):
 
     @classmethod
     def get_version(cls, settings, path):
-        """Generate the version string to be used in static URLs.
+        """生成用于静态URL的版本字符串.
 
-        ``settings`` is the `Application.settings` dictionary and ``path``
-        is the relative location of the requested asset on the filesystem.
-        The returned value should be a string, or ``None`` if no version
-        could be determined.
+        ``settings`` 是 `Application.settings` 字典并且 ``path``
+        是请求资源在文件系统中的相对位置. 返回值应该是一个字符串
+        或 ``None`` 如果没有版本可以被确定.
 
         .. versionchanged:: 3.1
-           This method was previously recommended for subclasses to override;
-           `get_content_version` is now preferred as it allows the base
-           class to handle caching of the result.
+           这个方法之前建议在子类中复写; `get_content_version`
+           现在是首选因为它允许基类来处理结果的缓存.
         """
         abs_path = cls.get_absolute_path(settings['static_path'], path)
         return cls._get_cached_version(abs_path)
@@ -2659,13 +2565,12 @@ class StaticFileHandler(RequestHandler):
 
 
 class FallbackHandler(RequestHandler):
-    """A `RequestHandler` that wraps another HTTP server callback.
+    """包装其他HTTP server回调的 `RequestHandler` .
 
-    The fallback is a callable object that accepts an
-    `~.httputil.HTTPServerRequest`, such as an `Application` or
-    `tornado.wsgi.WSGIContainer`.  This is most useful to use both
-    Tornado ``RequestHandlers`` and WSGI in the same server.  Typical
-    usage::
+    fallback是一个可调用的对象, 它接收一个
+    `~.httputil.HTTPServerRequest`, 诸如一个 `Application` 或
+    `tornado.wsgi.WSGIContainer`. 这对于在相同server中同时使用
+    Tornado ``RequestHandlers`` 和WSGI是非常有用的. 用法::
 
         wsgi_app = tornado.wsgi.WSGIContainer(
             django.core.handlers.wsgi.WSGIHandler())
@@ -2683,11 +2588,10 @@ class FallbackHandler(RequestHandler):
 
 
 class OutputTransform(object):
-    """A transform modifies the result of an HTTP request (e.g., GZip encoding)
+    """一个修改HTTP请求结果的transform(e.g., GZip encoding)
 
-    Applications are not expected to create their own OutputTransforms
-    or interact with them directly; the framework chooses which transforms
-    (if any) to apply.
+    Applications预计不会创建它们自己的OutputTransforms
+    或不会和它们直接交互; 由框架选择哪个transforms(如果有的话)适用.
     """
     def __init__(self, request):
         pass
@@ -2700,14 +2604,13 @@ class OutputTransform(object):
 
 
 class GZipContentEncoding(OutputTransform):
-    """Applies the gzip content encoding to the response.
+    """适用gzip内容编码到响应.
 
-    See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.11
+    参加 http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.11
 
     .. versionchanged:: 4.0
-        Now compresses all mime types beginning with ``text/``, instead
-        of just a whitelist. (the whitelist is still used for certain
-        non-text mime types).
+        现在压缩所有mime类型以 ``text/`` 开头, 而不只是一个白名单.
+        (白名单仍用于某些非文本(non-text)mime类型).
     """
     # Whitelist of compressible mime types (in addition to any types
     # beginning with "text/").
@@ -2772,15 +2675,14 @@ class GZipContentEncoding(OutputTransform):
 
 
 def authenticated(method):
-    """Decorate methods with this to require that the user be logged in.
+    """使用这个装饰的方法要求用户必须登陆.
 
-    If the user is not logged in, they will be redirected to the configured
+    如果用户未登陆, 他们将被重定向到已经配置的
     `login url <RequestHandler.get_login_url>`.
 
-    If you configure a login url with a query parameter, Tornado will
-    assume you know what you're doing and use it as-is.  If not, it
-    will add a `next` parameter so the login page knows where to send
-    you once you're logged in.
+    如果你配置login url带有查询参数, Tornado将假设你知道你正在
+    做什么并使用它. 如果不是, 它将添加一个 `next` 参数这样登陆
+    页就会知道一旦你登陆后将把你送到哪里.
     """
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
@@ -2802,13 +2704,12 @@ def authenticated(method):
 
 
 class UIModule(object):
-    """A re-usable, modular UI unit on a page.
+    """一个在页面上可复用, 模块化的UI单元.
 
-    UI modules often execute additional queries, and they can include
-    additional CSS and JavaScript that will be included in the output
-    page, which is automatically inserted on page render.
+    UI模块经常执行附加的查询, 它们也可以包含额外的CSS和
+    JavaScript, 这些将包含在输出页面上, 在页面渲染的时候自动插入.
 
-    Subclasses of UIModule must override the `render` method.
+    UIModule的子类必须复写 `render` 方法.
     """
     def __init__(self, handler):
         self.handler = handler
@@ -2878,19 +2779,17 @@ class _xsrf_form_html(UIModule):
 
 
 class TemplateModule(UIModule):
-    """UIModule that simply renders the given template.
+    """UIModule 简便的渲染给定的模板.
 
-    {% module Template("foo.html") %} is similar to {% include "foo.html" %},
-    but the module version gets its own namespace (with kwargs passed to
-    Template()) instead of inheriting the outer template's namespace.
+    {% module Template("foo.html") %} 和 {% include "foo.html" %} 和相似,
+    但是module版本有它自己的命名空间(带着关键字传递给Template())
+    而不是继承外模板的命名空间.
 
-    Templates rendered through this module also get access to UIModule's
-    automatic javascript/css features.  Simply call set_resources
-    inside the template and give it keyword arguments corresponding to
-    the methods on UIModule: {{ set_resources(js_files=static_url("my.js")) }}
-    Note that these resources are output once per template file, not once
-    per instantiation of the template, so they must not depend on
-    any arguments to the template.
+    通过这个模块渲染的模板也可以访问到UIModule的自动javascript/css功能.
+    只需在模板中调用set_resources并给它关键字参数对应的在UIModule上的
+    方法: {{ set_resources(js_files=static_url("my.js")) }}
+    注意这些资源只在每个模板文件中输出一次, 不是每次模板实例化一次,
+    所以它们不能依赖于模板的任何参数.
     """
     def __init__(self, handler):
         super(TemplateModule, self).__init__(handler)
@@ -2962,21 +2861,20 @@ class _UIModuleNamespace(object):
 
 
 class URLSpec(object):
-    """Specifies mappings between URLs and handlers."""
+    """指定URL和处理程序之间的映射."""
     def __init__(self, pattern, handler, kwargs=None, name=None):
         """Parameters:
 
-        * ``pattern``: Regular expression to be matched.  Any groups
-          in the regex will be passed in to the handler's get/post/etc
-          methods as arguments.
+        * ``pattern``: 被匹配的正则表达式. 任何在正则表达式的group
+          都将作为参数传递给处理程序的get/post/等方法.
 
-        * ``handler``: `RequestHandler` subclass to be invoked.
+        * ``handler``: 被调用的 `RequestHandler` 子类.
 
-        * ``kwargs`` (optional): A dictionary of additional arguments
-          to be passed to the handler's constructor.
+        * ``kwargs`` (optional): 将被传递给处理程序构造器的额外
+          参数组成的字典.
 
-        * ``name`` (optional): A name for this handler.  Used by
-          `Application.reverse_url`.
+        * ``name`` (optional): 该处理程序的名称. 被
+          `Application.reverse_url` 使用.
         """
         if not pattern.endswith('$'):
             pattern += '$'
@@ -3001,10 +2899,10 @@ class URLSpec(object):
              self.handler_class, self.kwargs, self.name)
 
     def _find_groups(self):
-        """Returns a tuple (reverse string, group count) for a url.
+        """返回一个基于url的元组(reverse string, group count).
 
-        For example: Given the url pattern /([0-9]{4})/([a-z-]+)/, this method
-        would return ('/%s/%s/', 2).
+        例如: 给定一个url 模式 /([0-9]{4})/([a-z-]+)/, 这个方法
+        将会返回('/%s/%s/', 2).
         """
         pattern = self.regex.pattern
         if pattern.startswith('^'):
