@@ -52,17 +52,16 @@
    .. automethod:: RequestHandler.decode_argument
    .. attribute:: RequestHandler.request
 
-      The `tornado.httputil.HTTPServerRequest` object containing additional
-      request parameters including e.g. headers and body data.
+      `tornado.httputil.HTTPServerRequest` 对象包含附加的
+      请求参数包括e.g. 头部和body数据.
 
    .. attribute:: RequestHandler.path_args
    .. attribute:: RequestHandler.path_kwargs
 
-      The ``path_args`` and ``path_kwargs`` attributes contain the
-      positional and keyword arguments that are passed to the
-      :ref:`HTTP verb methods <verbs>`.  These attributes are set
-      before those methods are called, so the values are available
-      during `prepare`.
+      ``path_args`` 和 ``path_kwargs`` 属性包含传递给
+      :ref:`HTTP verb methods <verbs>` 的位置和关键字参数.
+      这些属性被设置, 在这些方法被调用之前, 所以这些值
+      在 `prepare` 之间是可用的.
 
    Output
    ^^^^^^
@@ -107,7 +106,7 @@
 
    .. attribute:: RequestHandler.application
 
-      The `Application` object serving this request
+      为请求提供服务的 `Application` 对象
 
    .. automethod:: RequestHandler.check_etag_header
    .. automethod:: RequestHandler.check_xsrf_cookie
@@ -133,25 +132,22 @@
 
 
 
-   Application configuration
+   应用程序配置
    -----------------------------
    .. autoclass:: Application
       :members:
 
       .. attribute:: settings
 
-         Additional keyword arguments passed to the constructor are
-         saved in the `settings` dictionary, and are often referred to
-         in documentation as "application settings".  Settings are
-         used to customize various aspects of Tornado (although in
-         some cases richer customization is possible by overriding
-         methods in a subclass of `RequestHandler`).  Some
-         applications also like to use the `settings` dictionary as a
-         way to make application-specific settings available to
-         handlers without using global variables.  Settings used in
-         Tornado are described below.
+         传递给构造器的附加关键字参数保存在 `settings` 字典中,
+         并经常在文档中被称为"application settings". Settings被用于
+         自定义Tornado的很多方面(虽然在一些情况下, 更丰富的定制可能
+         是通过在 `RequestHandler` 的子类中复写方法). 一些应用程序
+         也喜欢使用 `settings` 字典作为使一些处理程序可以使用应用
+         程序的特定设置的方法, 而无需使用全局变量. Tornado中使用的
+         Setting描述如下.
 
-         General settings:
+         一般设置(General settings):
 
          * ``autoreload``: If ``True``, the server process will restart
            when any source files change, as described in :ref:`debug-mode`.
