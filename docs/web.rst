@@ -149,60 +149,55 @@
 
          一般设置(General settings):
 
-         * ``autoreload``: If ``True``, the server process will restart
-           when any source files change, as described in :ref:`debug-mode`.
-           This option is new in Tornado 3.2; previously this functionality
-           was controlled by the ``debug`` setting.
-         * ``debug``: Shorthand for several debug mode settings,
-           described in :ref:`debug-mode`.  Setting ``debug=True`` is
-           equivalent to ``autoreload=True``, ``compiled_template_cache=False``,
+         * ``autoreload``: 如果为 ``True``, 服务进程将会在任意资源文件
+           改变的时候重启, 正如 :ref:`debug-mode` 中描述的那样.
+           这个选项是Tornado 3.2中新增的; 在这之前这个功能是由
+           ``debug`` 设置控制的.
+         * ``debug``: 一些调试模式设置的速记, 正如 :ref:`debug-mode`
+           中描述的那样. ``debug=True`` 设置等同于 ``autoreload=True``,
+           ``compiled_template_cache=False``,
            ``static_hash_cache=False``, ``serve_traceback=True``.
-         * ``default_handler_class`` and ``default_handler_args``:
-           This handler will be used if no other match is found;
-           use this to implement custom 404 pages (new in Tornado 3.2).
-         * ``compress_response``: If ``True``, responses in textual formats
-           will be compressed automatically.  New in Tornado 4.0.
-         * ``gzip``: Deprecated alias for ``compress_response`` since
+         * ``default_handler_class`` 和 ``default_handler_args``:
+           如果没有发现其他匹配则会使用这个处理程序; 使用这个来实现自
+           定义404页面(Tornado 3.2新增).
+         * ``compress_response``: 如果为 ``True``, 以文本格式的响应
+           将被自动压缩. Tornado 4.0新增.
+         * ``gzip``: 不推荐使用的 ``compress_response`` 别名自从
            Tornado 4.0.
-         * ``log_function``: This function will be called at the end
-           of every request to log the result (with one argument, the
-           `RequestHandler` object).  The default implementation
-           writes to the `logging` module's root logger.  May also be
-           customized by overriding `Application.log_request`.
-         * ``serve_traceback``: If true, the default error page
-           will include the traceback of the error.  This option is new in
-           Tornado 3.2; previously this functionality was controlled by
-           the ``debug`` setting.
-         * ``ui_modules`` and ``ui_methods``: May be set to a mapping
-           of `UIModule` or UI methods to be made available to templates.
-           May be set to a module, dictionary, or a list of modules
-           and/or dicts.  See :ref:`ui-modules` for more details.
+         * ``log_function``: 这个函数将在每次请求结束的时候调用以记录
+           结果(有一次参数, 该 `RequestHandler` 对象). 默认实现是写入
+           `logging` 模块的根logger. 也可以通过复写
+           `Application.log_request` 自定义.
+         * ``serve_traceback``: 如果为true, 默认的错误页将包含错误信息
+           的回溯. 这个选项是在Tornado 3.2中新增的; 在此之前这个功能
+           由 ``debug`` 设置控制.
+         * ``ui_modules`` 和 ``ui_methods``: 可以被设置为 `UIModule`
+           或UI methods 的映射提供给模板. 可以被设置为一个模块, 字典,
+           或一个模块的列表和/或字典. 参见 :ref:`ui-modules` 了解更多
+           细节.
 
-         Authentication and security settings:
+         认证和安全设置(Authentication and security settings):
 
-         * ``cookie_secret``: Used by `RequestHandler.get_secure_cookie`
-           and `.set_secure_cookie` to sign cookies.
-         * ``key_version``: Used by requestHandler `.set_secure_cookie`
-           to sign cookies with a specific key when ``cookie_secret``
-           is a key dictionary.
-         * ``login_url``: The `authenticated` decorator will redirect
-           to this url if the user is not logged in.  Can be further
-           customized by overriding `RequestHandler.get_login_url`
-         * ``xsrf_cookies``: If true, :ref:`xsrf` will be enabled.
-         * ``xsrf_cookie_version``: Controls the version of new XSRF
-           cookies produced by this server.  Should generally be left
-           at the default (which will always be the highest supported
-           version), but may be set to a lower value temporarily
-           during version transitions.  New in Tornado 3.2.2, which
-           introduced XSRF cookie version 2.
-         * ``xsrf_cookie_kwargs``: May be set to a dictionary of
-           additional arguments to be passed to `.RequestHandler.set_cookie`
-           for the XSRF cookie.
+         * ``cookie_secret``: 被 `RequestHandler.get_secure_cookie`
+           使用, `.set_secure_cookie` 用来给cookies签名.
+         * ``key_version``: 被requestHandler `.set_secure_cookie`
+           使用一个特殊的key给cookie签名当 ``cookie_secret`` 是一个
+           key字典.
+         * ``login_url``: `authenticated` 装饰器将会重定向到这个url
+           如果该用户没有登陆. 更多自定义特性可以通过复写
+           `RequestHandler.get_login_url` 实现
+         * ``xsrf_cookies``: 如果true, :ref:`xsrf` 将被开启.
+         * ``xsrf_cookie_version``: 控制由该server产生的新XSRF
+           cookie的版本. 一般应在默认情况下(这将是最高支持的版本),
+           但是可以被暂时设置为一个较低的值, 在版本切换之间.
+           在Tornado 3.2.2 中新增, 这里引入了XSRF cookie 版本2.
+         * ``xsrf_cookie_kwargs``: 可设置为额外的参数字典传递给
+           `.RequestHandler.set_cookie` 为该XSRF cookie.
          * ``twitter_consumer_key``, ``twitter_consumer_secret``,
            ``friendfeed_consumer_key``, ``friendfeed_consumer_secret``,
            ``google_consumer_key``, ``google_consumer_secret``,
-           ``facebook_api_key``, ``facebook_secret``:  Used in the
-           `tornado.auth` module to authenticate to various APIs.
+           ``facebook_api_key``, ``facebook_secret``:  在
+           `tornado.auth` 模块中使用来验证各种APIs.
 
          Template settings:
 
