@@ -2317,7 +2317,7 @@ class StaticFileHandler(RequestHandler):
         """返回 ``path`` 相对于 ``root`` 的绝对路径.
 
         ``root`` 是这个 `StaticFileHandler` 配置的路径(在大多数情
-        况下是 `Application` 的 ``static_path``设置).
+        况下是 `Application` 的 ``static_path`` 设置).
 
         这个类方法可能在子类中被复写. 默认情况下它返回一个文件系统
         路径, 但其他字符串可以被使用, 只要它们是独特的并且被
@@ -2722,38 +2722,35 @@ class UIModule(object):
         return self.handler.current_user
 
     def render(self, *args, **kwargs):
-        """Override in subclasses to return this module's output."""
+        """在子类中复写以返回这个模块的输出."""
         raise NotImplementedError()
 
     def embedded_javascript(self):
-        """Override to return a JavaScript string
-        to be embedded in the page."""
+        """复写以返回一个被嵌入页面的JavaScript字符串."""
         return None
 
     def javascript_files(self):
-        """Override to return a list of JavaScript files needed by this module.
+        """复写以返回这个模块需要的JavaScript文件列表.
 
-        If the return values are relative paths, they will be passed to
-        `RequestHandler.static_url`; otherwise they will be used as-is.
+        如果返回值是相对路径, 它们将被传递给
+        `RequestHandler.static_url`; 否则会被原样使用.
         """
         return None
 
     def embedded_css(self):
-        """Override to return a CSS string
-        that will be embedded in the page."""
+        """复写以返回一个将被嵌入页面的CSS字符串."""
         return None
 
     def css_files(self):
-        """Override to returns a list of CSS files required by this module.
+        """复写以返回这个模块需要的CSS文件列表.
 
-        If the return values are relative paths, they will be passed to
-        `RequestHandler.static_url`; otherwise they will be used as-is.
+        如果返回值是相对路径, 它们将被传递给
+        `RequestHandler.static_url`; 否则会被原样使用.
         """
         return None
 
     def html_head(self):
-        """Override to return an HTML string that will be put in the <head/>
-        element.
+        """复写以返回一个将被放入<head/>标签的HTML字符串.
         """
         return None
 
@@ -2764,7 +2761,7 @@ class UIModule(object):
         return None
 
     def render_string(self, path, **kwargs):
-        """Renders a template and returns it as a string."""
+        """渲染一个模板并且将它作为一个字符串返回."""
         return self.handler.render_string(path, **kwargs)
 
 

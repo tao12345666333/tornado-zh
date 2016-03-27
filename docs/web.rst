@@ -199,49 +199,45 @@
            ``facebook_api_key``, ``facebook_secret``:  在
            `tornado.auth` 模块中使用来验证各种APIs.
 
-         Template settings:
+         模板设置:
 
-         * ``autoescape``: Controls automatic escaping for templates.
-           May be set to ``None`` to disable escaping, or to the *name*
-           of a function that all output should be passed through.
-           Defaults to ``"xhtml_escape"``.  Can be changed on a per-template
-           basis with the ``{% autoescape %}`` directive.
-         * ``compiled_template_cache``: Default is ``True``; if ``False``
-           templates will be recompiled on every request.  This option
-           is new in Tornado 3.2; previously this functionality was controlled
-           by the ``debug`` setting.
-         * ``template_path``: Directory containing template files.  Can be
-           further customized by overriding `RequestHandler.get_template_path`
-         * ``template_loader``: Assign to an instance of
-           `tornado.template.BaseLoader` to customize template loading.
-           If this setting is used the ``template_path`` and ``autoescape``
-           settings are ignored.  Can be further customized by overriding
-           `RequestHandler.create_template_loader`.
-         * ``template_whitespace``: Controls handling of whitespace in
-           templates; see `tornado.template.filter_whitespace` for allowed
-           values. New in Tornado 4.3.
+         * ``autoescape``: 控制对模板的自动转义. 可以被设置为 ``None``
+           以禁止转义, 或设置为一个所有输出都该传递过去的函数 *name* .
+           默认是 ``"xhtml_escape"``. 可以在每个模板中改变使用
+           ``{% autoescape %}`` 指令.
+         * ``compiled_template_cache``: 默认是 ``True``; 如果是 ``False``
+           模板将会在每次请求重新编译. 这个选项是Tornado 3.2中新增的;
+           在这之前这个功能由 ``debug`` 设置控制.
+         * ``template_path``: 包含模板文件的文件夹. 可以通过复写
+           `RequestHandler.get_template_path` 进一步定制
+         * ``template_loader``: 分配给 `tornado.template.BaseLoader`
+           的一个实例自定义模板加载. 如果使用了此设置, 则
+           ``template_path`` 和 ``autoescape`` 设置都会被忽略. 可
+           通过复写 `RequestHandler.create_template_loader` 进一步
+           定制.
+         * ``template_whitespace``: 控制处理模板中的空格; 参见
+           `tornado.template.filter_whitespace` 查看允许的值.
+           在Tornado 4.3中新增.
 
-         Static file settings:
+         静态文件设置:
 
-         * ``static_hash_cache``: Default is ``True``; if ``False``
-           static urls will be recomputed on every request.  This option
-           is new in Tornado 3.2; previously this functionality was controlled
-           by the ``debug`` setting.
-         * ``static_path``: Directory from which static files will be
-           served.
-         * ``static_url_prefix``:  Url prefix for static files,
-           defaults to ``"/static/"``.
-         * ``static_handler_class``, ``static_handler_args``: May be set to
-           use a different handler for static files instead of the default
-           `tornado.web.StaticFileHandler`.  ``static_handler_args``, if set,
-           should be a dictionary of keyword arguments to be passed to the
-           handler's ``initialize`` method.
+         * ``static_hash_cache``: 默认为 ``True``; 如果是 ``False``
+           静态url将会在每次请求重新计算. 这个选项是Tornado 3.2中
+           新增的; 在这之前这个功能由 ``debug`` 设置控制.
+         * ``static_path``: 将被提供服务的静态文件所在的文件夹.
+         * ``static_url_prefix``: 静态文件的Url前缀, 默认是
+           ``"/static/"``.
+         * ``static_handler_class``, ``static_handler_args``: 可
+           设置成为静态文件使用不同的处理程序代替默认的
+           `tornado.web.StaticFileHandler`.  ``static_handler_args``,
+           如果设置, 应该是一个关键字参数的字典传递给处理程序
+           的 ``initialize`` 方法.
 
    .. autoclass:: URLSpec
 
-      The ``URLSpec`` class is also available under the name ``tornado.web.url``.
+      ``URLSpec`` 类在 ``tornado.web.url`` 名称下也是可用的.
 
-   Decorators
+   装饰器(Decorators)
    ----------
    .. autofunction:: asynchronous
    .. autofunction:: authenticated
@@ -249,7 +245,7 @@
    .. autofunction:: removeslash
    .. autofunction:: stream_request_body
 
-   Everything else
+   其他(Everything else)
    ---------------
    .. autoexception:: HTTPError
    .. autoexception:: Finish
