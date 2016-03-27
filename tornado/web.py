@@ -2755,8 +2755,7 @@ class UIModule(object):
         return None
 
     def html_body(self):
-        """Override to return an HTML string that will be put at the end of
-        the <body/> element.
+        """复写以返回一个将被放入<body/>标签最后的HTML字符串.
         """
         return None
 
