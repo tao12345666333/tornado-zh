@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#
+# coding: utf-8
 # Copyright 2009 Facebook
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -14,21 +14,20 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-"""A simple template system that compiles templates to Python code.
+"""一个简单的模板系统, 将模板编译成Python代码.
 
-Basic usage looks like::
+基本用户如下::
 
     t = template.Template("<html>{{ myvalue }}</html>")
     print t.generate(myvalue="XXX")
 
-`Loader` is a class that loads templates from a root directory and caches
-the compiled templates::
+`Loader` 是一个从根目录加载模板并缓存编译过的模板的类::
 
     loader = template.Loader("/home/btaylor")
     print loader.load("test.html").generate(myvalue="XXX")
 
-We compile all templates to raw Python. Error-reporting is currently... uh,
-interesting. Syntax for the templates::
+我们编译所有模板至原生的Python. 错误报告是目前... uh,
+很有趣. 模板语法如下::
 
     ### base.html
     <html>
@@ -55,9 +54,8 @@ interesting. Syntax for the templates::
       <li><span style="bold">{{ escape(student.name) }}</span></li>
     {% end %}
 
-Unlike most other template systems, we do not put any restrictions on the
-expressions you can include in your statements. ``if`` and ``for`` blocks get
-translated exactly into Python, so you can do complex expressions like::
+与大多数其他模板系统不同, 我们没有在你的语句中包含的表达式上放置任何约束.
+``if`` 和 ``for`` 语句块完全翻译成了Python, 所以你可以写复杂的表达式例如::
 
    {% for student in [p for p in people if p.student and p.age > 23] %}
      <li>{{ escape(student.name) }}</li>

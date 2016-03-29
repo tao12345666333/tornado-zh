@@ -1,4 +1,4 @@
-``tornado.template`` --- Flexible output generation
+``tornado.template`` --- 产生灵活的输出
 ===================================================
 
 .. automodule:: tornado.template
