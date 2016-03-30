@@ -16,7 +16,7 @@
 
 """一个简单的模板系统, 将模板编译成Python代码.
 
-基本用户如下::
+基本用法如下::
 
     t = template.Template("<html>{{ myvalue }}</html>")
     print t.generate(myvalue="XXX")
@@ -54,17 +54,16 @@
       <li><span style="bold">{{ escape(student.name) }}</span></li>
     {% end %}
 
-与大多数其他模板系统不同, 我们没有在你的语句中包含的表达式上放置任何约束.
+与大多数其他模板系统不同, 我们没有在你的语句中可包含的表达式上放置任何约束.
 ``if`` 和 ``for`` 语句块完全翻译成了Python, 所以你可以写复杂的表达式例如::
 
    {% for student in [p for p in people if p.student and p.age > 23] %}
      <li>{{ escape(student.name) }}</li>
    {% end %}
 
-Translating directly to Python means you can apply functions to expressions
-easily, like the ``escape()`` function in the examples above. You can pass
-functions in to your template just like any other variable
-(In a `.RequestHandler`, override `.RequestHandler.get_template_namespace`)::
+直接翻译成Python意味着你可以很简单的在表达式中使用函数, 就像在上面例子中的
+``escape()`` 函数. 你可以把函数传递到你的模板中就像其他任何变量一样(在一个
+`.RequestHandler` 中, 复写 `.RequestHandler.get_template_namespace`)::
 
    ### Python code
    def add(x, y):
@@ -74,19 +73,18 @@ functions in to your template just like any other variable
    ### The template
    {{ add(1, 2) }}
 
-We provide the functions `escape() <.xhtml_escape>`, `.url_escape()`,
-`.json_encode()`, and `.squeeze()` to all templates by default.
+默认情况下我们提供了 `escape() <.xhtml_escape>`, `.url_escape()`,
+`.json_encode()`, 和 `.squeeze()` 函数给所有模板.
 
-Typical applications do not create `Template` or `Loader` instances by
-hand, but instead use the `~.RequestHandler.render` and
-`~.RequestHandler.render_string` methods of
-`tornado.web.RequestHandler`, which load templates automatically based
-on the ``template_path`` `.Application` setting.
+典型的应用程序不会手动创建 `Template` 或 `Loader` 实例, 而是使用
+`tornado.web.RequestHandler` 中的 `~.RequestHandler.render` 和
+`~.RequestHandler.render_string` 方法, 这些方法自动的基于
+``template_path`` `.Application` 设置加载模板.
 
-Variable names beginning with ``_tt_`` are reserved by the template
-system and should not be used by application code.
+以 ``_tt_`` 为前缀命名的变量是模板系统保留的, 不应该被应用程序的
+代码使用.
 
-Syntax Reference
+语法参考
 ----------------
 
 Template expressions are surrounded by double curly braces: ``{{ ... }}``.
