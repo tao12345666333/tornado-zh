@@ -87,25 +87,21 @@
 语法参考
 ----------------
 
-Template expressions are surrounded by double curly braces: ``{{ ... }}``.
-The contents may be any python expression, which will be escaped according
-to the current autoescape setting and inserted into the output.  Other
-template directives use ``{% %}``.  These tags may be escaped as ``{{!``
-and ``{%!`` if you need to include a literal ``{{`` or ``{%`` in the output.
+模板表达式被双花括号包围: ``{{ ... }}``. 内容可以是任何python表达式,
+会根据当前自动转义(autoescape)设置被转义并且插入到输出. 其他模板指令
+使用 ``{% %}``. 这些标签可以被转义作为 ``{{!`` 和 ``{%!`` 如果你需要
+在输出中包含一个原义的 ``{{`` 或 ``{%`` .
 
-To comment out a section so that it is omitted from the output, surround it
-with ``{# ... #}``.
+为了注释掉一段让它从输出中省略, 使用 ``{# ... #}`` 包住它.
 
 ``{% apply *function* %}...{% end %}``
-    Applies a function to the output of all template code between ``apply``
-    and ``end``::
+    在 ``apply`` 和 ``end`` 之间应用一个函数到所有模板代码的输出::
 
         {% apply linkify %}{{name}} said: {{message}}{% end %}
 
-    Note that as an implementation detail apply blocks are implemented
-    as nested functions and thus may interact strangely with variables
-    set via ``{% set %}``, or the use of ``{% break %}`` or ``{% continue %}``
-    within loops.
+    注意作为一个实现细节使用块会执行嵌套函数, 因此可能产生奇怪的
+    相互作用通过 ``{% set %}`` 设置的变量, 或者使用在循环中使用
+    ``{% break %}`` 或 ``{% continue %}`` .
 
 ``{% autoescape *function* %}``
     Sets the autoescape mode for the current file.  This does not affect
