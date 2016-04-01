@@ -100,22 +100,20 @@
         {% apply linkify %}{{name}} said: {{message}}{% end %}
 
     注意作为一个实现细节使用块会执行嵌套函数, 因此可能产生奇怪的
-    相互作用通过 ``{% set %}`` 设置的变量, 或者使用在循环中使用
+    相互作用, 包括通过 ``{% set %}`` 设置的变量, 或者在循环中使用
     ``{% break %}`` 或 ``{% continue %}`` .
 
 ``{% autoescape *function* %}``
-    Sets the autoescape mode for the current file.  This does not affect
-    other files, even those referenced by ``{% include %}``.  Note that
-    autoescaping can also be configured globally, at the `.Application`
-    or `Loader`.::
+    为当前文件设置自动转义(autoescape)模式. 这不会影响其他文件, 即使
+    是那些通过 ``{% include %}`` 引用的文件. 注意自动转义也可以全局
+    设置, 在 `.Application` 或 `Loader` 中.::
 
         {% autoescape xhtml_escape %}
         {% autoescape None %}
 
 ``{% block *name* %}...{% end %}``
-    Indicates a named, replaceable block for use with ``{% extends %}``.
-    Blocks in the parent template will be replaced with the contents of
-    the same-named block in a child template.::
+    标明了一个已命名的, 可以使用 ``{% extends %}`` 被替换的块.
+    在父模板中的块将会被子模板中同名块的内容替换.::
 
         <!-- base.html -->
         <title>{% block title %}Default title{% end %}</title>
@@ -125,9 +123,8 @@
         {% block title %}My page title{% end %}
 
 ``{% comment ... %}``
-    A comment which will be removed from the template output.  Note that
-    there is no ``{% end %}`` tag; the comment goes from the word ``comment``
-    to the closing ``%}`` tag.
+    一个将会从模板的输出中移除的注释. 注意这里没有 ``{% end %}`` 标签;
+    该注释从 ``comment`` 这个词开始到 ``%}`` 标签关闭.
 
 ``{% extends *filename* %}``
     Inherit from another template.  Templates that use ``extends`` should
