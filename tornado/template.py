@@ -127,59 +127,57 @@
     该注释从 ``comment`` 这个词开始到 ``%}`` 标签关闭.
 
 ``{% extends *filename* %}``
-    Inherit from another template.  Templates that use ``extends`` should
-    contain one or more ``block`` tags to replace content from the parent
-    template.  Anything in the child template not contained in a ``block``
-    tag will be ignored.  For an example, see the ``{% block %}`` tag.
+    从另一个模板继承. 使用 ``extends`` 的模板应该包含一个或多个
+    ``block`` 标签以替换父模板中的内容. 子模板内任何不包含在一个
+    ``block`` 标签中的内容都将被忽略. 例如, 参见 ``{% block %}`` 标签.
 
 ``{% for *var* in *expr* %}...{% end %}``
-    Same as the python ``for`` statement.  ``{% break %}`` and
-    ``{% continue %}`` may be used inside the loop.
+    和python的 ``for`` 语句一样.  ``{% break %}`` 和
+    ``{% continue %}`` 可以用在循环里.
 
 ``{% from *x* import *y* %}``
-    Same as the python ``import`` statement.
+    和python的 ``import`` 语句一样.
 
 ``{% if *condition* %}...{% elif *condition* %}...{% else %}...{% end %}``
-    Conditional statement - outputs the first section whose condition is
-    true.  (The ``elif`` and ``else`` sections are optional)
+    条件语句 - 输出第一个条件为true 的部分.  ( ``elif`` 和 ``else`` 部分是
+    可选的)
 
 ``{% import *module* %}``
-    Same as the python ``import`` statement.
+    和python的 ``import`` 语句一样.
 
 ``{% include *filename* %}``
-    Includes another template file.  The included file can see all the local
-    variables as if it were copied directly to the point of the ``include``
-    directive (the ``{% autoescape %}`` directive is an exception).
-    Alternately, ``{% module Template(filename, **kwargs) %}`` may be used
-    to include another template with an isolated namespace.
+    包含另一个模板文件. 被包含的文件可以看到所有局部变量就像它被直接
+    复制到了该 ``include`` 指令的位置( ``{% autoescape %}`` 指令是一
+    个异常). 替代的, ``{% module Template(filename, **kwargs) %}``
+    可能被用来包含另外的有独立命名空间的模板.
 
 ``{% module *expr* %}``
-    Renders a `~tornado.web.UIModule`.  The output of the ``UIModule`` is
-    not escaped::
+    渲染一个 `~tornado.web.UIModule`. 该 ``UIModule`` 的输出没有
+    转义::
 
         {% module Template("foo.html", arg=42) %}
 
-    ``UIModules`` are a feature of the `tornado.web.RequestHandler`
-    class (and specifically its ``render`` method) and will not work
-    when the template system is used on its own in other contexts.
+    ``UIModules`` 是 `tornado.web.RequestHandler` 类(尤其是它的
+    ``render`` 方法)的一个方法, 并且当模板系统在其他上下文中使用
+    时, 它将不工作.
 
 ``{% raw *expr* %}``
-    Outputs the result of the given expression without autoescaping.
+    输出给定表达式的结果并且不会转义.
 
 ``{% set *x* = *y* %}``
-    Sets a local variable.
+    设置一个局部变量.
 
 ``{% try %}...{% except %}...{% else %}...{% finally %}...{% end %}``
-    Same as the python ``try`` statement.
+    和python的 ``try`` 语句一样.
 
 ``{% while *condition* %}... {% end %}``
-    Same as the python ``while`` statement.  ``{% break %}`` and
-    ``{% continue %}`` may be used inside the loop.
+    和python的 ``while`` 语句一样. ``{% break %}`` 和
+    ``{% continue %}`` 可以用在循环里.
 
 ``{% whitespace *mode* %}``
-    Sets the whitespace mode for the remainder of the current file
-    (or until the next ``{% whitespace %}`` directive). See
-    `filter_whitespace` for available options. New in Tornado 4.3.
+    为当前文件的剩余部分设置空白模式(whitespace mode)
+    (或直到下一个 ``{% whitespace %}`` 指令). 参见
+    `filter_whitespace` 查看可用参数. Tornado 4.3中新增.
 """
 
 from __future__ import absolute_import, division, print_function, with_statement
@@ -205,15 +203,13 @@ _UNSET = object()
 
 
 def filter_whitespace(mode, text):
-    """Transform whitespace in ``text`` according to ``mode``.
+    """根据 ``mode`` 转换空白到 ``text`` .
 
-    Available modes are:
+    可用的模式有:
 
-    * ``all``: Return all whitespace unmodified.
-    * ``single``: Collapse consecutive whitespace with a single whitespace
-      character, preserving newlines.
-    * ``oneline``: Collapse all runs of whitespace into a single space
-      character, removing all newlines in the process.
+    * ``all``: 返回所有未更改的空白.
+    * ``single``: 压缩连串的空白用一个空白字符代替, 保留换行符.
+    * ``oneline``: 压缩所有空白到一个空格字符, 在这个过程中移除所有换行符.
 
     .. versionadded:: 4.3
     """
@@ -230,10 +226,10 @@ def filter_whitespace(mode, text):
 
 
 class Template(object):
-    """A compiled template.
+    """编译模板.
 
-    We compile into Python from the given template_string. You can generate
-    the template from variables with generate().
+    我们从给定的template_string编译到Python. 你可以使用generate()
+    用变量生成模板.
     """
     # note that the constructor's signature is not extracted with
     # autodoc because _UNSET looks like garbage.  When changing
@@ -241,24 +237,22 @@ class Template(object):
     def __init__(self, template_string, name="<string>", loader=None,
                  compress_whitespace=_UNSET, autoescape=_UNSET,
                  whitespace=None):
-        """Construct a Template.
+        """构造一个模板.
 
-        :arg str template_string: the contents of the template file.
-        :arg str name: the filename from which the template was loaded
-            (used for error message).
-        :arg tornado.template.BaseLoader loader: the `~tornado.template.BaseLoader` responsible for this template,
-            used to resolve ``{% include %}`` and ``{% extend %}``
-            directives.
-        :arg bool compress_whitespace: Deprecated since Tornado 4.3.
-            Equivalent to ``whitespace="single"`` if true and
-            ``whitespace="all"`` if false.
-        :arg str autoescape: The name of a function in the template
-            namespace, or ``None`` to disable escaping by default.
-        :arg str whitespace: A string specifying treatment of whitespace;
-            see `filter_whitespace` for options.
+        :arg str template_string: 模板文件的内容.
+        :arg str name: 被加载的模板文件名(用于错误信息).
+        :arg tornado.template.BaseLoader loader: `~tornado.template.BaseLoader`
+            负责该模板, 用于解决 ``{% include %}`` 和 ``{% extend %}`` 指令.
+        :arg bool compress_whitespace: 自从Tornado 4.3过时了.
+            如果为true, 相当于 ``whitespace="single"`` ,
+            如果为false, 相当于 ``whitespace="all"`` .
+        :arg str autoescape: 在模板命名空间中的函数名, 默认情况下为 ``None``
+            以禁用转义.
+        :arg str whitespace: 一个指定处理whitespace 的字符串; 参见
+            `filter_whitespace` 了解可选项.
 
         .. versionchanged:: 4.3
-           Added ``whitespace`` parameter; deprecated ``compress_whitespace``.
+           增加 ``whitespace`` 参数; 弃用 ``compress_whitespace``.
         """
         self.name = escape.native_str(name)
 
@@ -307,7 +301,7 @@ class Template(object):
             raise
 
     def generate(self, **kwargs):
-        """Generate this template with the given arguments."""
+        """用给定参数生成此模板."""
         namespace = {
             "escape": escape.xhtml_escape,
             "xhtml_escape": escape.xhtml_escape,
@@ -362,28 +356,24 @@ class Template(object):
 
 
 class BaseLoader(object):
-    """Base class for template loaders.
+    """模板加载器的基类.
 
-    You must use a template loader to use template constructs like
-    ``{% extends %}`` and ``{% include %}``. The loader caches all
-    templates after they are loaded the first time.
+    你必须使用一个模板加载器来使用模板的构造器例如 ``{% extends %}``
+    和 ``{% include %}``. 加载器在所有模板首次加载之后进行缓存.
     """
     def __init__(self, autoescape=_DEFAULT_AUTOESCAPE, namespace=None,
                  whitespace=None):
-        """Construct a template loader.
+        """构造一个模板加载器.
 
-        :arg str autoescape: The name of a function in the template
-            namespace, such as "xhtml_escape", or ``None`` to disable
-            autoescaping by default.
-        :arg dict namespace: A dictionary to be added to the default template
-            namespace, or ``None``.
-        :arg str whitespace: A string specifying default behavior for
-            whitespace in templates; see `filter_whitespace` for options.
-            Default is "single" for files ending in ".html" and ".js" and
-            "all" for other files.
+        :arg str autoescape: 在模板命名空间中的函数名, 例如 "xhtml_escape",
+            或默认情况下为 ``None`` 来禁用自动转义.
+        :arg dict namespace: 一个被加入默认模板命名空间中的字典或 ``None``.
+        :arg str whitespace: 一个指定模板中whitespace默认行为的字符串;
+            参见 `filter_whitespace` 查看可选项. 默认是 "single" 对于
+            ".html" 和 ".js" 文件的结束, "all" 是为了其他文件.
 
         .. versionchanged:: 4.3
-           Added ``whitespace`` parameter.
+           添加 ``whitespace`` 参数.
         """
         self.autoescape = autoescape
         self.namespace = namespace or {}
@@ -397,16 +387,16 @@ class BaseLoader(object):
         self.lock = threading.RLock()
 
     def reset(self):
-        """Resets the cache of compiled templates."""
+        """重置已编译模板的缓存."""
         with self.lock:
             self.templates = {}
 
     def resolve_path(self, name, parent_path=None):
-        """Converts a possibly-relative path to absolute (used internally)."""
+        """转化一个可能相对的路径为绝对路径(内部使用)."""
         raise NotImplementedError()
 
     def load(self, name, parent_path=None):
-        """Loads a template."""
+        """加载一个模板."""
         name = self.resolve_path(name, parent_path=parent_path)
         with self.lock:
             if name not in self.templates:
@@ -418,7 +408,7 @@ class BaseLoader(object):
 
 
 class Loader(BaseLoader):
-    """A template loader that loads from a single root directory.
+    """一个从单一根文件夹加载的模板加载器.
     """
     def __init__(self, root_directory, **kwargs):
         super(Loader, self).__init__(**kwargs)
@@ -443,7 +433,7 @@ class Loader(BaseLoader):
 
 
 class DictLoader(BaseLoader):
-    """A template loader that loads from a dictionary."""
+    """一个从字典加载的模板加载器."""
     def __init__(self, dict, **kwargs):
         super(DictLoader, self).__init__(**kwargs)
         self.dict = dict
@@ -646,13 +636,12 @@ class _Text(_Node):
 
 
 class ParseError(Exception):
-    """Raised for template syntax errors.
+    """抛出模板的语法错误.
 
-    ``ParseError`` instances have ``filename`` and ``lineno`` attributes
-    indicating the position of the error.
+    ``ParseError`` 实例有 ``filename`` 和 ``lineno`` 属性指出错误所在位置.
 
     .. versionchanged:: 4.3
-       Added ``filename`` and ``lineno`` attributes.
+       添加 ``filename`` 和 ``lineno`` 属性.
     """
     def __init__(self, message, filename, lineno):
         self.message = message

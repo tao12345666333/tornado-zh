@@ -238,7 +238,7 @@
       ``URLSpec`` 类在 ``tornado.web.url`` 名称下也是可用的.
 
    装饰器(Decorators)
-   ----------
+   --------------------
    .. autofunction:: asynchronous
    .. autofunction:: authenticated
    .. autofunction:: addslash
@@ -246,7 +246,7 @@
    .. autofunction:: stream_request_body
 
    其他(Everything else)
-   ---------------
+   -------------------------
    .. autoexception:: HTTPError
    .. autoexception:: Finish
    .. autoexception:: MissingArgumentError
