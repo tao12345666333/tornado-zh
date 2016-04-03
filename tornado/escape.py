@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#
+# coding: utf-8
 # Copyright 2009 Facebook
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -14,10 +14,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-"""Escaping/unescaping methods for HTML, JSON, URLs, and others.
+"""HTML, JSON, URLs, 和其他(格式)的转义/非转义方法.
 
-Also includes a few other miscellaneous string manipulation functions that
-have crept in over time.
+也包含一些其他的各种字符串操作函数.
 """
 
 from __future__ import absolute_import, division, print_function, with_statement

@@ -1,9 +1,9 @@
-``tornado.escape`` --- Escaping and string manipulation
+``tornado.escape`` --- 转义和字符串操作
 =======================================================
 
 .. automodule:: tornado.escape
 
-   Escaping functions
+   转义函数
    ------------------
 
    .. autofunction:: xhtml_escape
