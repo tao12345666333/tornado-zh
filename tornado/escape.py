@@ -54,22 +54,21 @@ _XHTML_ESCAPE_DICT = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;',
 
 
 def xhtml_escape(value):
-    """Escapes a string so it is valid within HTML or XML.
+    """转义一个字符串使它在HTML 或XML 中有效.
 
-    Escapes the characters ``<``, ``>``, ``"``, ``'``, and ``&``.
-    When used in attribute values the escaped strings must be enclosed
-    in quotes.
+    转义这些字符 ``<``, ``>``, ``"``, ``'``, 和 ``&``.
+    当属性值使用转义字符串必须用引号括起来.
 
     .. versionchanged:: 3.2
 
-       Added the single quote to the list of escaped characters.
+       添加了单引号到转义字符串列表.
     """
     return _XHTML_ESCAPE_RE.sub(lambda match: _XHTML_ESCAPE_DICT[match.group(0)],
                                 to_basestring(value))
 
 
 def xhtml_unescape(value):
-    """Un-escapes an XML-escaped string."""
+    """反转义一个已经XML转义过的字符串."""
     return re.sub(r"&(#?)(\w+?);", _convert_entity, _unicode(value))
 
 
@@ -77,7 +76,7 @@ def xhtml_unescape(value):
 # Please see https://github.com/tornadoweb/tornado/pull/706
 # before sending a pull request that adds **kwargs to this function.
 def json_encode(value):
-    """JSON-encodes the given Python object."""
+    """将给定的Python对象进行JSON编码."""
     # JSON permits but does not require forward slashes to be escaped.
     # This is useful when json data is emitted in a <script> tag
     # in HTML, as it prevents </script> tags from prematurely terminating
@@ -88,25 +87,24 @@ def json_encode(value):
 
 
 def json_decode(value):
-    """Returns Python objects for the given JSON string."""
+    """返回给定JSON字符串的Python对象."""
     return json.loads(to_basestring(value))
 
 
 def squeeze(value):
-    """Replace all sequences of whitespace chars with a single space."""
+    """使用单个空格代替所有空格字符组成的序列."""
     return re.sub(r"[\x00-\x20]+", " ", value).strip()
 
 
 def url_escape(value, plus=True):
-    """Returns a URL-encoded version of the given value.
+    """返回一个给定值的URL编码版本.
 
-    If ``plus`` is true (the default), spaces will be represented
-    as "+" instead of "%20".  This is appropriate for query strings
-    but not for the path component of a URL.  Note that this default
-    is the reverse of Python's urllib module.
+    如果 ``plus`` 为true (默认值), 空格将被表示为"+"而不是"%20".
+    这是适当的为查询字符串, 但不是一个URL路径组件. 注意此默认设置
+    和Python的urllib模块是相反的.
 
     .. versionadded:: 3.1
-        The ``plus`` argument
+        该 ``plus`` 参数
     """
     quote = urllib_parse.quote_plus if plus else urllib_parse.quote
     return quote(utf8(value))
