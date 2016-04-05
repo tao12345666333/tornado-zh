@@ -76,7 +76,7 @@ def xhtml_unescape(value):
 # Please see https://github.com/tornadoweb/tornado/pull/706
 # before sending a pull request that adds **kwargs to this function.
 def json_encode(value):
-    """将给定的Python对象进行JSON编码."""
+    """将给定的Python 对象进行JSON 编码."""
     # JSON permits but does not require forward slashes to be escaped.
     # This is useful when json data is emitted in a <script> tag
     # in HTML, as it prevents </script> tags from prematurely terminating
@@ -87,7 +87,7 @@ def json_encode(value):
 
 
 def json_decode(value):
-    """返回给定JSON字符串的Python对象."""
+    """返回给定JSON 字符串的Python 对象."""
     return json.loads(to_basestring(value))
 
 
@@ -97,11 +97,11 @@ def squeeze(value):
 
 
 def url_escape(value, plus=True):
-    """返回一个给定值的URL编码版本.
+    """返回一个给定值的URL 编码版本.
 
     如果 ``plus`` 为true (默认值), 空格将被表示为"+"而不是"%20".
     这是适当的为查询字符串, 但不是一个URL路径组件. 注意此默认设置
-    和Python的urllib模块是相反的.
+    和Python的urllib 模块是相反的.
 
     .. versionadded:: 3.1
         该 ``plus`` 参数
@@ -115,21 +115,19 @@ def url_escape(value, plus=True):
 # of parse_qs since python 3's version insists on decoding everything.
 if sys.version_info[0] < 3:
     def url_unescape(value, encoding='utf-8', plus=True):
-        """Decodes the given value from a URL.
+        """解码来自于URL 的给定值.
 
-        The argument may be either a byte or unicode string.
+        该参数可以是一个字节或unicode 字符串.
 
-        If encoding is None, the result will be a byte string.  Otherwise,
-        the result is a unicode string in the specified encoding.
+        如果encoding 是None , 该结果将会是一个字节串. 否则, 该结果会是
+        指定编码的unicode 字符串.
 
-        If ``plus`` is true (the default), plus signs will be interpreted
-        as spaces (literal plus signs must be represented as "%2B").  This
-        is appropriate for query strings and form-encoded values but not
-        for the path component of a URL.  Note that this default is the
-        reverse of Python's urllib module.
+        如果 ``plus`` 是true (默认值), 加号将被解释为空格(文字加号必须被
+        表示为"%2B"). 这是适用于查询字符串和form-encoded 的值, 但不是URL
+        的路径组件. 注意该默认设置和Python 的urllib 模块是相反的.
 
         .. versionadded:: 3.1
-           The ``plus`` argument
+           该 ``plus`` 参数
         """
         unquote = (urllib_parse.unquote_plus if plus else urllib_parse.unquote)
         if encoding is None:
@@ -140,21 +138,19 @@ if sys.version_info[0] < 3:
     parse_qs_bytes = _parse_qs
 else:
     def url_unescape(value, encoding='utf-8', plus=True):
-        """Decodes the given value from a URL.
+        """解码来自于URL 的给定值.
 
-        The argument may be either a byte or unicode string.
+        该参数可以是一个字节或unicode 字符串.
 
-        If encoding is None, the result will be a byte string.  Otherwise,
-        the result is a unicode string in the specified encoding.
+        如果encoding 是None , 该结果将会是一个字节串. 否则, 该结果会是
+        指定编码的unicode 字符串.
 
-        If ``plus`` is true (the default), plus signs will be interpreted
-        as spaces (literal plus signs must be represented as "%2B").  This
-        is appropriate for query strings and form-encoded values but not
-        for the path component of a URL.  Note that this default is the
-        reverse of Python's urllib module.
+        如果 ``plus`` 是true (默认值), 加号将被解释为空格(文字加号必须被
+        表示为"%2B"). 这是适用于查询字符串和form-encoded 的值, 但不是URL
+        的路径组件. 注意该默认设置和Python 的urllib 模块是相反的.
 
         .. versionadded:: 3.1
-           The ``plus`` argument
+           该 ``plus`` 参数
         """
         if encoding is None:
             if plus:
@@ -188,10 +184,10 @@ _UTF8_TYPES = (bytes, type(None))
 
 
 def utf8(value):
-    """Converts a string argument to a byte string.
+    """将字符串参数转换为字节字符串.
 
-    If the argument is already a byte string or None, it is returned unchanged.
-    Otherwise it must be a unicode string and is encoded as utf8.
+    如果该参数已经是一个字节字符串或None, 则原样返回.
+    否则它必须是一个unicode 字符串并且被编码成utf8.
     """
     if isinstance(value, _UTF8_TYPES):
         return value
@@ -205,10 +201,10 @@ _TO_UNICODE_TYPES = (unicode_type, type(None))
 
 
 def to_unicode(value):
-    """Converts a string argument to a unicode string.
+    """将字符串参数转换为unicode 字符串.
 
-    If the argument is already a unicode string or None, it is returned
-    unchanged.  Otherwise it must be a byte string and is decoded as utf8.
+    如果该参数已经是一个unicode 字符串或None, 则原样返回.
+    否则它必须是一个字节字符串并且被解码成utf8.
     """
     if isinstance(value, _TO_UNICODE_TYPES):
         return value
@@ -233,13 +229,12 @@ _BASESTRING_TYPES = (basestring_type, type(None))
 
 
 def to_basestring(value):
-    """Converts a string argument to a subclass of basestring.
+    """将字符串参数转换为basestring 的子类.
 
-    In python2, byte and unicode strings are mostly interchangeable,
-    so functions that deal with a user-supplied argument in combination
-    with ascii string constants can use either and should return the type
-    the user supplied.  In python3, the two types are not interchangeable,
-    so this method is needed to convert byte strings to unicode.
+    在python2 中, 字节字符串和unicode 字符串几乎是可以互换的,
+    所以函数处理一个用户提供的参数与ascii 字符串常量相结合,
+    可以使用和应该返回用户提供的类型. 在python3 中, 这两个类型
+    不可以互换, 所以这个方法必须转换字节字符串为unicode 字符串.
     """
     if isinstance(value, _BASESTRING_TYPES):
         return value
@@ -251,9 +246,9 @@ def to_basestring(value):
 
 
 def recursive_unicode(obj):
-    """Walks a simple data structure, converting byte strings to unicode.
+    """伴随一个简单的数据结构, 转换字节字符串为unicode 字符串.
 
-    Supports lists, tuples, and dictionaries.
+    支持列表, 元组, 和字典.
     """
     if isinstance(obj, dict):
         return dict((recursive_unicode(k), recursive_unicode(v)) for (k, v) in obj.items())
@@ -278,19 +273,19 @@ _URL_RE = re.compile(to_unicode(r"""\b((?:([\w-]+):(/{1,3})|www[.])(?:(?:(?:[^\s
 
 def linkify(text, shorten=False, extra_params="",
             require_protocol=False, permitted_protocols=["http", "https"]):
-    """Converts plain text into HTML with links.
+    """转换纯文本为带有链接的HTML.
 
-    For example: ``linkify("Hello http://tornadoweb.org!")`` would return
+    例如: ``linkify("Hello http://tornadoweb.org!")`` 将返回
     ``Hello <a href="http://tornadoweb.org">http://tornadoweb.org</a>!``
 
-    Parameters:
+    参数:
 
-    * ``shorten``: Long urls will be shortened for display.
+    * ``shorten``: 长url 将被缩短展示.
 
-    * ``extra_params``: Extra text to include in the link tag, or a callable
-        taking the link as an argument and returning the extra text
+    * ``extra_params``: 额外的文本中的链接标签, 或一个可调用的
+        带有该链接作为一个参数并返回该额外的文本.
         e.g. ``linkify(text, extra_params='rel="nofollow" class="external"')``,
-        or::
+        或::
 
             def extra_params_cb(url):
                 if url.startswith("http://example.com"):
@@ -299,13 +294,12 @@ def linkify(text, shorten=False, extra_params="",
                     return 'class="external" rel="nofollow"'
             linkify(text, extra_params=extra_params_cb)
 
-    * ``require_protocol``: Only linkify urls which include a protocol. If
-        this is False, urls such as www.facebook.com will also be linkified.
+    * ``require_protocol``: 只有链接url 包括一个协议. 如果这是False,
+        例如www.facebook.com 这样的url 也将被linkified.
 
-    * ``permitted_protocols``: List (or set) of protocols which should be
-        linkified, e.g. ``linkify(text, permitted_protocols=["http", "ftp",
-        "mailto"])``. It is very unsafe to include protocols such as
-        ``javascript``.
+    * ``permitted_protocols``: 协议的列表(或集合)应该被linkified,
+        e.g. ``linkify(text, permitted_protocols=["http", "ftp",
+        "mailto"])``. 这是非常不安全的, 包括协议, 比如 ``javascript``.
     """
     if extra_params and not callable(extra_params):
         extra_params = " " + extra_params.strip()
