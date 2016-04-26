@@ -14,29 +14,27 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-"""Translation methods for generating localized strings.
+"""生成本地化字符串的翻译方法.
 
-To load a locale and generate a translated string::
+要加载区域设置并生成一个翻译后的字符串::
 
     user_locale = tornado.locale.get("es_LA")
     print user_locale.translate("Sign out")
 
-`tornado.locale.get()` returns the closest matching locale, not necessarily the
-specific locale you requested. You can support pluralization with
-additional arguments to `~Locale.translate()`, e.g.::
+`tornado.locale.get()` 返回最匹配的语言环境, 不一定是你请求的特定的语言
+环境. 你可以用额外的参数来支持多元化给 `~Locale.translate()`, e.g.::
 
     people = [...]
     message = user_locale.translate(
         "%(list)s is online", "%(list)s are online", len(people))
     print message % {"list": user_locale.list(people)}
 
-The first string is chosen if ``len(people) == 1``, otherwise the second
-string is chosen.
+如果 ``len(people) == 1`` 则选择第一个字符串, 否则选择第二个字符串.
 
-Applications should call one of `load_translations` (which uses a simple
-CSV format) or `load_gettext_translations` (which uses the ``.mo`` format
-supported by `gettext` and related tools).  If neither method is called,
-the `Locale.translate` method will simply return the original string.
+应用程序应该调用 `load_translations` (它使用一个简单的CSV 格式) 或
+`load_gettext_translations` (它通过使用 `gettext` 和相关工具支持
+``.mo`` 格式) 其中之一.  如果没有方法被调用, `Locale.translate`
+方法将会直接的返回原本的字符串.
 """
 
 from __future__ import absolute_import, division, print_function, with_statement
