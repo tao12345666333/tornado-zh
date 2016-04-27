@@ -2,7 +2,7 @@
 =====================
 
 因为Tornado内置了自己的HTTPServer, 运行和部署它与其他Python web框架不
-太一样. 你需要写一个``main()``函数来启动服务, 而不是配置一个WSGI容器
+太一样. 你需要写一个 ``main()`` 函数来启动服务, 而不是配置一个WSGI容器
 来运行你的应用:
 
 .. testcode::
@@ -21,7 +21,7 @@
 配置你的操作系统或者进程管理器来运行这个程序以启动服务. 请注意, 增加每个
 进程允许打开的最大文件句柄数是可能是必要的(为了避免"Too many open files"
 的错误). 为了增加这个上限(例如设置为50000 ) 你可以使用ulimit命令, 
-修改/etc/security/limits.conf 或者设置``minfds`` 在你的supervisord配置中.
+修改/etc/security/limits.conf 或者设置 ``minfds`` 在你的supervisord配置中.
 
 进程和端口
 ~~~~~~~~~~~~~~~~~~~
@@ -59,7 +59,7 @@ IOLoop实例是重要的(甚至是间接的). 其次, 在这个模型中, 很难
 运行在负载均衡器后面
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-当运行在一个负载均衡器例如nginx, 建议传递``xheaders=True`` 给
+当运行在一个负载均衡器例如nginx, 建议传递 ``xheaders=True`` 给
 `.HTTPServer` 的构造器. 这将告诉Tornado使用类似 ``X-Real-IP``
 这样的HTTP头来获取用户的IP地址而不是把所有流量都认为来自于
 负载均衡器的IP地址.
