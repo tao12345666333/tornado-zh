@@ -284,7 +284,7 @@ class WebSocketHandler(tornado.web.RequestHandler):
     def check_origin(self, origin):
         """通过重写这个方法来实现域的切换
 
-        参数 ``origin`` 的值来自 HTTP header 中的``Origin``,url 负责初始化这个请求.
+        参数 ``origin`` 的值来自 HTTP header 中的 ``Origin`` ,url 负责初始化这个请求.
         这个方法并不是要求客户端不发送这样的 heder;这样的请求一直被允许（因为所有的浏览器
         实现的 websockets 都支持这个 header ,并且非浏览器客户端没有同样的跨域安全问题.
 
@@ -989,8 +989,8 @@ def websocket_connect(url, io_loop=None, callback=None, connect_timeout=None,
     ``compression_options`` 作为 `.WebSocketHandler.get_compression_options` 的
     返回值, 将会以同样的方式执行.
 
-    这个连接支持两种类型的操作.在协程风格下,应用程序通常在一个循环里调用`～.WebSocket
-    ClientConnection.read_message`::
+    这个连接支持两种类型的操作.在协程风格下,应用程序通常在一个循环里调用
+    `～.WebSocketClientConnection.read_message`::
 
         conn = yield websocket_connect(url)
         while True:
