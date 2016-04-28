@@ -10,7 +10,7 @@
 该模块依照最新 WebSocket 协议 `RFC 6455 <http://tools.ietf.org/html/rfc6455>`_ 实现.
 
 .. versionchanged:: 4.0
-   Removed support for the draft 76 protocol version.
+   删除了对76 草案协议版本的支持.
 """
 
 from __future__ import absolute_import, division, print_function, with_statement
