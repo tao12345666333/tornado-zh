@@ -61,11 +61,11 @@ CONTEXT_SEPARATOR = "\x04"
 
 
 def get(*locale_codes):
-    """Returns the closest match for the given locale codes.
+    """返回给定区域代码的最近匹配.
 
-    We iterate over all given locale codes in order. If we have a tight
-    or a loose match for the code (e.g., "en" for "en_US"), we return
-    the locale. Otherwise we move to the next code in the list.
+    我们按顺序遍历所有给定的区域代码. 如果我们有一个紧密的或松散匹配
+    的代码(e.g., "en" for "en_US"), 我们返回该区域. 否则我们移动到列表
+    中的下一个代码.
 
     By default we return ``en_US`` if no translations are found for any of
     the specified locales. You can change the default locale with
