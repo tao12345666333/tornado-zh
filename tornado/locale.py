@@ -63,24 +63,22 @@ CONTEXT_SEPARATOR = "\x04"
 def get(*locale_codes):
     """返回给定区域代码的最近匹配.
 
-    我们按顺序遍历所有给定的区域代码. 如果我们有一个紧密的或松散匹配
-    的代码(e.g., "en" for "en_US"), 我们返回该区域. 否则我们移动到列表
+    我们按顺序遍历所有给定的区域代码. 如果我们有一个确定的或模糊的匹配
+    代码(e.g., "en" 匹配 "en_US"), 则我们返回该区域. 否则我们移动到列表
     中的下一个代码.
 
-    By default we return ``en_US`` if no translations are found for any of
-    the specified locales. You can change the default locale with
-    `set_default_locale()`.
+    默认情况下我们返回 ``en_US`` 如果没有发现任何对指定区域的翻译.
+    你可以改变默认区域通过 `set_default_locale()`.
     """
     return Locale.get_closest(*locale_codes)
 
 
 def set_default_locale(code):
-    """Sets the default locale.
+    """设置默认区域.
 
-    The default locale is assumed to be the language used for all strings
-    in the system. The translations loaded from disk are mappings from
-    the default locale to the destination locale. Consequently, you don't
-    need to create a translation file for the default locale.
+    默认语言环境被假定为用于系统中所有的字符串的语言. 从磁盘加载的翻译
+    是从默认的语言环境到目标区域的映射. 因此, 你不需要为默认的语言环境
+    创建翻译文件.
     """
     global _default_locale
     global _supported_locales
@@ -222,7 +220,7 @@ def load_gettext_translations(directory, domain):
 
 
 def get_supported_locales():
-    """Returns a list of all the supported locale codes."""
+    """返回所有支持的语言代码列表."""
     return _supported_locales
 
 
@@ -439,7 +437,7 @@ class Locale(object):
 
 
 class CSVLocale(Locale):
-    """Locale implementation using tornado's CSV translation format."""
+    """区域设置使用tornado 的CSV翻译格式."""
     def translate(self, message, plural_message=None, count=None):
         if plural_message is not None:
             assert count is not None
