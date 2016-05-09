@@ -87,39 +87,36 @@ def set_default_locale(code):
 
 
 def load_translations(directory, encoding=None):
-    """Loads translations from CSV files in a directory.
+    """从目录中的CSV 文件加载翻译.
 
-    Translations are strings with optional Python-style named placeholders
-    (e.g., ``My name is %(name)s``) and their associated translations.
+    翻译是带有任意的Python 风格指定的占位符的字符串(e.g., ``My name is %(name)s``)
+    及其相关翻译.
 
-    The directory should have translation files of the form ``LOCALE.csv``,
-    e.g. ``es_GT.csv``. The CSV files should have two or three columns: string,
-    translation, and an optional plural indicator. Plural indicators should
-    be one of "plural" or "singular". A given string can have both singular
-    and plural forms. For example ``%(name)s liked this`` may have a
-    different verb conjugation depending on whether %(name)s is one
-    name or a list of names. There should be two rows in the CSV file for
-    that string, one with plural indicator "singular", and one "plural".
-    For strings with no verbs that would change on translation, simply
-    use "unknown" or the empty string (or don't include the column at all).
+    该目录应该有以下形式的翻译文件 ``LOCALE.csv``, e.g. ``es_GT.csv``.
+    该CSV 文件应该有两列或三列: 字符串, 翻译, 和可选的多个指标. 复数的指标
+    应该是"plural" 或 "singular" 其中之一. 一个给定的字符串可以同时有单数和
+    复数形式. 例如 ``%(name)s liked this`` 可能有一个不同的动词组合, 这取决于
+    %(name)s 是一个名字还是一个名字列表. 在CSV文件里应该有两个针对于该字符串
+    的行, 一个用指示器指示"singular" (奇数), 一个指示"plural" (复数).
+    对于没有动词的字符串，将改变翻译, 简单的使用"unknown" 或空字符串
+    (或者不包括在所有列中的).
 
-    The file is read using the `csv` module in the default "excel" dialect.
-    In this format there should not be spaces after the commas.
+    这个文件默认使用 `csv` 模块的 "excel" 进行读操作. 这种格式在逗号后面不
+    应该包含空格.
 
-    If no ``encoding`` parameter is given, the encoding will be
-    detected automatically (among UTF-8 and UTF-16) if the file
-    contains a byte-order marker (BOM), defaulting to UTF-8 if no BOM
-    is present.
+    如过没有给定 ``encoding`` 参数, 编码格式将会自动检测(在UTF-8 和UTF-16
+    之间) 如果该文件包含一个 byte-order marker (BOM), 如果没有BOM将默认为
+    UTF-8.
 
-    Example translation ``es_LA.csv``::
+    例如翻译 ``es_LA.csv``::
 
         "I love you","Te amo"
         "%(name)s liked this","A %(name)s les gustó esto","plural"
         "%(name)s liked this","A %(name)s le gustó esto","singular"
 
     .. versionchanged:: 4.3
-       Added ``encoding`` parameter. Added support for BOM-based encoding
-       detection, UTF-16, and UTF-8-with-BOM.
+       添加 ``encoding`` 参数. 添加对BOM-based 的编码检测, UTF-16,
+       和 UTF-8-with-BOM.
     """
     global _translations
     global _supported_locales
