@@ -101,12 +101,12 @@ def load_translations(directory, encoding=None):
     对于没有动词的字符串，将改变翻译, 简单的使用"unknown" 或空字符串
     (或者不包括在所有列中的).
 
-    这个文件默认使用 `csv` 模块的 "excel" 进行读操作. 这种格式在逗号后面不
+    这个文件默认使用 `csv` 模块的"excel"进行读操作. 这种格式在逗号后面不
     应该包含空格.
 
-    如过没有给定 ``encoding`` 参数, 编码格式将会自动检测(在UTF-8 和UTF-16
-    之间) 如果该文件包含一个 byte-order marker (BOM), 如果没有BOM将默认为
-    UTF-8.
+    如果没有给定 ``encoding`` 参数, 如果该文件包含一个
+    byte-order marker (BOM), 编码格式将会自动检测(在UTF-8 和UTF-16
+    之间), 如果没有BOM将默认为UTF-8.
 
     例如翻译 ``es_LA.csv``::
 
@@ -174,23 +174,23 @@ def load_translations(directory, encoding=None):
 
 
 def load_gettext_translations(directory, domain):
-    """Loads translations from `gettext`'s locale tree
+    """从 `gettext` 的区域树加载翻译
 
-    Locale tree is similar to system's ``/usr/share/locale``, like::
+    区域树和系统的 ``/usr/share/locale`` 很类似, 例如::
 
         {directory}/{lang}/LC_MESSAGES/{domain}.mo
 
-    Three steps are required to have you app translated:
+    让你的应用程序翻译有三步是必须的:
 
-    1. Generate POT translation file::
+    1. 生成POT翻译文件::
 
         xgettext --language=Python --keyword=_:1,2 -d mydomain file1.py file2.html etc
 
-    2. Merge against existing POT file::
+    2. 合并现有的 POT 文件::
 
         msgmerge old.po mydomain.po > new.po
 
-    3. Compile::
+    3. 编译::
 
         msgfmt mydomain.po -o {directory}/pt_BR/LC_MESSAGES/mydomain.mo
     """
@@ -222,14 +222,14 @@ def get_supported_locales():
 
 
 class Locale(object):
-    """Object representing a locale.
+    """对象代表一个区域.
 
-    After calling one of `load_translations` or `load_gettext_translations`,
-    call `get` or `get_closest` to get a Locale object.
+    在调用 `load_translations` 或 `load_gettext_translations` 之后,
+    调用 `get` 或 `get_closest` 以得到一个Locale对象.
     """
     @classmethod
     def get_closest(cls, *locale_codes):
-        """Returns the closest match for the given locale code."""
+        """返回给定区域代码的最近匹配."""
         for code in locale_codes:
             if not code:
                 continue
@@ -247,9 +247,9 @@ class Locale(object):
 
     @classmethod
     def get(cls, code):
-        """Returns the Locale for the given locale code.
+        """返回给定区域代码的Locale.
 
-        If it is not supported, we raise an exception.
+        如果这个方法不支持, 我们将抛出一个异常.
         """
         if not hasattr(cls, "_cache"):
             cls._cache = {}
