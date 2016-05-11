@@ -286,12 +286,11 @@ class Locale(object):
             _("Friday"), _("Saturday"), _("Sunday")]
 
     def translate(self, message, plural_message=None, count=None):
-        """Returns the translation for the given message for this locale.
+        """返回给定信息在当前区域环境下的翻译.
 
-        If ``plural_message`` is given, you must also provide
-        ``count``. We return ``plural_message`` when ``count != 1``,
-        and we return the singular form for the given message when
-        ``count == 1``.
+        如果给定了 ``plural_message`` , 你也必须有提供 ``count``.
+        当 ``count != 1`` 时, 我们返回 ``plural_message`` 并且当
+        ``count == 1`` 时, 我们返回给定消息的单数形式.
         """
         raise NotImplementedError()
 
@@ -300,16 +299,16 @@ class Locale(object):
 
     def format_date(self, date, gmt_offset=0, relative=True, shorter=False,
                     full_format=False):
-        """Formats the given date (which should be GMT).
+        """格式化给定的日期(应该是GMT时间).
 
-        By default, we return a relative time (e.g., "2 minutes ago"). You
-        can return an absolute date string with ``relative=False``.
+        默认情况下, 我们返回一个相对时间(e.g., "2 minutes ago"). 你
+        可以返回一个绝对日期字符串通过 ``relative=False`` 参数.
 
-        You can force a full format date ("July 10, 1980") with
-        ``full_format=True``.
+        你可以强制使用一个完整的格式化日期("July 10, 1980") 通过
+        ``full_format=True`` 参数.
 
-        This method is primarily intended for dates in the past.
-        For dates in the future, we fall back to full format.
+        这个方法主要用于过去的日期. 对于将来的日期, 我们退回到
+        全格式.
         """
         if isinstance(date, numbers.Real):
             date = datetime.datetime.utcfromtimestamp(date)
@@ -385,9 +384,9 @@ class Locale(object):
         }
 
     def format_day(self, date, gmt_offset=0, dow=True):
-        """Formats the given date as a day of week.
+        """将给定日期格式化为一周的某一天.
 
-        Example: "Monday, January 22". You can remove the day of week with
+        例如: "Monday, January 22". 你可以移除星期几通过
         ``dow=False``.
         """
         local_date = date - datetime.timedelta(minutes=gmt_offset)
