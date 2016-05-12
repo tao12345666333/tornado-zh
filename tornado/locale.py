@@ -452,7 +452,7 @@ class CSVLocale(Locale):
 
 
 class GettextLocale(Locale):
-    """Locale implementation using the `gettext` module."""
+    """使用 `gettext` 模块实现Locale."""
     def __init__(self, code, translations):
         try:
             # python 2
@@ -474,20 +474,20 @@ class GettextLocale(Locale):
             return self.gettext(message)
 
     def pgettext(self, context, message, plural_message=None, count=None):
-        """Allows to set context for translation, accepts plural forms.
+        """允许为翻译设置上下文, 接受复数形式.
 
-        Usage example::
+        使用示例::
 
             pgettext("law", "right")
             pgettext("good", "right")
 
-        Plural message example::
+        复数信息示例::
 
             pgettext("organization", "club", "clubs", len(clubs))
             pgettext("stick", "club", "clubs", len(clubs))
 
-        To generate POT file with context, add following options to step 1
-        of `load_gettext_translations` sequence::
+        为了使用上下文生成POT文件, 给第1步添加下面的选项到
+        `load_gettext_translations` 序列::
 
             xgettext [basic options] --keyword=pgettext:1c,2 --keyword=pgettext:1c,2,3
 
