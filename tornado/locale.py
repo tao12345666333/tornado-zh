@@ -186,7 +186,7 @@ def load_gettext_translations(directory, domain):
 
         xgettext --language=Python --keyword=_:1,2 -d mydomain file1.py file2.html etc
 
-    2. 合并现有的 POT 文件::
+    2. 合并现有的POT文件::
 
         msgmerge old.po mydomain.po > new.po
 
@@ -404,10 +404,9 @@ class Locale(object):
             }
 
     def list(self, parts):
-        """Returns a comma-separated list for the given list of parts.
+        """返回给定列表的一个由逗号分隔的部分.
 
-        The format is, e.g., "A, B and C", "A and B" or just "A" for lists
-        of size 1.
+        格式是, e.g., "A, B and C", "A and B" 或者"A"当列表长度为1.
         """
         _ = self.translate
         if len(parts) == 0:
@@ -421,7 +420,7 @@ class Locale(object):
         }
 
     def friendly_number(self, value):
-        """Returns a comma-separated number for the given integer."""
+        """返回给定整数的一个由逗号分隔的字符串."""
         if self.code not in ("en", "en_US"):
             return str(value)
         value = str(value)
