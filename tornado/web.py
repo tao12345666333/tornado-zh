@@ -144,7 +144,7 @@ DEFAULT_SIGNED_VALUE_MIN_VERSION = 1
 class RequestHandler(object):
     """HTTP请求处理的基类.
 
-    子类至少应该定义以下"Entry points" 部分中被定义的方法其中之一.
+    子类至少应该是以下"Entry points" 部分中被定义的方法其中之一.
     """
     SUPPORTED_METHODS = ("GET", "HEAD", "POST", "DELETE", "PATCH", "PUT",
                          "OPTIONS")

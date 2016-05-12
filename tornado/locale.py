@@ -14,29 +14,27 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-"""Translation methods for generating localized strings.
+"""生成本地化字符串的翻译方法.
 
-To load a locale and generate a translated string::
+要加载区域设置并生成一个翻译后的字符串::
 
     user_locale = tornado.locale.get("es_LA")
     print user_locale.translate("Sign out")
 
-`tornado.locale.get()` returns the closest matching locale, not necessarily the
-specific locale you requested. You can support pluralization with
-additional arguments to `~Locale.translate()`, e.g.::
+`tornado.locale.get()` 返回最匹配的语言环境, 不一定是你请求的特定的语言
+环境. 你可以用额外的参数来支持多元化给 `~Locale.translate()`, e.g.::
 
     people = [...]
     message = user_locale.translate(
         "%(list)s is online", "%(list)s are online", len(people))
     print message % {"list": user_locale.list(people)}
 
-The first string is chosen if ``len(people) == 1``, otherwise the second
-string is chosen.
+如果 ``len(people) == 1`` 则选择第一个字符串, 否则选择第二个字符串.
 
-Applications should call one of `load_translations` (which uses a simple
-CSV format) or `load_gettext_translations` (which uses the ``.mo`` format
-supported by `gettext` and related tools).  If neither method is called,
-the `Locale.translate` method will simply return the original string.
+应用程序应该调用 `load_translations` (它使用一个简单的CSV 格式) 或
+`load_gettext_translations` (它通过使用 `gettext` 和相关工具支持
+``.mo`` 格式) 其中之一.  如果没有方法被调用, `Locale.translate`
+方法将会直接的返回原本的字符串.
 """
 
 from __future__ import absolute_import, division, print_function, with_statement
@@ -63,26 +61,24 @@ CONTEXT_SEPARATOR = "\x04"
 
 
 def get(*locale_codes):
-    """Returns the closest match for the given locale codes.
+    """返回给定区域代码的最近匹配.
 
-    We iterate over all given locale codes in order. If we have a tight
-    or a loose match for the code (e.g., "en" for "en_US"), we return
-    the locale. Otherwise we move to the next code in the list.
+    我们按顺序遍历所有给定的区域代码. 如果我们有一个确定的或模糊的匹配
+    代码(e.g., "en" 匹配 "en_US"), 则我们返回该区域. 否则我们移动到列表
+    中的下一个代码.
 
-    By default we return ``en_US`` if no translations are found for any of
-    the specified locales. You can change the default locale with
-    `set_default_locale()`.
+    默认情况下我们返回 ``en_US`` 如果没有发现任何对指定区域的翻译.
+    你可以改变默认区域通过 `set_default_locale()`.
     """
     return Locale.get_closest(*locale_codes)
 
 
 def set_default_locale(code):
-    """Sets the default locale.
+    """设置默认区域.
 
-    The default locale is assumed to be the language used for all strings
-    in the system. The translations loaded from disk are mappings from
-    the default locale to the destination locale. Consequently, you don't
-    need to create a translation file for the default locale.
+    默认语言环境被假定为用于系统中所有的字符串的语言. 从磁盘加载的翻译
+    是从默认的语言环境到目标区域的映射. 因此, 你不需要为默认的语言环境
+    创建翻译文件.
     """
     global _default_locale
     global _supported_locales
@@ -91,39 +87,36 @@ def set_default_locale(code):
 
 
 def load_translations(directory, encoding=None):
-    """Loads translations from CSV files in a directory.
+    """从目录中的CSV 文件加载翻译.
 
-    Translations are strings with optional Python-style named placeholders
-    (e.g., ``My name is %(name)s``) and their associated translations.
+    翻译是带有任意的Python 风格指定的占位符的字符串(e.g., ``My name is %(name)s``)
+    及其相关翻译.
 
-    The directory should have translation files of the form ``LOCALE.csv``,
-    e.g. ``es_GT.csv``. The CSV files should have two or three columns: string,
-    translation, and an optional plural indicator. Plural indicators should
-    be one of "plural" or "singular". A given string can have both singular
-    and plural forms. For example ``%(name)s liked this`` may have a
-    different verb conjugation depending on whether %(name)s is one
-    name or a list of names. There should be two rows in the CSV file for
-    that string, one with plural indicator "singular", and one "plural".
-    For strings with no verbs that would change on translation, simply
-    use "unknown" or the empty string (or don't include the column at all).
+    该目录应该有以下形式的翻译文件 ``LOCALE.csv``, e.g. ``es_GT.csv``.
+    该CSV 文件应该有两列或三列: 字符串, 翻译, 和可选的多个指标. 复数的指标
+    应该是"plural" 或 "singular" 其中之一. 一个给定的字符串可以同时有单数和
+    复数形式. 例如 ``%(name)s liked this`` 可能有一个不同的动词组合, 这取决于
+    %(name)s 是一个名字还是一个名字列表. 在CSV文件里应该有两个针对于该字符串
+    的行, 一个用指示器指示"singular" (奇数), 一个指示"plural" (复数).
+    对于没有动词的字符串，将改变翻译, 简单的使用"unknown" 或空字符串
+    (或者不包括在所有列中的).
 
-    The file is read using the `csv` module in the default "excel" dialect.
-    In this format there should not be spaces after the commas.
+    这个文件默认使用 `csv` 模块的"excel"进行读操作. 这种格式在逗号后面不
+    应该包含空格.
 
-    If no ``encoding`` parameter is given, the encoding will be
-    detected automatically (among UTF-8 and UTF-16) if the file
-    contains a byte-order marker (BOM), defaulting to UTF-8 if no BOM
-    is present.
+    如果没有给定 ``encoding`` 参数, 如果该文件包含一个
+    byte-order marker (BOM), 编码格式将会自动检测(在UTF-8 和UTF-16
+    之间), 如果没有BOM将默认为UTF-8.
 
-    Example translation ``es_LA.csv``::
+    例如翻译 ``es_LA.csv``::
 
         "I love you","Te amo"
         "%(name)s liked this","A %(name)s les gustó esto","plural"
         "%(name)s liked this","A %(name)s le gustó esto","singular"
 
     .. versionchanged:: 4.3
-       Added ``encoding`` parameter. Added support for BOM-based encoding
-       detection, UTF-16, and UTF-8-with-BOM.
+       添加 ``encoding`` 参数. 添加对BOM-based 的编码检测, UTF-16,
+       和 UTF-8-with-BOM.
     """
     global _translations
     global _supported_locales
@@ -181,23 +174,23 @@ def load_translations(directory, encoding=None):
 
 
 def load_gettext_translations(directory, domain):
-    """Loads translations from `gettext`'s locale tree
+    """从 `gettext` 的区域树加载翻译
 
-    Locale tree is similar to system's ``/usr/share/locale``, like::
+    区域树和系统的 ``/usr/share/locale`` 很类似, 例如::
 
         {directory}/{lang}/LC_MESSAGES/{domain}.mo
 
-    Three steps are required to have you app translated:
+    让你的应用程序翻译有三步是必须的:
 
-    1. Generate POT translation file::
+    1. 生成POT翻译文件::
 
         xgettext --language=Python --keyword=_:1,2 -d mydomain file1.py file2.html etc
 
-    2. Merge against existing POT file::
+    2. 合并现有的POT文件::
 
         msgmerge old.po mydomain.po > new.po
 
-    3. Compile::
+    3. 编译::
 
         msgfmt mydomain.po -o {directory}/pt_BR/LC_MESSAGES/mydomain.mo
     """
@@ -224,19 +217,19 @@ def load_gettext_translations(directory, domain):
 
 
 def get_supported_locales():
-    """Returns a list of all the supported locale codes."""
+    """返回所有支持的语言代码列表."""
     return _supported_locales
 
 
 class Locale(object):
-    """Object representing a locale.
+    """对象代表一个区域.
 
-    After calling one of `load_translations` or `load_gettext_translations`,
-    call `get` or `get_closest` to get a Locale object.
+    在调用 `load_translations` 或 `load_gettext_translations` 之后,
+    调用 `get` 或 `get_closest` 以得到一个Locale对象.
     """
     @classmethod
     def get_closest(cls, *locale_codes):
-        """Returns the closest match for the given locale code."""
+        """返回给定区域代码的最近匹配."""
         for code in locale_codes:
             if not code:
                 continue
@@ -254,9 +247,9 @@ class Locale(object):
 
     @classmethod
     def get(cls, code):
-        """Returns the Locale for the given locale code.
+        """返回给定区域代码的Locale.
 
-        If it is not supported, we raise an exception.
+        如果这个方法不支持, 我们将抛出一个异常.
         """
         if not hasattr(cls, "_cache"):
             cls._cache = {}
@@ -293,12 +286,11 @@ class Locale(object):
             _("Friday"), _("Saturday"), _("Sunday")]
 
     def translate(self, message, plural_message=None, count=None):
-        """Returns the translation for the given message for this locale.
+        """返回给定信息在当前区域环境下的翻译.
 
-        If ``plural_message`` is given, you must also provide
-        ``count``. We return ``plural_message`` when ``count != 1``,
-        and we return the singular form for the given message when
-        ``count == 1``.
+        如果给定了 ``plural_message`` , 你也必须有提供 ``count``.
+        当 ``count != 1`` 时, 我们返回 ``plural_message`` 并且当
+        ``count == 1`` 时, 我们返回给定消息的单数形式.
         """
         raise NotImplementedError()
 
@@ -307,16 +299,16 @@ class Locale(object):
 
     def format_date(self, date, gmt_offset=0, relative=True, shorter=False,
                     full_format=False):
-        """Formats the given date (which should be GMT).
+        """格式化给定的日期(应该是GMT时间).
 
-        By default, we return a relative time (e.g., "2 minutes ago"). You
-        can return an absolute date string with ``relative=False``.
+        默认情况下, 我们返回一个相对时间(e.g., "2 minutes ago"). 你
+        可以返回一个绝对日期字符串通过 ``relative=False`` 参数.
 
-        You can force a full format date ("July 10, 1980") with
-        ``full_format=True``.
+        你可以强制使用一个完整的格式化日期("July 10, 1980") 通过
+        ``full_format=True`` 参数.
 
-        This method is primarily intended for dates in the past.
-        For dates in the future, we fall back to full format.
+        这个方法主要用于过去的日期. 对于将来的日期, 我们退回到
+        全格式.
         """
         if isinstance(date, numbers.Real):
             date = datetime.datetime.utcfromtimestamp(date)
@@ -392,9 +384,9 @@ class Locale(object):
         }
 
     def format_day(self, date, gmt_offset=0, dow=True):
-        """Formats the given date as a day of week.
+        """将给定日期格式化为一周的某一天.
 
-        Example: "Monday, January 22". You can remove the day of week with
+        例如: "Monday, January 22". 你可以移除星期几通过
         ``dow=False``.
         """
         local_date = date - datetime.timedelta(minutes=gmt_offset)
@@ -412,10 +404,9 @@ class Locale(object):
             }
 
     def list(self, parts):
-        """Returns a comma-separated list for the given list of parts.
+        """返回给定列表的一个由逗号分隔的部分.
 
-        The format is, e.g., "A, B and C", "A and B" or just "A" for lists
-        of size 1.
+        格式是, e.g., "A, B and C", "A and B" 或者"A"当列表长度为1.
         """
         _ = self.translate
         if len(parts) == 0:
@@ -429,7 +420,7 @@ class Locale(object):
         }
 
     def friendly_number(self, value):
-        """Returns a comma-separated number for the given integer."""
+        """返回给定整数的一个由逗号分隔的字符串."""
         if self.code not in ("en", "en_US"):
             return str(value)
         value = str(value)
@@ -441,7 +432,7 @@ class Locale(object):
 
 
 class CSVLocale(Locale):
-    """Locale implementation using tornado's CSV translation format."""
+    """区域设置使用tornado 的CSV翻译格式."""
     def translate(self, message, plural_message=None, count=None):
         if plural_message is not None:
             assert count is not None
@@ -461,7 +452,7 @@ class CSVLocale(Locale):
 
 
 class GettextLocale(Locale):
-    """Locale implementation using the `gettext` module."""
+    """使用 `gettext` 模块实现Locale."""
     def __init__(self, code, translations):
         try:
             # python 2
@@ -483,20 +474,20 @@ class GettextLocale(Locale):
             return self.gettext(message)
 
     def pgettext(self, context, message, plural_message=None, count=None):
-        """Allows to set context for translation, accepts plural forms.
+        """允许为翻译设置上下文, 接受复数形式.
 
-        Usage example::
+        使用示例::
 
             pgettext("law", "right")
             pgettext("good", "right")
 
-        Plural message example::
+        复数信息示例::
 
             pgettext("organization", "club", "clubs", len(clubs))
             pgettext("stick", "club", "clubs", len(clubs))
 
-        To generate POT file with context, add following options to step 1
-        of `load_gettext_translations` sequence::
+        为了使用上下文生成POT文件, 给第1步添加下面的选项到
+        `load_gettext_translations` 序列::
 
             xgettext [basic options] --keyword=pgettext:1c,2 --keyword=pgettext:1c,2,3
 
