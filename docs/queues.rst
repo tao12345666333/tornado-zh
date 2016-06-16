@@ -1,4 +1,4 @@
-``tornado.queues`` -- Queues for coroutines
+``tornado.queues`` -- 协程的队列
 ===========================================
 
 .. versionadded:: 4.2
