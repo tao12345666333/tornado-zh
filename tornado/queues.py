@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding: utf-8
+#
 # Copyright 2015 The Tornado Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -53,9 +56,9 @@ class _QueueIterator(object):
 
 
 class Queue(object):
-    """Coordinate producer and consumer coroutines.
+    """协调生产者消费者协程.
 
-    If maxsize is 0 (the default) the queue size is unbounded.
+    如果maxsize 是0(默认配置)意味着队列的大小是无限的.
 
     .. testcode::
 
@@ -105,8 +108,8 @@ class Queue(object):
         Doing work on 4
         Done
 
-    In Python 3.5, `Queue` implements the async iterator protocol, so
-    ``consumer()`` could be rewritten as::
+    在Python 3.5, `Queue` 实现了异步迭代器协议, 所以
+    ``consumer()`` 可以被重写为::
 
         async def consumer():
             async for item in q:
@@ -117,7 +120,7 @@ class Queue(object):
                     q.task_done()
 
     .. versionchanged:: 4.3
-       Added ``async for`` support in Python 3.5.
+       为Python 3.5添加 ``async for`` 支持 in Python 3.5.
 
     """
     def __init__(self, maxsize=0):
@@ -137,11 +140,11 @@ class Queue(object):
 
     @property
     def maxsize(self):
-        """Number of items allowed in the queue."""
+        """队列中允许的最大项目数."""
         return self._maxsize
 
     def qsize(self):
-        """Number of items in the queue."""
+        """当前队列中的项目数."""
         return len(self._queue)
 
     def empty(self):
@@ -154,10 +157,9 @@ class Queue(object):
             return self.qsize() >= self.maxsize
 
     def put(self, item, timeout=None):
-        """Put an item into the queue, perhaps waiting until there is room.
+        """将一个项目放入队列中, 可能需要等待直到队列中有空间.
 
-        Returns a Future, which raises `tornado.gen.TimeoutError` after a
-        timeout.
+        返回一个Future对象, 如果超时会抛出 `tornado.gen.TimeoutError` .
         """
         try:
             self.put_nowait(item)
@@ -170,9 +172,9 @@ class Queue(object):
             return gen._null_future
 
     def put_nowait(self, item):
-        """Put an item into the queue without blocking.
+        """非阻塞的将一个项目放入队列中.
 
-        If no free slot is immediately available, raise `QueueFull`.
+        如果没有立即可用的空闲插槽, 则抛出 `QueueFull`.
         """
         self._consume_expired()
         if self._getters:
@@ -186,10 +188,10 @@ class Queue(object):
             self.__put_internal(item)
 
     def get(self, timeout=None):
-        """Remove and return an item from the queue.
+        """从队列中删除并返回一个项目.
 
-        Returns a Future which resolves once an item is available, or raises
-        `tornado.gen.TimeoutError` after a timeout.
+        返回一个Future对象, 当项目可用时resolve, 或者在超时后抛出
+        `tornado.gen.TimeoutError` .
         """
         future = Future()
         try:
@@ -200,10 +202,9 @@ class Queue(object):
         return future
 
     def get_nowait(self):
-        """Remove and return an item from the queue without blocking.
+        """非阻塞的从队列中删除并返回一个项目.
 
-        Return an item if one is immediately available, else raise
-        `QueueEmpty`.
+        如果有项目是立即可用的则返回该项目, 否则抛出 `QueueEmpty`.
         """
         self._consume_expired()
         if self._putters:
