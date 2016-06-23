@@ -28,12 +28,12 @@ from tornado.locks import Event
 
 
 class QueueEmpty(Exception):
-    """Raised by `.Queue.get_nowait` when the queue has no items."""
+    """当队列中没有项目时, 由 `.Queue.get_nowait` 抛出."""
     pass
 
 
 class QueueFull(Exception):
-    """Raised by `.Queue.put_nowait` when a queue is at its maximum size."""
+    """当队列为最大size时, 由 `.Queue.put_nowait` 抛出."""
     pass
 
 
