@@ -293,9 +293,9 @@ class Queue(object):
 
 
 class PriorityQueue(Queue):
-    """A `.Queue` that retrieves entries in priority order, lowest first.
+    """一个有优先级的 `.Queue` 最小的最优先.
 
-    Entries are typically tuples like ``(priority number, data)``.
+    写入的条目通常是元组, 类似 ``(priority number, data)``.
 
     .. testcode::
 
@@ -327,7 +327,7 @@ class PriorityQueue(Queue):
 
 
 class LifoQueue(Queue):
-    """A `.Queue` that retrieves the most recently put items first.
+    """一个后进先出(Lifo)的 `.Queue`.
 
     .. testcode::
 
