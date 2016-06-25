@@ -219,16 +219,15 @@ class Queue(object):
             raise QueueEmpty
 
     def task_done(self):
-        """Indicate that a formerly enqueued task is complete.
+        """表明前面排队的任务已经完成.
 
-        Used by queue consumers. For each `.get` used to fetch a task, a
-        subsequent call to `.task_done` tells the queue that the processing
-        on the task is complete.
+        被消费者队列使用. 每个 `.get` 用来获取一个任务, 随后(subsequent)
+        调用 `.task_done` 告诉队列正在处理的任务已经完成.
 
-        If a `.join` is blocking, it resumes when all items have been
-        processed; that is, when every `.put` is matched by a `.task_done`.
+        如果 `.join` 正在阻塞, 它会在所有项目都被处理完后调起;
+        即当每个 `.put` 都被一个 `.task_done` 匹配.
 
-        Raises `ValueError` if called more times than `.put`.
+        如果调用次数超过 `.put` 将会抛出 `ValueError` .
         """
         if self._unfinished_tasks <= 0:
             raise ValueError('task_done() called too many times')
@@ -237,10 +236,9 @@ class Queue(object):
             self._finished.set()
 
     def join(self, timeout=None):
-        """Block until all items in the queue are processed.
+        """阻塞(block)直到队列中的所有项目都处理完.
 
-        Returns a Future, which raises `tornado.gen.TimeoutError` after a
-        timeout.
+        返回一个Future对象, 超时后会抛出 `tornado.gen.TimeoutError` 异常.
         """
         return self._finished.wait(timeout)
 
