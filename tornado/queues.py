@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding: utf-8
+#
 # Copyright 2015 The Tornado Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -25,12 +28,12 @@ from tornado.locks import Event
 
 
 class QueueEmpty(Exception):
-    """Raised by `.Queue.get_nowait` when the queue has no items."""
+    """当队列中没有项目时, 由 `.Queue.get_nowait` 抛出."""
     pass
 
 
 class QueueFull(Exception):
-    """Raised by `.Queue.put_nowait` when a queue is at its maximum size."""
+    """当队列为最大size时, 由 `.Queue.put_nowait` 抛出."""
     pass
 
 
@@ -53,9 +56,9 @@ class _QueueIterator(object):
 
 
 class Queue(object):
-    """Coordinate producer and consumer coroutines.
+    """协调生产者消费者协程.
 
-    If maxsize is 0 (the default) the queue size is unbounded.
+    如果maxsize 是0(默认配置)意味着队列的大小是无限的.
 
     .. testcode::
 
@@ -105,8 +108,8 @@ class Queue(object):
         Doing work on 4
         Done
 
-    In Python 3.5, `Queue` implements the async iterator protocol, so
-    ``consumer()`` could be rewritten as::
+    在Python 3.5, `Queue` 实现了异步迭代器协议, 所以
+    ``consumer()`` 可以被重写为::
 
         async def consumer():
             async for item in q:
@@ -117,7 +120,7 @@ class Queue(object):
                     q.task_done()
 
     .. versionchanged:: 4.3
-       Added ``async for`` support in Python 3.5.
+       为Python 3.5添加 ``async for`` 支持 in Python 3.5.
 
     """
     def __init__(self, maxsize=0):
@@ -137,11 +140,11 @@ class Queue(object):
 
     @property
     def maxsize(self):
-        """Number of items allowed in the queue."""
+        """队列中允许的最大项目数."""
         return self._maxsize
 
     def qsize(self):
-        """Number of items in the queue."""
+        """当前队列中的项目数."""
         return len(self._queue)
 
     def empty(self):
@@ -154,10 +157,9 @@ class Queue(object):
             return self.qsize() >= self.maxsize
 
     def put(self, item, timeout=None):
-        """Put an item into the queue, perhaps waiting until there is room.
+        """将一个项目放入队列中, 可能需要等待直到队列中有空间.
 
-        Returns a Future, which raises `tornado.gen.TimeoutError` after a
-        timeout.
+        返回一个Future对象, 如果超时会抛出 `tornado.gen.TimeoutError` .
         """
         try:
             self.put_nowait(item)
@@ -170,9 +172,9 @@ class Queue(object):
             return gen._null_future
 
     def put_nowait(self, item):
-        """Put an item into the queue without blocking.
+        """非阻塞的将一个项目放入队列中.
 
-        If no free slot is immediately available, raise `QueueFull`.
+        如果没有立即可用的空闲插槽, 则抛出 `QueueFull`.
         """
         self._consume_expired()
         if self._getters:
@@ -186,10 +188,10 @@ class Queue(object):
             self.__put_internal(item)
 
     def get(self, timeout=None):
-        """Remove and return an item from the queue.
+        """从队列中删除并返回一个项目.
 
-        Returns a Future which resolves once an item is available, or raises
-        `tornado.gen.TimeoutError` after a timeout.
+        返回一个Future对象, 当项目可用时resolve, 或者在超时后抛出
+        `tornado.gen.TimeoutError` .
         """
         future = Future()
         try:
@@ -200,10 +202,9 @@ class Queue(object):
         return future
 
     def get_nowait(self):
-        """Remove and return an item from the queue without blocking.
+        """非阻塞的从队列中删除并返回一个项目.
 
-        Return an item if one is immediately available, else raise
-        `QueueEmpty`.
+        如果有项目是立即可用的则返回该项目, 否则抛出 `QueueEmpty`.
         """
         self._consume_expired()
         if self._putters:
@@ -218,16 +219,15 @@ class Queue(object):
             raise QueueEmpty
 
     def task_done(self):
-        """Indicate that a formerly enqueued task is complete.
+        """表明前面排队的任务已经完成.
 
-        Used by queue consumers. For each `.get` used to fetch a task, a
-        subsequent call to `.task_done` tells the queue that the processing
-        on the task is complete.
+        被消费者队列使用. 每个 `.get` 用来获取一个任务, 随后(subsequent)
+        调用 `.task_done` 告诉队列正在处理的任务已经完成.
 
-        If a `.join` is blocking, it resumes when all items have been
-        processed; that is, when every `.put` is matched by a `.task_done`.
+        如果 `.join` 正在阻塞, 它会在所有项目都被处理完后调起;
+        即当每个 `.put` 都被一个 `.task_done` 匹配.
 
-        Raises `ValueError` if called more times than `.put`.
+        如果调用次数超过 `.put` 将会抛出 `ValueError` .
         """
         if self._unfinished_tasks <= 0:
             raise ValueError('task_done() called too many times')
@@ -236,10 +236,9 @@ class Queue(object):
             self._finished.set()
 
     def join(self, timeout=None):
-        """Block until all items in the queue are processed.
+        """阻塞(block)直到队列中的所有项目都处理完.
 
-        Returns a Future, which raises `tornado.gen.TimeoutError` after a
-        timeout.
+        返回一个Future对象, 超时后会抛出 `tornado.gen.TimeoutError` 异常.
         """
         return self._finished.wait(timeout)
 
@@ -292,9 +291,9 @@ class Queue(object):
 
 
 class PriorityQueue(Queue):
-    """A `.Queue` that retrieves entries in priority order, lowest first.
+    """一个有优先级的 `.Queue` 最小的最优先.
 
-    Entries are typically tuples like ``(priority number, data)``.
+    写入的条目通常是元组, 类似 ``(priority number, data)``.
 
     .. testcode::
 
@@ -326,7 +325,7 @@ class PriorityQueue(Queue):
 
 
 class LifoQueue(Queue):
-    """A `.Queue` that retrieves the most recently put items first.
+    """一个后进先出(Lifo)的 `.Queue`.
 
     .. testcode::
 
