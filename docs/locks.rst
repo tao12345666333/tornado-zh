@@ -1,15 +1,13 @@
-``tornado.locks`` -- Synchronization primitives
+``tornado.locks`` -- 同步原语
 ===============================================
 
 .. versionadded:: 4.2
 
-Coordinate coroutines with synchronization primitives analogous to those the
-standard library provides to threads.
+使用和标准库提供给线程相似的同步原语协调协程.
 
-*(Note that these primitives are not actually thread-safe and cannot be used in
-place of those from the standard library--they are meant to coordinate Tornado
-coroutines in a single-threaded app, not to protect shared objects in a
-multithreaded app.)*
+*(请注意, 这些原语不是线程安全的, 不能被用来代替标准库中的--它
+们是为了协调在单线程app中的Tornado协程, 而不是为了在一个多线程
+app中保护共享对象.)*
 
 .. automodule:: tornado.locks
 
