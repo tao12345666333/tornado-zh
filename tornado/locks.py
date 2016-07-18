@@ -45,12 +45,11 @@ class _TimeoutGarbageCollector(object):
 
 
 class Condition(_TimeoutGarbageCollector):
-    """A condition allows one or more coroutines to wait until notified.
+    """允许一个或多个协程等待直到被通知的条件.
 
-    Like a standard `threading.Condition`, but does not need an underlying lock
-    that is acquired and released.
+    就像标准的 `threading.Condition`, 但是不需要一个被获取和释放的底层锁.
 
-    With a `Condition`, coroutines can wait to be notified by other coroutines:
+    通过 `Condition`, 协程可以等待着被其他协程通知:
 
     .. testcode::
 
@@ -86,21 +85,20 @@ class Condition(_TimeoutGarbageCollector):
         Done notifying
         I'm done waiting
 
-    `wait` takes an optional ``timeout`` argument, which is either an absolute
-    timestamp::
+    `wait` 有一个可选参数 ``timeout`` , 要不然是一个绝对的时间戳::
 
         io_loop = IOLoop.current()
 
         # Wait up to 1 second for a notification.
         yield condition.wait(timeout=io_loop.time() + 1)
 
-    ...or a `datetime.timedelta` for a timeout relative to the current time::
+    ...或一个 `datetime.timedelta` 相对于当前时间的一个延时::
 
         # Wait up to 1 second.
         yield condition.wait(timeout=datetime.timedelta(seconds=1))
 
-    The method raises `tornado.gen.TimeoutError` if there's no notification
-    before the deadline.
+    这个方法将抛出一个 `tornado.gen.TimeoutError` 如果在最后时间之前都
+    没有通知.
     """
 
     def __init__(self):
@@ -114,10 +112,10 @@ class Condition(_TimeoutGarbageCollector):
         return result + '>'
 
     def wait(self, timeout=None):
-        """Wait for `.notify`.
+        """等待 `.notify`.
 
-        Returns a `.Future` that resolves ``True`` if the condition is notified,
-        or ``False`` after a timeout.
+        返回一个 `.Future` 对象, 如果条件被通知则为 ``True`` ,
+        或者在超时之后为 ``False`` .
         """
         waiter = Future()
         self._waiters.append(waiter)
@@ -132,7 +130,7 @@ class Condition(_TimeoutGarbageCollector):
         return waiter
 
     def notify(self, n=1):
-        """Wake ``n`` waiters."""
+        """唤醒 ``n`` 个等待者(waiters) ."""
         waiters = []  # Waiters we plan to run right now.
         while n and self._waiters:
             waiter = self._waiters.popleft()
@@ -144,7 +142,7 @@ class Condition(_TimeoutGarbageCollector):
             waiter.set_result(True)
 
     def notify_all(self):
-        """Wake all waiters."""
+        """唤醒全部的等待者(waiters) ."""
         self.notify(len(self._waiters))
 
 
