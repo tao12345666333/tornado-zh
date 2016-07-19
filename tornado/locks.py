@@ -147,12 +147,12 @@ class Condition(_TimeoutGarbageCollector):
 
 
 class Event(object):
-    """An event blocks coroutines until its internal flag is set to True.
+    """一个阻塞协程的事件直到它的内部标识设置为True.
 
-    Similar to `threading.Event`.
+    类似于 `threading.Event`.
 
-    A coroutine can wait for an event to be set. Once it is set, calls to
-    ``yield event.wait()`` will not block unless the event has been cleared:
+    协程可以等待一个事件被设置. 一旦它被设置, 调用
+    ``yield event.wait()`` 将不会被阻塞除非该事件已经被清除:
 
     .. testcode::
 
@@ -196,13 +196,13 @@ class Event(object):
             self.__class__.__name__, 'set' if self.is_set() else 'clear')
 
     def is_set(self):
-        """Return ``True`` if the internal flag is true."""
+        """如果内部标识是true将返回 ``True`` ."""
         return self._future.done()
 
     def set(self):
-        """Set the internal flag to ``True``. All waiters are awakened.
+        """设置内部标识为 ``True``. 所有的等待者(waiters)都被唤醒.
 
-        Calling `.wait` once the flag is set will not block.
+        一旦该标识被设置调用 `.wait` 将不会阻塞.
         """
         if not self._future.done():
             self._future.set_result(None)
