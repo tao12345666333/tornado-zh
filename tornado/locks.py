@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding: utf-8
+#
 # Copyright 2015 The Tornado Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -45,7 +48,7 @@ class _TimeoutGarbageCollector(object):
 
 
 class Condition(_TimeoutGarbageCollector):
-    """允许一个或多个协程等待直到被通知的条件.
+    u"""允许一个或多个协程等待直到被通知的条件.
 
     就像标准的 `threading.Condition`, 但是不需要一个被获取和释放的底层锁.
 
@@ -208,18 +211,18 @@ class Event(object):
             self._future.set_result(None)
 
     def clear(self):
-        """Reset the internal flag to ``False``.
+        """重置内部标识为 ``False``.
 
-        Calls to `.wait` will block until `.set` is called.
+        调用 `.wait` 将阻塞直到 `.set` 被调用.
         """
         if self._future.done():
             self._future = Future()
 
     def wait(self, timeout=None):
-        """Block until the internal flag is true.
+        """阻塞直到内部标识为true.
 
-        Returns a Future, which raises `tornado.gen.TimeoutError` after a
-        timeout.
+        返回一个Future对象, 在超时之后会抛出一个 `tornado.gen.TimeoutError`
+        异常.
         """
         if timeout is None:
             return self._future
@@ -246,7 +249,7 @@ class _ReleasingContextManager(object):
 
 
 class Semaphore(_TimeoutGarbageCollector):
-    """A lock that can be acquired a fixed number of times before blocking.
+    """可以在阻塞之前获得固定次数的锁.
 
     A Semaphore manages a counter representing the number of `.release` calls
     minus the number of `.acquire` calls, plus an initial value. The `.acquire`
