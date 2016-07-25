@@ -251,13 +251,11 @@ class _ReleasingContextManager(object):
 class Semaphore(_TimeoutGarbageCollector):
     """可以在阻塞之前获得固定次数的锁.
 
-    A Semaphore manages a counter representing the number of `.release` calls
-    minus the number of `.acquire` calls, plus an initial value. The `.acquire`
-    method blocks if necessary until it can return without making the counter
-    negative.
+    一个信号量管理着代表 `.release` 调用次数减去 `.acquire` 的
+    调用次数的计数器, 加一个初始值. 如果必要的话,`.acquire` 方
+    法将会阻塞, 直到它可以返回, 而不使该计数器成为负值.
 
-    Semaphores limit access to a shared resource. To allow access for two
-    workers at a time:
+    信号量限制访问共享资源. 为了允许两个worker同时获得权限:
 
     .. testsetup:: semaphore
 
@@ -315,8 +313,8 @@ class Semaphore(_TimeoutGarbageCollector):
         Worker 1 is done
         Worker 2 is done
 
-    Workers 0 and 1 are allowed to run concurrently, but worker 2 waits until
-    the semaphore has been released once, by worker 0.
+    Workers 0 和 1 允许并行运行, 但是worker 2将等待直到
+    信号量被worker 0释放.
 
     `.acquire` is a context manager, so ``worker`` could be written as::
 
