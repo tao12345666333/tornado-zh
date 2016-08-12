@@ -316,7 +316,7 @@ class Semaphore(_TimeoutGarbageCollector):
     Workers 0 和 1 允许并行运行, 但是worker 2将等待直到
     信号量被worker 0释放.
 
-    `.acquire` is a context manager, so ``worker`` could be written as::
+    `.acquire` 是一个上下文管理器, 所以 ``worker`` 可以被写为::
 
         @gen.coroutine
         def worker(worker_id):
@@ -327,8 +327,7 @@ class Semaphore(_TimeoutGarbageCollector):
             # Now the semaphore has been released.
             print("Worker %d is done" % worker_id)
 
-    In Python 3.5, the semaphore itself can be used as an async context
-    manager::
+    在 Python 3.5 中, 信号量自身可以作为一个异步上下文管理器::
 
         async def worker(worker_id):
             async with sem:
@@ -339,7 +338,7 @@ class Semaphore(_TimeoutGarbageCollector):
             print("Worker %d is done" % worker_id)
 
     .. versionchanged:: 4.3
-       Added ``async with`` support in Python 3.5.
+       添加对 Python 3.5 ``async with`` 的支持.
     """
     def __init__(self, value=1):
         super(Semaphore, self).__init__()
@@ -357,7 +356,7 @@ class Semaphore(_TimeoutGarbageCollector):
         return '<{0} [{1}]>'.format(res[1:-1], extra)
 
     def release(self):
-        """Increment the counter and wake one waiter."""
+        """增加counter 并且唤醒一个waiter."""
         self._value += 1
         while self._waiters:
             waiter = self._waiters.popleft()
