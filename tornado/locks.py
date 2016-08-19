@@ -373,10 +373,10 @@ class Semaphore(_TimeoutGarbageCollector):
                 break
 
     def acquire(self, timeout=None):
-        """Decrement the counter. Returns a Future.
+        """递减计数器. 返回一个 Future 对象.
 
-        Block if the counter is zero and wait for a `.release`. The Future
-        raises `.TimeoutError` after the deadline.
+        如果计数器(counter)为0将会阻塞, 等待 `.release`. 在超时之后
+        Future 对象将会抛出 `.TimeoutError` .
         """
         waiter = Future()
         if self._value > 0:
