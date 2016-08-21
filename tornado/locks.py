@@ -486,9 +486,9 @@ class Lock(object):
     def release(self):
         """Unlock.
 
-        The first coroutine in line waiting for `acquire` gets the lock.
+        在队列中等待 `acquire` 的第一个 coroutine 获得锁.
 
-        If not locked, raise a `RuntimeError`.
+        如果没有锁, 将抛出 `RuntimeError`.
         """
         try:
             self._block.release()
