@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding: utf-8
+#
 # Copyright 2015 The Tornado Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -45,12 +48,11 @@ class _TimeoutGarbageCollector(object):
 
 
 class Condition(_TimeoutGarbageCollector):
-    """A condition allows one or more coroutines to wait until notified.
+    u"""允许一个或多个协程等待直到被通知的条件.
 
-    Like a standard `threading.Condition`, but does not need an underlying lock
-    that is acquired and released.
+    就像标准的 `threading.Condition`, 但是不需要一个被获取和释放的底层锁.
 
-    With a `Condition`, coroutines can wait to be notified by other coroutines:
+    通过 `Condition`, 协程可以等待着被其他协程通知:
 
     .. testcode::
 
@@ -86,21 +88,20 @@ class Condition(_TimeoutGarbageCollector):
         Done notifying
         I'm done waiting
 
-    `wait` takes an optional ``timeout`` argument, which is either an absolute
-    timestamp::
+    `wait` 有一个可选参数 ``timeout`` , 要不然是一个绝对的时间戳::
 
         io_loop = IOLoop.current()
 
         # Wait up to 1 second for a notification.
         yield condition.wait(timeout=io_loop.time() + 1)
 
-    ...or a `datetime.timedelta` for a timeout relative to the current time::
+    ...或一个 `datetime.timedelta` 相对于当前时间的一个延时::
 
         # Wait up to 1 second.
         yield condition.wait(timeout=datetime.timedelta(seconds=1))
 
-    The method raises `tornado.gen.TimeoutError` if there's no notification
-    before the deadline.
+    这个方法将抛出一个 `tornado.gen.TimeoutError` 如果在最后时间之前都
+    没有通知.
     """
 
     def __init__(self):
@@ -114,10 +115,10 @@ class Condition(_TimeoutGarbageCollector):
         return result + '>'
 
     def wait(self, timeout=None):
-        """Wait for `.notify`.
+        """等待 `.notify`.
 
-        Returns a `.Future` that resolves ``True`` if the condition is notified,
-        or ``False`` after a timeout.
+        返回一个 `.Future` 对象, 如果条件被通知则为 ``True`` ,
+        或者在超时之后为 ``False`` .
         """
         waiter = Future()
         self._waiters.append(waiter)
@@ -132,7 +133,7 @@ class Condition(_TimeoutGarbageCollector):
         return waiter
 
     def notify(self, n=1):
-        """Wake ``n`` waiters."""
+        """唤醒 ``n`` 个等待者(waiters) ."""
         waiters = []  # Waiters we plan to run right now.
         while n and self._waiters:
             waiter = self._waiters.popleft()
@@ -144,17 +145,17 @@ class Condition(_TimeoutGarbageCollector):
             waiter.set_result(True)
 
     def notify_all(self):
-        """Wake all waiters."""
+        """唤醒全部的等待者(waiters) ."""
         self.notify(len(self._waiters))
 
 
 class Event(object):
-    """An event blocks coroutines until its internal flag is set to True.
+    """一个阻塞协程的事件直到它的内部标识设置为True.
 
-    Similar to `threading.Event`.
+    类似于 `threading.Event`.
 
-    A coroutine can wait for an event to be set. Once it is set, calls to
-    ``yield event.wait()`` will not block unless the event has been cleared:
+    协程可以等待一个事件被设置. 一旦它被设置, 调用
+    ``yield event.wait()`` 将不会被阻塞除非该事件已经被清除:
 
     .. testcode::
 
@@ -198,30 +199,30 @@ class Event(object):
             self.__class__.__name__, 'set' if self.is_set() else 'clear')
 
     def is_set(self):
-        """Return ``True`` if the internal flag is true."""
+        """如果内部标识是true将返回 ``True`` ."""
         return self._future.done()
 
     def set(self):
-        """Set the internal flag to ``True``. All waiters are awakened.
+        """设置内部标识为 ``True``. 所有的等待者(waiters)都被唤醒.
 
-        Calling `.wait` once the flag is set will not block.
+        一旦该标识被设置调用 `.wait` 将不会阻塞.
         """
         if not self._future.done():
             self._future.set_result(None)
 
     def clear(self):
-        """Reset the internal flag to ``False``.
+        """重置内部标识为 ``False``.
 
-        Calls to `.wait` will block until `.set` is called.
+        调用 `.wait` 将阻塞直到 `.set` 被调用.
         """
         if self._future.done():
             self._future = Future()
 
     def wait(self, timeout=None):
-        """Block until the internal flag is true.
+        """阻塞直到内部标识为true.
 
-        Returns a Future, which raises `tornado.gen.TimeoutError` after a
-        timeout.
+        返回一个Future对象, 在超时之后会抛出一个 `tornado.gen.TimeoutError`
+        异常.
         """
         if timeout is None:
             return self._future
@@ -248,15 +249,13 @@ class _ReleasingContextManager(object):
 
 
 class Semaphore(_TimeoutGarbageCollector):
-    """A lock that can be acquired a fixed number of times before blocking.
+    """可以在阻塞之前获得固定次数的锁.
 
-    A Semaphore manages a counter representing the number of `.release` calls
-    minus the number of `.acquire` calls, plus an initial value. The `.acquire`
-    method blocks if necessary until it can return without making the counter
-    negative.
+    一个信号量管理着代表 `.release` 调用次数减去 `.acquire` 的
+    调用次数的计数器, 加一个初始值. 如果必要的话,`.acquire` 方
+    法将会阻塞, 直到它可以返回, 而不使该计数器成为负值.
 
-    Semaphores limit access to a shared resource. To allow access for two
-    workers at a time:
+    信号量限制访问共享资源. 为了允许两个worker同时获得权限:
 
     .. testsetup:: semaphore
 
@@ -314,10 +313,10 @@ class Semaphore(_TimeoutGarbageCollector):
         Worker 1 is done
         Worker 2 is done
 
-    Workers 0 and 1 are allowed to run concurrently, but worker 2 waits until
-    the semaphore has been released once, by worker 0.
+    Workers 0 和 1 允许并行运行, 但是worker 2将等待直到
+    信号量被worker 0释放.
 
-    `.acquire` is a context manager, so ``worker`` could be written as::
+    `.acquire` 是一个上下文管理器, 所以 ``worker`` 可以被写为::
 
         @gen.coroutine
         def worker(worker_id):
@@ -328,8 +327,7 @@ class Semaphore(_TimeoutGarbageCollector):
             # Now the semaphore has been released.
             print("Worker %d is done" % worker_id)
 
-    In Python 3.5, the semaphore itself can be used as an async context
-    manager::
+    在 Python 3.5 中, 信号量自身可以作为一个异步上下文管理器::
 
         async def worker(worker_id):
             async with sem:
@@ -340,7 +338,7 @@ class Semaphore(_TimeoutGarbageCollector):
             print("Worker %d is done" % worker_id)
 
     .. versionchanged:: 4.3
-       Added ``async with`` support in Python 3.5.
+       添加对 Python 3.5 ``async with`` 的支持.
     """
     def __init__(self, value=1):
         super(Semaphore, self).__init__()
@@ -358,7 +356,7 @@ class Semaphore(_TimeoutGarbageCollector):
         return '<{0} [{1}]>'.format(res[1:-1], extra)
 
     def release(self):
-        """Increment the counter and wake one waiter."""
+        """增加counter 并且唤醒一个waiter."""
         self._value += 1
         while self._waiters:
             waiter = self._waiters.popleft()
@@ -375,10 +373,10 @@ class Semaphore(_TimeoutGarbageCollector):
                 break
 
     def acquire(self, timeout=None):
-        """Decrement the counter. Returns a Future.
+        """递减计数器. 返回一个 Future 对象.
 
-        Block if the counter is zero and wait for a `.release`. The Future
-        raises `.TimeoutError` after the deadline.
+        如果计数器(counter)为0将会阻塞, 等待 `.release`. 在超时之后
+        Future 对象将会抛出 `.TimeoutError` .
         """
         waiter = Future()
         if self._value > 0:
@@ -413,34 +411,32 @@ class Semaphore(_TimeoutGarbageCollector):
 
 
 class BoundedSemaphore(Semaphore):
-    """A semaphore that prevents release() being called too many times.
+    """一个防止release() 被调用太多次的信号量.
 
-    If `.release` would increment the semaphore's value past the initial
-    value, it raises `ValueError`. Semaphores are mostly used to guard
-    resources with limited capacity, so a semaphore released too many times
-    is a sign of a bug.
+    如果 `.release` 增加信号量的值超过初始值, 它将抛出 `ValueError`.
+    信号量通常是通过限制容量来保护资源, 所以一个信号量释放太多次是
+    一个错误的标志.
     """
     def __init__(self, value=1):
         super(BoundedSemaphore, self).__init__(value=value)
         self._initial_value = value
 
     def release(self):
-        """Increment the counter and wake one waiter."""
+        """增加counter 并且唤醒一个waiter."""
         if self._value >= self._initial_value:
             raise ValueError("Semaphore released too many times")
         super(BoundedSemaphore, self).release()
 
 
 class Lock(object):
-    """A lock for coroutines.
+    """协程的锁.
 
-    A Lock begins unlocked, and `acquire` locks it immediately. While it is
-    locked, a coroutine that yields `acquire` waits until another coroutine
-    calls `release`.
+    一个Lock开始解锁, 然后它立即 `acquire` 锁. 虽然它是锁着的,
+    一个协程yield `acquire` 并等待, 直到另一个协程调用 `release`.
 
-    Releasing an unlocked lock raises `RuntimeError`.
+    释放一个没锁住的锁将抛出 `RuntimeError`.
 
-    `acquire` supports the context manager protocol in all Python versions:
+    在所有Python 版本中 `acquire` 支持上下文管理协议:
 
     >>> from tornado import gen, locks
     >>> lock = locks.Lock()
@@ -453,10 +449,10 @@ class Lock(object):
     ...
     ...    # Now the lock is released.
 
-    In Python 3.5, `Lock` also supports the async context manager
-    protocol. Note that in this case there is no `acquire`, because
-    ``async with`` includes both the ``yield`` and the ``acquire``
-    (just as it does with `threading.Lock`):
+    在Python 3.5, `Lock` 也支持异步上下文管理协议(async context manager
+    protocol). 注意在这种情况下没有 `acquire`, 因为
+    ``async with`` 同时包含 ``yield`` 和 ``acquire``
+    (就像 `threading.Lock`):
 
     >>> async def f():  # doctest: +SKIP
     ...    async with lock:
@@ -466,7 +462,7 @@ class Lock(object):
     ...    # Now the lock is released.
 
     .. versionchanged:: 3.5
-       Added ``async with`` support in Python 3.5.
+       添加Python 3.5 的 ``async with`` 支持.
 
     """
     def __init__(self):
@@ -478,19 +474,19 @@ class Lock(object):
             self._block)
 
     def acquire(self, timeout=None):
-        """Attempt to lock. Returns a Future.
+        """尝试锁. 返回一个Future 对象.
 
-        Returns a Future, which raises `tornado.gen.TimeoutError` after a
-        timeout.
+        返回一个Future 对象, 在超时之后将抛出
+        `tornado.gen.TimeoutError` .
         """
         return self._block.acquire(timeout)
 
     def release(self):
         """Unlock.
 
-        The first coroutine in line waiting for `acquire` gets the lock.
+        在队列中等待 `acquire` 的第一个 coroutine 获得锁.
 
-        If not locked, raise a `RuntimeError`.
+        如果没有锁, 将抛出 `RuntimeError`.
         """
         try:
             self._block.release()
