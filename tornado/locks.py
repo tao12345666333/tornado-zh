@@ -411,34 +411,32 @@ class Semaphore(_TimeoutGarbageCollector):
 
 
 class BoundedSemaphore(Semaphore):
-    """A semaphore that prevents release() being called too many times.
+    """一个防止release() 被调用太多次的信号量.
 
-    If `.release` would increment the semaphore's value past the initial
-    value, it raises `ValueError`. Semaphores are mostly used to guard
-    resources with limited capacity, so a semaphore released too many times
-    is a sign of a bug.
+    如果 `.release` 增加信号量的值超过初始值, 它将抛出 `ValueError`.
+    信号量通常是通过限制容量来保护资源, 所以一个信号量释放太多次是
+    一个错误的标志.
     """
     def __init__(self, value=1):
         super(BoundedSemaphore, self).__init__(value=value)
         self._initial_value = value
 
     def release(self):
-        """Increment the counter and wake one waiter."""
+        """增加counter 并且唤醒一个waiter."""
         if self._value >= self._initial_value:
             raise ValueError("Semaphore released too many times")
         super(BoundedSemaphore, self).release()
 
 
 class Lock(object):
-    """A lock for coroutines.
+    """协程的锁.
 
-    A Lock begins unlocked, and `acquire` locks it immediately. While it is
-    locked, a coroutine that yields `acquire` waits until another coroutine
-    calls `release`.
+    一个Lock开始解锁, 然后它立即 `acquire` 锁. 虽然它是锁着的,
+    一个协程yield `acquire` 并等待, 直到另一个协程调用 `release`.
 
-    Releasing an unlocked lock raises `RuntimeError`.
+    释放一个没锁住的锁将抛出 `RuntimeError`.
 
-    `acquire` supports the context manager protocol in all Python versions:
+    在所有Python 版本中 `acquire` 支持上下文管理协议:
 
     >>> from tornado import gen, locks
     >>> lock = locks.Lock()
@@ -451,10 +449,10 @@ class Lock(object):
     ...
     ...    # Now the lock is released.
 
-    In Python 3.5, `Lock` also supports the async context manager
-    protocol. Note that in this case there is no `acquire`, because
-    ``async with`` includes both the ``yield`` and the ``acquire``
-    (just as it does with `threading.Lock`):
+    在Python 3.5, `Lock` 也支持异步上下文管理协议(async context manager
+    protocol). 注意在这种情况下没有 `acquire`, 因为
+    ``async with`` 同时包含 ``yield`` 和 ``acquire``
+    (就像 `threading.Lock`):
 
     >>> async def f():  # doctest: +SKIP
     ...    async with lock:
@@ -464,7 +462,7 @@ class Lock(object):
     ...    # Now the lock is released.
 
     .. versionchanged:: 3.5
-       Added ``async with`` support in Python 3.5.
+       添加Python 3.5 的 ``async with`` 支持.
 
     """
     def __init__(self):
@@ -476,10 +474,10 @@ class Lock(object):
             self._block)
 
     def acquire(self, timeout=None):
-        """Attempt to lock. Returns a Future.
+        """尝试锁. 返回一个Future 对象.
 
-        Returns a Future, which raises `tornado.gen.TimeoutError` after a
-        timeout.
+        返回一个Future 对象, 在超时之后将抛出
+        `tornado.gen.TimeoutError` .
         """
         return self._block.acquire(timeout)
 
