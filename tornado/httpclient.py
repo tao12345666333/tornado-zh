@@ -1,10 +1,9 @@
-"""Blocking and non-blocking HTTP client interfaces.
+"""阻塞和非阻塞 HTTP 客户端接口.
 
-This module defines a common interface shared by two implementations,
-``simple_httpclient`` and ``curl_httpclient``.  Applications may either
-instantiate their chosen implementation class directly or use the
-`AsyncHTTPClient` class from this module, which selects an implementation
-that can be overridden with the `AsyncHTTPClient.configure` method.
+这个模块定义了一个被两种实现方式 ``simple_httpclient`` 和
+``curl_httpclient`` 共享的通用接口 . 应用程序可以选择直接实例化实现类
+或使用本模块提供的 `AsyncHTTPClient` 类, 通过复写
+`AsyncHTTPClient.configure` 方法来选择一种实现 .
 
 The default implementation is ``simple_httpclient``, and this is expected
 to be suitable for most users' needs.  However, some applications may wish
