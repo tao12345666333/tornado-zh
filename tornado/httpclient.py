@@ -5,25 +5,21 @@
 或使用本模块提供的 `AsyncHTTPClient` 类, 通过复写
 `AsyncHTTPClient.configure` 方法来选择一种实现 .
 
-The default implementation is ``simple_httpclient``, and this is expected
-to be suitable for most users' needs.  However, some applications may wish
-to switch to ``curl_httpclient`` for reasons such as the following:
+默认的实现是 ``simple_httpclient``, 这将能满足大多数用户的需要 . 然而, 一
+些应用程序可能会因为以下原因想切换到 ``curl_httpclient`` :
 
-* ``curl_httpclient`` has some features not found in ``simple_httpclient``,
-  including support for HTTP proxies and the ability to use a specified
-  network interface.
+* ``curl_httpclient`` 有一些 ``simple_httpclient`` 不具有的功能特性,
+  包括对 HTTP 代理和使用指定网络接口能力的支持.
 
-* ``curl_httpclient`` is more likely to be compatible with sites that are
-  not-quite-compliant with the HTTP spec, or sites that use little-exercised
-  features of HTTP.
+* ``curl_httpclient`` 更有可能与不完全符合 HTTP 规范的网站兼容, 或者
+  使用很少运行的 HTTP 特性的网站兼容.
 
-* ``curl_httpclient`` is faster.
+* ``curl_httpclient`` 更快.
 
-* ``curl_httpclient`` was the default prior to Tornado 2.0.
+* ``curl_httpclient`` 是 Tornado 2.0 之前的默认值.
 
-Note that if you are using ``curl_httpclient``, it is highly
-recommended that you use a recent version of ``libcurl`` and
-``pycurl``.  Currently the minimum supported version of libcurl is
+注意如果你正在使用 ``curl_httpclient``, 强力建议你使用最新版本的
+``libcurl`` 和 ``pycurl``.  Currently the minimum supported version of libcurl is
 7.21.1, and the minimum version of pycurl is 7.18.2.  It is highly
 recommended that your ``libcurl`` installation is built with
 asynchronous DNS resolver (threaded or c-ares), otherwise you may
