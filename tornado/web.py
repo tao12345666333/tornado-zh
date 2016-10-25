@@ -491,7 +491,7 @@ class RequestHandler(object):
         """设置给定的cookie 名称/值还有其他给定的选项.
 
         另外的关键字参数在Cookie.Morsel直接设置.
-        参见 http://docs.python.org/library/cookie.html#morsel-objects
+        参见 https://docs.python.org/2/library/cookie.html#morsel-objects
         查看可用的属性.
         """
         # The cookie library only accepts type str, in both python 2 and 3
