@@ -19,16 +19,15 @@
 * ``curl_httpclient`` 是 Tornado 2.0 之前的默认值.
 
 注意如果你正在使用 ``curl_httpclient``, 强力建议你使用最新版本的
-``libcurl`` 和 ``pycurl``.  Currently the minimum supported version of libcurl is
-7.21.1, and the minimum version of pycurl is 7.18.2.  It is highly
-recommended that your ``libcurl`` installation is built with
-asynchronous DNS resolver (threaded or c-ares), otherwise you may
-encounter various problems with request timeouts (for more
-information, see
+``libcurl`` 和 ``pycurl``.  当前 libcurl 能被支持的最小版本是
+7.21.1, pycurl 能被支持的最小版本是 7.18.2. 强烈建议你所安装的 ``libcurl``
+是和异步 DNS 解析器 (threaded 或 c-ares) 一起构建的,
+否则你可能会遇到各种请求超时的问题 (更多信息请查看
 http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTCONNECTTIMEOUTMS
-and comments in curl_httpclient.py).
+和 curl_httpclient.py 里面的注释).
 
-To select ``curl_httpclient``, call `AsyncHTTPClient.configure` at startup::
+为了选择 ``curl_httpclient``, 只需要在启动的时候调用
+`AsyncHTTPClient.configure` ::
 
     AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
 """
@@ -47,11 +46,11 @@ from tornado.util import Configurable
 
 
 class HTTPClient(object):
-    """A blocking HTTP client.
+    """一个阻塞的 HTTP 客户端.
 
-    This interface is provided for convenience and testing; most applications
-    that are running an IOLoop will want to use `AsyncHTTPClient` instead.
-    Typical usage looks like this::
+    这个接口被提供是为了方便使用和测试 ; 大多数运行于 IOLoop 的应用程序
+    会使用 `AsyncHTTPClient` 来替代它.
+    一般的用法就像这样 ::
 
         http_client = httpclient.HTTPClient()
         try:
@@ -77,21 +76,21 @@ class HTTPClient(object):
         self.close()
 
     def close(self):
-        """Closes the HTTPClient, freeing any resources used."""
+        """关闭该 HTTPClient, 释放所有使用的资源."""
         if not self._closed:
             self._async_client.close()
             self._io_loop.close()
             self._closed = True
 
     def fetch(self, request, **kwargs):
-        """Executes a request, returning an `HTTPResponse`.
+        """执行一个请求, 返回一个 `HTTPResponse`.
 
-        The request may be either a string URL or an `HTTPRequest` object.
-        If it is a string, we construct an `HTTPRequest` using any additional
-        kwargs: ``HTTPRequest(request, **kwargs)``
+        该请求可以是一个 URL 字符串或者一个 `HTTPRequest` 对象.
+        如果它是一个字符串, 我们会使用任意关键字参数构造一个
+        `HTTPRequest` : ``HTTPRequest(request, **kwargs)``
 
-        If an error occurs during the fetch, we raise an `HTTPError` unless
-        the ``raise_error`` keyword argument is set to False.
+        如果在 fetch 过程中发生错误, 我们将抛出一个 `HTTPError` 除非
+        ``raise_error`` 关键字参数被设置为 False.
         """
         response = self._io_loop.run_sync(functools.partial(
             self._async_client.fetch, request, **kwargs))
