@@ -98,9 +98,9 @@ class HTTPClient(object):
 
 
 class AsyncHTTPClient(Configurable):
-    """An non-blocking HTTP client.
+    """一个非阻塞 HTTP 客户端.
 
-    Example usage::
+    使用示例::
 
         def handle_request(response):
             if response.error:
@@ -121,9 +121,8 @@ class AsyncHTTPClient(Configurable):
     The implementation subclass as well as arguments to its
     constructor can be set with the static method `configure()`
 
-    All `AsyncHTTPClient` implementations support a ``defaults``
-    keyword argument, which can be used to set default values for
-    `HTTPRequest` attributes.  For example::
+    所有 `AsyncHTTPClient` 实现都支持一个 ``defaults`` 关键字参数,
+    可以被用来设置默认 `HTTPRequest` 属性的值. 例如::
 
         AsyncHTTPClient.configure(
             None, defaults=dict(user_agent="MyUserAgent"))
@@ -254,9 +253,9 @@ class AsyncHTTPClient(Configurable):
 
     @classmethod
     def configure(cls, impl, **kwargs):
-        """Configures the `AsyncHTTPClient` subclass to use.
+        """配置 `AsyncHTTPClient` 使用的子类.
 
-        ``AsyncHTTPClient()`` actually creates an instance of a subclass.
+        ``AsyncHTTPClient()`` 实际创建一个这个子类的实例.
         This method may be called with either a class object or the
         fully-qualified name of such a class (or ``None`` to use the default,
         ``SimpleAsyncHTTPClient``)
@@ -276,7 +275,7 @@ class AsyncHTTPClient(Configurable):
 
 
 class HTTPRequest(object):
-    """HTTP client request object."""
+    """HTTP 客户端请求对象."""
 
     # Default values for HTTPRequest parameters.
     # Merged with the values on the request object by AsyncHTTPClient
@@ -502,11 +501,11 @@ class HTTPRequest(object):
 
 
 class HTTPResponse(object):
-    """HTTP Response object.
+    """HTTP 响应对象.
 
-    Attributes:
+    属性:
 
-    * request: HTTPRequest object
+    * request: HTTPRequest 对象
 
     * code: numeric HTTP status code, e.g. 200 or 404
 
@@ -582,16 +581,16 @@ class HTTPResponse(object):
 
 
 class HTTPError(Exception):
-    """Exception thrown for an unsuccessful HTTP request.
+    """一个 HTTP 请求失败后抛出的异常.
 
-    Attributes:
+    属性:
 
-    * ``code`` - HTTP error integer error code, e.g. 404.  Error code 599 is
-      used when no HTTP response was received, e.g. for a timeout.
+    * ``code`` - 整数的 HTTP 错误码, e.g. 404. 当没有接收到 HTTP 响应时
+      将会使用 599 错误码, e.g. for a timeout.
 
     * ``response`` - `HTTPResponse` object, if any.
 
-    Note that if ``follow_redirects`` is False, redirects become HTTPErrors,
+    注意如果 ``follow_redirects`` 为 False, 重定向将导致 HTTPErrors,
     and you can look at ``error.response.headers['Location']`` to see the
     destination of the redirect.
     """
