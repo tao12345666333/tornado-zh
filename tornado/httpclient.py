@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding: utf-8
+
 """阻塞和非阻塞 HTTP 客户端接口.
 
 这个模块定义了一个被两种实现方式 ``simple_httpclient`` 和
@@ -131,7 +134,7 @@ class AsyncHTTPClient(Configurable):
             defaults=dict(user_agent="MyUserAgent"))
 
     .. versionchanged:: 4.1
-       The ``io_loop`` argument is deprecated.
+       ``io_loop`` 参数被废弃.
     """
     @classmethod
     def configurable_base(cls):
@@ -176,7 +179,7 @@ class AsyncHTTPClient(Configurable):
         self._closed = False
 
     def close(self):
-        """Destroys this HTTP client, freeing any file descriptors used.
+        """销毁该 HTTP 客户端, 释放所有被使用的文件描述符.
 
         This method is **not needed in normal use** due to the way
         that `AsyncHTTPClient` objects are transparently reused.
@@ -197,7 +200,7 @@ class AsyncHTTPClient(Configurable):
             del self._instance_cache[self.io_loop]
 
     def fetch(self, request, callback=None, raise_error=True, **kwargs):
-        """Executes a request, asynchronously returning an `HTTPResponse`.
+        """执行一个请求, 异步的返回一个 `HTTPResponse`.
 
         The request may be either a string URL or an `HTTPRequest` object.
         If it is a string, we construct an `HTTPRequest` using any additional
