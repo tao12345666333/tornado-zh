@@ -114,15 +114,12 @@ class AsyncHTTPClient(Configurable):
         http_client = AsyncHTTPClient()
         http_client.fetch("http://www.google.com/", handle_request)
 
-    The constructor for this class is magic in several respects: It
-    actually creates an instance of an implementation-specific
-    subclass, and instances are reused as a kind of pseudo-singleton
-    (one per `.IOLoop`).  The keyword argument ``force_instance=True``
-    can be used to suppress this singleton behavior.  Unless
-    ``force_instance=True`` is used, no arguments other than
-    ``io_loop`` should be passed to the `AsyncHTTPClient` constructor.
-    The implementation subclass as well as arguments to its
-    constructor can be set with the static method `configure()`
+    这个类的构造器在几个考虑上是神奇的: 它实际创建了一个特定实现的子
+    类的实例, 并且实例被作为一种伪单例重用 (每一个 `.IOLoop`).
+    关键字参数 ``force_instance=True`` 可以被用来抑制这种单例行为.
+    除非 ``force_instance=True`` 被使用, 除了 ``io_loop`` 以外其他
+    参数都不应该传递给 `AsyncHTTPClient` 构造器.
+    实现的子类以及它的构造器的参数可以通过静态方法 `configure()` 设置.
 
     所有 `AsyncHTTPClient` 实现都支持一个 ``defaults`` 关键字参数,
     可以被用来设置默认 `HTTPRequest` 属性的值. 例如::
