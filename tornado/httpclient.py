@@ -605,9 +605,9 @@ class HTTPError(Exception):
 
 
 class _RequestProxy(object):
-    """Combines an object with a dictionary of defaults.
+    """将对象和默认字典相结合.
 
-    Used internally by AsyncHTTPClient implementations.
+    本质上是被 AsyncHTTPClient 的实现使用.
     """
     def __init__(self, request, defaults):
         self.request = request
