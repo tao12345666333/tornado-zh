@@ -14,7 +14,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-"""A non-blocking, single-threaded TCP server."""
+"""一个非阻塞, 单线程 TCP 服务."""
 from __future__ import absolute_import, division, print_function, with_statement
 
 import errno
@@ -157,24 +157,20 @@ class TCPServer(object):
         self.add_sockets([socket])
 
     def bind(self, port, address=None, family=socket.AF_UNSPEC, backlog=128):
-        """Binds this server to the given port on the given address.
+        """绑定该服务到指定的地址的指定端口上.
 
-        To start the server, call `start`. If you want to run this server
-        in a single process, you can call `listen` as a shortcut to the
-        sequence of `bind` and `start` calls.
+        要启动该服务, 调用 `start`. 如果你想要在一个单进程上运行该服务,
+        你可以调用 `listen` 作为顺序调用 `bind` 和 `start` 的一个快捷方式.
 
-        Address may be either an IP address or hostname.  If it's a hostname,
-        the server will listen on all IP addresses associated with the
-        name.  Address may be an empty string or None to listen on all
-        available interfaces.  Family may be set to either `socket.AF_INET`
-        or `socket.AF_INET6` to restrict to IPv4 or IPv6 addresses, otherwise
-        both will be used if available.
+        address 参数可以是 IP 地址或者主机名.  如果它是主机名,
+        该服务将监听在和该名称有关的所有 IP 地址上.  地址也可以是空字符串或者
+        None, 服务将监听所有可用的接口. family 可以被设置为 `socket.AF_INET` 或
+        `socket.AF_INET6` 用来限定是 IPv4 或 IPv6 地址, 否则如果可用的话, 两者
+        都将被使用.
 
-        The ``backlog`` argument has the same meaning as for
-        `socket.listen <socket.socket.listen>`.
+        ``backlog`` 参数和 `socket.listen <socket.socket.listen>` 是相同含义.
 
-        This method may be called multiple times prior to `start` to listen
-        on multiple ports or interfaces.
+        这个方法可能在 `start` 之前被调用多次来监听在多个端口或接口上.
         """
         sockets = bind_sockets(port, address=address, family=family,
                                backlog=backlog)
