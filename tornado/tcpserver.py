@@ -80,7 +80,7 @@ class TCPServer(object):
             IOLoop.current().start()
 
        当使用这个接口, `.IOLoop` 一定 *不能* 被传递给
-       `TCPServer` 构造器.  `start` 总是会在默认独立的 `.IOLoop`
+       `TCPServer` 构造器.  `start` 总是会在默认单一的 `.IOLoop`
        上启动服务.
 
     3. `add_sockets`: 高级多进程模式::
@@ -91,15 +91,13 @@ class TCPServer(object):
             server.add_sockets(sockets)
             IOLoop.current().start()
 
-       The `add_sockets` interface is more complicated, but it can be
-       used with `tornado.process.fork_processes` to give you more
-       flexibility in when the fork happens.  `add_sockets` can
-       also be used in single-process servers if you want to create
-       your listening sockets in some way other than
-       `~tornado.netutil.bind_sockets`.
+       `add_sockets` 接口更加复杂, 但是它可以和 `tornado.process.fork_processes`
+       一起被使用, 当 fork 发生的时候给你更多灵活性.  `add_sockets` 也可以被用于
+       单进程服务中, 如果你想要使用 `~tornado.netutil.bind_sockets` 以外的方式
+       创建你监听的 socket.
 
     .. versionadded:: 3.1
-       The ``max_buffer_size`` argument.
+       ``max_buffer_size`` 参数.
     """
     def __init__(self, io_loop=None, ssl_options=None, max_buffer_size=None,
                  read_chunk_size=None):
