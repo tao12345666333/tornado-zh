@@ -212,10 +212,9 @@ class TCPServer(object):
         self.add_sockets(sockets)
 
     def stop(self):
-        """Stops listening for new connections.
+        """停止对新连接的监听.
 
-        Requests currently in progress may still continue after the
-        server is stopped.
+        正在进行的请求可能仍然会继续在服务停止之后.
         """
         for fd, sock in self._sockets.items():
             self.io_loop.remove_handler(fd)
