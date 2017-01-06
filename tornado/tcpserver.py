@@ -127,12 +127,11 @@ class TCPServer(object):
                                  self.ssl_options['keyfile'])
 
     def listen(self, port, address=""):
-        """Starts accepting connections on the given port.
+        """开始在给定的端口接收连接.
 
-        This method may be called more than once to listen on multiple ports.
-        `listen` takes effect immediately; it is not necessary to call
-        `TCPServer.start` afterwards.  It is, however, necessary to start
-        the `.IOLoop`.
+        这个方法可能不只被调用一次, 可能会被调用多次在多个端口上.
+        `listen` 立即生效; 它没必要在 `TCPServer.start` 之后调用.
+        然而, 它必须要启动 `.IOLoop`.
         """
         sockets = bind_sockets(port, address=address)
         self.add_sockets(sockets)
