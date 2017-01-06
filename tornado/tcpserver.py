@@ -137,13 +137,12 @@ class TCPServer(object):
         self.add_sockets(sockets)
 
     def add_sockets(self, sockets):
-        """Makes this server start accepting connections on the given sockets.
+        """使服务开始接收给定端口的连接.
 
-        The ``sockets`` parameter is a list of socket objects such as
-        those returned by `~tornado.netutil.bind_sockets`.
-        `add_sockets` is typically used in combination with that
-        method and `tornado.process.fork_processes` to provide greater
-        control over the initialization of a multi-process server.
+        ``sockets`` 参数是一个 socket 对象的列表, 例如那些被
+        `~tornado.netutil.bind_sockets` 所返回的对象.
+        `add_sockets` 通常和 `tornado.process.fork_processes` 相结合使用,
+        以便于在一个多进程服务初始化时提供更多控制.
         """
         if self.io_loop is None:
             self.io_loop = IOLoop.current()
@@ -154,7 +153,7 @@ class TCPServer(object):
                                io_loop=self.io_loop)
 
     def add_socket(self, socket):
-        """Singular version of `add_sockets`.  Takes a single socket object."""
+        """单数版本的 `add_sockets`.  接受一个单一的 socket 对象."""
         self.add_sockets([socket])
 
     def bind(self, port, address=None, family=socket.AF_UNSPEC, backlog=128):
