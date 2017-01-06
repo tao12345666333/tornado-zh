@@ -36,41 +36,54 @@ except ImportError:
 
 
 class TCPServer(object):
-    r"""A non-blocking, single-threaded TCP server.
+    r"""一个非阻塞, 单线程的 TCP 服务.
 
-    To use `TCPServer`, define a subclass which overrides the `handle_stream`
-    method.
+    想要使用 `TCPServer`, 只需要定义一个子类, 复写 `handle_stream`
+    方法即可. 例如, 一个简单的 echo server 可以做如下定义::
 
-    To make this server serve SSL traffic, send the ``ssl_options`` keyword
-    argument with an `ssl.SSLContext` object. For compatibility with older
-    versions of Python ``ssl_options`` may also be a dictionary of keyword
-    arguments for the `ssl.wrap_socket` method.::
+      from tornado.tcpserver import TCPServer
+      from tornado.iostream import StreamClosedError
+      from tornado import gen
+
+      class EchoServer(TCPServer):
+          @gen.coroutine
+          def handle_stream(self, stream, address):
+              while True:
+                  try:
+                      data = yield stream.read_until(b"\n")
+                      yield stream.write(data)
+                  except StreamClosedError:
+                      break
+
+    为了使该服务提供 SSL 传输, 通过一个``ssl_options`` 关键字参数
+    传递进去 `ssl.SSLContext` 对象即可. 为了兼容旧版本的 Python
+    ``ssl_options`` 也可以是一个字典作为`ssl.wrap_socket` 方法的关键字参数.::
 
        ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
        ssl_ctx.load_cert_chain(os.path.join(data_dir, "mydomain.crt"),
                                os.path.join(data_dir, "mydomain.key"))
        TCPServer(ssl_options=ssl_ctx)
 
-    `TCPServer` initialization follows one of three patterns:
+    `TCPServer` 初始化可以是以下三种模式之一:
 
-    1. `listen`: simple single-process::
+    1. `listen`: 简单的单进程模式::
 
             server = TCPServer()
             server.listen(8888)
             IOLoop.current().start()
 
-    2. `bind`/`start`: simple multi-process::
+    2. `bind`/`start`: 简单的多进程模式::
 
             server = TCPServer()
             server.bind(8888)
             server.start(0)  # Forks multiple sub-processes
             IOLoop.current().start()
 
-       When using this interface, an `.IOLoop` must *not* be passed
-       to the `TCPServer` constructor.  `start` will always start
-       the server on the default singleton `.IOLoop`.
+       当使用这个接口, `.IOLoop` 一定 *不能* 被传递给
+       `TCPServer` 构造器.  `start` 总是会在默认独立的 `.IOLoop`
+       上启动服务.
 
-    3. `add_sockets`: advanced multi-process::
+    3. `add_sockets`: 高级多进程模式::
 
             sockets = bind_sockets(8888)
             tornado.process.fork_processes(0)
