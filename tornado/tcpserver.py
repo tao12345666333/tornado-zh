@@ -180,7 +180,7 @@ class TCPServer(object):
             self._pending_sockets.extend(sockets)
 
     def start(self, num_processes=1):
-        """Starts this server in the `.IOLoop`.
+        """在 `.IOLoop` 中启动该服务.
 
         By default, we run the server in this process and do not fork any
         additional child process.
