@@ -182,8 +182,8 @@ class TCPServer(object):
     def start(self, num_processes=1):
         """在 `.IOLoop` 中启动该服务.
 
-        By default, we run the server in this process and do not fork any
-        additional child process.
+        默认情况下, 我们我们在该进程中运行这个服务, 并且不会 fork 出任何额外
+        的子进程.
 
         If num_processes is ``None`` or <= 0, we detect the number of cores
         available on this machine and fork that number of child
@@ -217,9 +217,9 @@ class TCPServer(object):
             sock.close()
 
     def handle_stream(self, stream, address):
-        """Override to handle a new `.IOStream` from an incoming connection.
+        """通过复写这个方法从进来的连接处理一个新的 `.IOStream` .
 
-        This method may be a coroutine; if so any exceptions it raises
+        这个方法可能是一个协程; if so any exceptions it raises
         asynchronously will be logged. Accepting of incoming connections
         will not be blocked by this coroutine.
 
