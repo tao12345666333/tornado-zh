@@ -55,9 +55,9 @@ class TCPServer(object):
                   except StreamClosedError:
                       break
 
-    为了使该服务提供 SSL 传输, 通过一个``ssl_options`` 关键字参数
-    传递进去 `ssl.SSLContext` 对象即可. 为了兼容旧版本的 Python
-    ``ssl_options`` 也可以是一个字典作为`ssl.wrap_socket` 方法的关键字参数.::
+    为了使该服务提供 SSL 传输, 通过一个名为``ssl_options`` 的关键字参数
+    传递进去 `ssl.SSLContext` 对象即可. 为了兼容旧版本的 Python,
+    ``ssl_options`` 也可以是一个字典, 作为`ssl.wrap_socket` 方法的关键字参数.::
 
        ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
        ssl_ctx.load_cert_chain(os.path.join(data_dir, "mydomain.crt"),
