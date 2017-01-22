@@ -129,9 +129,9 @@ class TCPServer(object):
     def listen(self, port, address=""):
         """开始在给定的端口接收连接.
 
-        这个方法可能不只被调用一次, 可能会被调用多次在多个端口上.
-        `listen` 立即生效; 它没必要在 `TCPServer.start` 之后调用.
-        然而, 它必须要启动 `.IOLoop`.
+        这个方法可能不只被调用一次, 可能会在多个端口上被调用多次.
+        `listen` 方法将立即生效, 所以它没必要在 `TCPServer.start` 之后调用.
+        然而, 必须要启动 `.IOLoop` 才可以.
         """
         sockets = bind_sockets(port, address=address)
         self.add_sockets(sockets)
@@ -182,22 +182,19 @@ class TCPServer(object):
     def start(self, num_processes=1):
         """在 `.IOLoop` 中启动该服务.
 
-        默认情况下, 我们我们在该进程中运行这个服务, 并且不会 fork 出任何额外
+        默认情况下, 我们在该进程中运行服务, 并且不会 fork 出任何额外
         的子进程.
 
-        If num_processes is ``None`` or <= 0, we detect the number of cores
-        available on this machine and fork that number of child
-        processes. If num_processes is given and > 1, we fork that
-        specific number of sub-processes.
+        如果 num_processes 为 ``None`` 或 <= 0, 我们检测这台机器上可用的
+        核心数并 fork 相同数量的子进程. 如果给定了 num_processes 并且 > 1,
+        我们 fork 指定数量的子进程.
 
-        Since we use processes and not threads, there is no shared memory
-        between any server code.
+        因为我们使用进程而不是线程, 在任何服务代码之间没有共享内存.
 
-        Note that multiple processes are not compatible with the autoreload
-        module (or the ``autoreload=True`` option to `tornado.web.Application`
-        which defaults to True when ``debug=True``).
-        When using multiple processes, no IOLoops can be created or
-        referenced until after the call to ``TCPServer.start(n)``.
+        注意多进程模式和 autoreload 模块不兼容(或者是当 ``debug=True`` 时
+        `tornado.web.Application` 的 ``autoreload=True`` 选项默认为 True).
+        当使用多进程模式时, 直到 ``TCPServer.start(n)`` 调用后, 才能创建或者
+        引用 IOLoops .
         """
         assert not self._started
         self._started = True
