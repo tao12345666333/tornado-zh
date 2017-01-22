@@ -214,19 +214,17 @@ class TCPServer(object):
             sock.close()
 
     def handle_stream(self, stream, address):
-        """通过复写这个方法从进来的连接处理一个新的 `.IOStream` .
+        """通过复写这个方法以处理一个来自传入连接的新 `.IOStream` .
 
-        这个方法可能是一个协程; if so any exceptions it raises
-        asynchronously will be logged. Accepting of incoming connections
-        will not be blocked by this coroutine.
+        这个方法可能是一个协程; 如果是这样, 异步引发的任何异常都将被记录.
+        接受传入连接不会被该协程阻塞.
 
-        If this `TCPServer` is configured for SSL, ``handle_stream``
-        may be called before the SSL handshake has completed. Use
-        `.SSLIOStream.wait_for_handshake` if you need to verify the client's
-        certificate or use NPN/ALPN.
+        如果这个 `TCPServer` 被配置为 SSL, ``handle_stream``
+        将在 SSL 握手完成前被调用. 如果你需要验证客户端的证书或使用 NPN/ALPN
+        请使用 `.SSLIOStream.wait_for_handshake` .
 
         .. versionchanged:: 4.2
-           Added the option for this method to be a coroutine.
+           给这个方法添加了选项, 可以为协程.
         """
         raise NotImplementedError()
 
