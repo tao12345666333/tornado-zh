@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding: utf-8
 #
 # Copyright 2011 Facebook
 #
@@ -14,7 +15,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-"""一个非阻塞, 单线程 TCP 服务."""
+u"""一个非阻塞, 单线程 TCP 服务."""
 from __future__ import absolute_import, division, print_function, with_statement
 
 import errno
@@ -36,7 +37,7 @@ except ImportError:
 
 
 class TCPServer(object):
-    r"""一个非阻塞, 单线程的 TCP 服务.
+    u"""一个非阻塞, 单线程的 TCP 服务.
 
     想要使用 `TCPServer`, 只需要定义一个子类, 复写 `handle_stream`
     方法即可. 例如, 一个简单的 echo server 可以做如下定义::
@@ -127,7 +128,7 @@ class TCPServer(object):
                                  self.ssl_options['keyfile'])
 
     def listen(self, port, address=""):
-        """开始在给定的端口接收连接.
+        u"""开始在给定的端口接收连接.
 
         这个方法可能不只被调用一次, 可能会在多个端口上被调用多次.
         `listen` 方法将立即生效, 所以它没必要在 `TCPServer.start` 之后调用.
@@ -137,7 +138,7 @@ class TCPServer(object):
         self.add_sockets(sockets)
 
     def add_sockets(self, sockets):
-        """使服务开始接收给定端口的连接.
+        u"""使服务开始接收给定端口的连接.
 
         ``sockets`` 参数是一个 socket 对象的列表, 例如那些被
         `~tornado.netutil.bind_sockets` 所返回的对象.
@@ -153,11 +154,11 @@ class TCPServer(object):
                                io_loop=self.io_loop)
 
     def add_socket(self, socket):
-        """单数版本的 `add_sockets`.  接受一个单一的 socket 对象."""
+        u"""单数版本的 `add_sockets`.  接受一个单一的 socket 对象."""
         self.add_sockets([socket])
 
     def bind(self, port, address=None, family=socket.AF_UNSPEC, backlog=128):
-        """绑定该服务到指定的地址的指定端口上.
+        u"""绑定该服务到指定的地址的指定端口上.
 
         要启动该服务, 调用 `start`. 如果你想要在一个单进程上运行该服务,
         你可以调用 `listen` 作为顺序调用 `bind` 和 `start` 的一个快捷方式.
@@ -180,7 +181,7 @@ class TCPServer(object):
             self._pending_sockets.extend(sockets)
 
     def start(self, num_processes=1):
-        """在 `.IOLoop` 中启动该服务.
+        u"""在 `.IOLoop` 中启动该服务.
 
         默认情况下, 我们在该进程中运行服务, 并且不会 fork 出任何额外
         的子进程.
@@ -205,7 +206,7 @@ class TCPServer(object):
         self.add_sockets(sockets)
 
     def stop(self):
-        """停止对新连接的监听.
+        u"""停止对新连接的监听.
 
         正在进行的请求可能仍然会继续在服务停止之后.
         """
@@ -214,7 +215,7 @@ class TCPServer(object):
             sock.close()
 
     def handle_stream(self, stream, address):
-        """通过复写这个方法以处理一个来自传入连接的新 `.IOStream` .
+        u"""通过复写这个方法以处理一个来自传入连接的新 `.IOStream` .
 
         这个方法可能是一个协程; 如果是这样, 异步引发的任何异常都将被记录.
         接受传入连接不会被该协程阻塞.
