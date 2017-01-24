@@ -990,7 +990,7 @@ def websocket_connect(url, io_loop=None, callback=None, connect_timeout=None,
     返回值, 将会以同样的方式执行.
 
     这个连接支持两种类型的操作.在协程风格下,应用程序通常在一个循环里调用
-    `～.WebSocketClientConnection.read_message`::
+    `~.WebSocketClientConnection.read_message`::
 
         conn = yield websocket_connect(url)
         while True:
