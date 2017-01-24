@@ -43,7 +43,7 @@ from tornado.util import Configurable
 
 class HTTPServer(TCPServer, Configurable,
                  httputil.HTTPServerConnectionDelegate):
-    ur"""非阻塞，单线程 HTTP server。
+    u"""非阻塞，单线程 HTTP server。
 
     一个server可以由一个 `.HTTPServerConnectionDelegate` 的子类定义，
     或者，为了向后兼容，由一个以 `.HTTPServerRequest` 为参数的callback定义。
