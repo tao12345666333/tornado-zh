@@ -1,27 +1,27 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-"""阻塞和非阻塞 HTTP 客户端接口.
+"""阻塞和非阻塞的 HTTP 客户端接口.
 
 这个模块定义了一个被两种实现方式 ``simple_httpclient`` 和
-``curl_httpclient`` 共享的通用接口 . 应用程序可以选择直接实例化实现类
+``curl_httpclient`` 共享的通用接口 . 应用程序可以选择直接实例化相对应的实现类,
 或使用本模块提供的 `AsyncHTTPClient` 类, 通过复写
 `AsyncHTTPClient.configure` 方法来选择一种实现 .
 
-默认的实现是 ``simple_httpclient``, 这将能满足大多数用户的需要 . 然而, 一
+默认的实现是 ``simple_httpclient``, 这可以能满足大多数用户的需要 . 然而, 一
 些应用程序可能会因为以下原因想切换到 ``curl_httpclient`` :
 
 * ``curl_httpclient`` 有一些 ``simple_httpclient`` 不具有的功能特性,
   包括对 HTTP 代理和使用指定网络接口能力的支持.
 
-* ``curl_httpclient`` 更有可能与不完全符合 HTTP 规范的网站兼容, 或者
-  使用很少运行的 HTTP 特性的网站兼容.
+* ``curl_httpclient`` 更有可能与不完全符合 HTTP 规范的网站兼容, 或者与
+  使用很少使用 HTTP 特性的网站兼容.
 
 * ``curl_httpclient`` 更快.
 
 * ``curl_httpclient`` 是 Tornado 2.0 之前的默认值.
 
-注意如果你正在使用 ``curl_httpclient``, 强力建议你使用最新版本的
+注意, 如果你正在使用 ``curl_httpclient``, 强力建议你使用最新版本的
 ``libcurl`` 和 ``pycurl``.  当前 libcurl 能被支持的最小版本是
 7.21.1, pycurl 能被支持的最小版本是 7.18.2. 强烈建议你所安装的 ``libcurl``
 是和异步 DNS 解析器 (threaded 或 c-ares) 一起构建的,
@@ -51,7 +51,7 @@ from tornado.util import Configurable
 class HTTPClient(object):
     """一个阻塞的 HTTP 客户端.
 
-    这个接口被提供是为了方便使用和测试 ; 大多数运行于 IOLoop 的应用程序
+    提供这个接口是为了方便使用和测试; 大多数运行于 IOLoop 的应用程序
     会使用 `AsyncHTTPClient` 来替代它.
     一般的用法就像这样 ::
 
@@ -86,9 +86,9 @@ class HTTPClient(object):
             self._closed = True
 
     def fetch(self, request, **kwargs):
-        """执行一个请求, 返回一个 `HTTPResponse`.
+        """执行一个请求, 返回一个 `HTTPResponse` 对象.
 
-        该请求可以是一个 URL 字符串或者一个 `HTTPRequest` 对象.
+        该请求可以是一个 URL 字符串或是一个 `HTTPRequest` 对象.
         如果它是一个字符串, 我们会使用任意关键字参数构造一个
         `HTTPRequest` : ``HTTPRequest(request, **kwargs)``
 
@@ -114,11 +114,11 @@ class AsyncHTTPClient(Configurable):
         http_client = AsyncHTTPClient()
         http_client.fetch("http://www.google.com/", handle_request)
 
-    这个类的构造器在几个考虑上是神奇的: 它实际创建了一个特定实现的子
-    类的实例, 并且实例被作为一种伪单例重用 (每一个 `.IOLoop`).
-    关键字参数 ``force_instance=True`` 可以被用来抑制这种单例行为.
-    除非 ``force_instance=True`` 被使用, 除了 ``io_loop`` 以外其他
-    参数都不应该传递给 `AsyncHTTPClient` 构造器.
+    这个类的构造器有几个比较神奇的考虑: 它实际创建了一个基于特定实现的子
+    类的实例, 并且该实例被作为一种伪单例重用 (每一个 `.IOLoop` ).
+    使用关键字参数 ``force_instance=True`` 可以用来限制这种单例行为.
+    只有使用了 ``force_instance=True`` 时候, 才可以传递 ``io_loop`` 以外其他
+    的参数给 `AsyncHTTPClient` 构造器.
     实现的子类以及它的构造器的参数可以通过静态方法 `configure()` 设置.
 
     所有 `AsyncHTTPClient` 实现都支持一个 ``defaults`` 关键字参数,
@@ -178,14 +178,13 @@ class AsyncHTTPClient(Configurable):
     def close(self):
         """销毁该 HTTP 客户端, 释放所有被使用的文件描述符.
 
-        This method is **not needed in normal use** due to the way
-        that `AsyncHTTPClient` objects are transparently reused.
-        ``close()`` is generally only necessary when either the
-        `.IOLoop` is also being closed, or the ``force_instance=True``
-        argument was used when creating the `AsyncHTTPClient`.
+        因为 `AsyncHTTPClient` 对象透明重用的方式, 该方法
+        **在正常使用时并不需要** .
+        ``close()`` 一般只有在`.IOLoop` 也被关闭, 或在创建
+        `AsyncHTTPClient` 的时候使用了 ``force_instance=True`` 参数才需要.
 
-        No other methods may be called on the `AsyncHTTPClient` after
-        ``close()``.
+        在 `AsyncHTTPClient` 调用 ``close()`` 方法后, 其他方法就不能被调用
+        了.
 
         """
         if self._closed:
