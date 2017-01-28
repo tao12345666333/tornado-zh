@@ -250,21 +250,18 @@ class AsyncHTTPClient(Configurable):
 
     @classmethod
     def configure(cls, impl, **kwargs):
-        """配置 `AsyncHTTPClient` 使用的子类.
+        """配置要使用的 `AsyncHTTPClient` 子类.
 
-        ``AsyncHTTPClient()`` 实际创建一个这个子类的实例.
-        This method may be called with either a class object or the
-        fully-qualified name of such a class (or ``None`` to use the default,
-        ``SimpleAsyncHTTPClient``)
+        ``AsyncHTTPClient()`` 实际上是创建一个子类的实例.
+        此方法可以使用一个类对象或此类的完全限定名称(或为 ``None`` 则使用默认的,
+        ``SimpleAsyncHTTPClient``) 调用.
 
-        If additional keyword arguments are given, they will be passed
-        to the constructor of each subclass instance created.  The
-        keyword argument ``max_clients`` determines the maximum number
-        of simultaneous `~AsyncHTTPClient.fetch()` operations that can
-        execute in parallel on each `.IOLoop`.  Additional arguments
-        may be supported depending on the implementation class in use.
+        如果给定了额外的关键字参数, 它们将会被传递给创建的每个子类实例的
+        构造函数. 关键字参数 ``max_clients`` 确定了可以在每个 `.IOLoop` 上
+        并行执行的 `~AsyncHTTPClient.fetch()` 操作的最大数量. 根据使用的
+        实现类不同, 可能支持其他参数.
 
-        Example::
+        例如::
 
            AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
         """
