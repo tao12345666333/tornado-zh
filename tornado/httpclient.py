@@ -196,22 +196,20 @@ class AsyncHTTPClient(Configurable):
             del self._instance_cache[self.io_loop]
 
     def fetch(self, request, callback=None, raise_error=True, **kwargs):
-        """执行一个请求, 异步的返回一个 `HTTPResponse`.
+        """执行一个请求, 并且异步的返回 `HTTPResponse`.
 
-        The request may be either a string URL or an `HTTPRequest` object.
-        If it is a string, we construct an `HTTPRequest` using any additional
-        kwargs: ``HTTPRequest(request, **kwargs)``
+        request 参数可以是一个 URL 字符串也可以是一个 `HTTPRequest` 对象.
+        如果是一个字符串, 我们将使用全部的关键字参数一起构造一个
+        `HTTPRequest` 对象: ``HTTPRequest(request, **kwargs)``
 
-        This method returns a `.Future` whose result is an
-        `HTTPResponse`.  By default, the ``Future`` will raise an `HTTPError`
-        if the request returned a non-200 response code. Instead, if
-        ``raise_error`` is set to False, the response will always be
-        returned regardless of the response code.
+        这个方法返回一个结果为 `HTTPResponse` 的 `.Future` 对象.
+        默认情况下, 如果该请求返回一个非 200 的响应码, 这个 ``Future``
+        将会抛出一个 `HTTPError` 错误. 相反, 如果 ``raise_error`` 设置为
+        False, 则无论响应码如何, 都将返回该 response (响应).
 
-        If a ``callback`` is given, it will be invoked with the `HTTPResponse`.
-        In the callback interface, `HTTPError` is not automatically raised.
-        Instead, you must check the response's ``error`` attribute or
-        call its `~HTTPResponse.rethrow` method.
+        如果给定了 ``callback`` , 它将被 `HTTPResponse` 调用.
+        在回调接口中, `HTTPError` 不会自动抛出. 相反你必须检查该响应的
+        ``error`` 属性或者调用它的 `~HTTPResponse.rethrow` 方法.
         """
         if self._closed:
             raise RuntimeError("fetch() called on closed AsyncHTTPClient")
