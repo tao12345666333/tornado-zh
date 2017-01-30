@@ -298,14 +298,14 @@ class HTTPRequest(object):
                  client_key=None, client_cert=None, body_producer=None,
                  expect_100_continue=False, decompress_response=None,
                  ssl_options=None):
-        r"""All parameters except ``url`` are optional.
+        r"""除了 ``url`` 以外所有参数都是可选的.
 
-        :arg string url: URL to fetch
-        :arg string method: HTTP method, e.g. "GET" or "POST"
-        :arg headers: Additional HTTP headers to pass on the request
-        :type headers: `~tornado.httputil.HTTPHeaders` or `dict`
-        :arg body: HTTP request body as a string (byte or unicode; if unicode
-           the utf-8 encoding will be used)
+        :arg string url: fetch 的 URL
+        :arg string method: HTTP 方法, e.g. "GET" or "POST"
+        :arg headers: 额外的 HTTP 请求头
+        :type headers: `~tornado.httputil.HTTPHeaders` 或 `dict`
+        :arg body: HTTP 请求体字符串 (byte 或 unicode; 如果是 unicode
+           则使用 utf-8 编码)
         :arg body_producer: Callable used for lazy/asynchronous request bodies.
            It is called with one argument, a ``write`` function, and should
            return a `.Future`.  It should call the write function with new
