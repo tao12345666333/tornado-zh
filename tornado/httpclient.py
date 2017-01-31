@@ -317,27 +317,26 @@ class HTTPRequest(object):
            to pass a ``Content-Length`` in the headers as otherwise chunked
            encoding will be used, and many servers do not support chunked
            encoding on requests.  New in Tornado 4.0
-        :arg string auth_username: Username for HTTP authentication
-        :arg string auth_password: Password for HTTP authentication
-        :arg string auth_mode: Authentication mode; default is "basic".
+        :arg string auth_username: HTTP 认证的用户名
+        :arg string auth_password: HTTP 认证的密码
+        :arg string auth_mode: 认证模式; 默认是 "basic".
            Allowed values are implementation-defined; ``curl_httpclient``
            supports "basic" and "digest"; ``simple_httpclient`` only supports
            "basic"
         :arg float connect_timeout: Timeout for initial connection in seconds
         :arg float request_timeout: Timeout for entire request in seconds
-        :arg if_modified_since: Timestamp for ``If-Modified-Since`` header
-        :type if_modified_since: `datetime` or `float`
+        :arg if_modified_since: ``If-Modified-Since`` 头的时间戳
+        :type if_modified_since: `datetime` 或 `float`
         :arg bool follow_redirects: Should redirects be followed automatically
            or return the 3xx response?
-        :arg int max_redirects: Limit for ``follow_redirects``
+        :arg int max_redirects: ``follow_redirects`` 的限制
         :arg string user_agent: String to send as ``User-Agent`` header
         :arg bool decompress_response: Request a compressed response from
            the server and decompress it after downloading.  Default is True.
            New in Tornado 4.0.
-        :arg bool use_gzip: Deprecated alias for ``decompress_response``
-           since Tornado 4.0.
-        :arg string network_interface: Network interface to use for request.
-           ``curl_httpclient`` only; see note below.
+        :arg bool use_gzip: ``decompress_response`` 的别名从 Tornado 4.0已弃用.
+        :arg string network_interface: 请求所使用的网络接口.
+           只有 ``curl_httpclient`` ; 请看下面的备注.
         :arg callable streaming_callback: If set, ``streaming_callback`` will
            be run with each chunk of data as it is received, and
            ``HTTPResponse.body`` and ``HTTPResponse.buffer`` will be empty in
@@ -357,11 +356,10 @@ class HTTPRequest(object):
            ``proxy_host`` and ``proxy_port`` must be set; ``proxy_username`` and
            ``proxy_pass`` are optional.  Proxies are currently only supported
            with ``curl_httpclient``.
-        :arg int proxy_port: HTTP proxy port
-        :arg string proxy_username: HTTP proxy username
-        :arg string proxy_password: HTTP proxy password
-        :arg bool allow_nonstandard_methods: Allow unknown values for ``method``
-           argument?
+        :arg int proxy_port: HTTP 代理端口
+        :arg string proxy_username: HTTP 代理用户名
+        :arg string proxy_password: HTTP 代理密码
+        :arg bool allow_nonstandard_methods: 允许 ``method`` 参数使用未知值?
         :arg bool validate_cert: For HTTPS requests, validate the server's
            certificate?
         :arg string ca_certs: filename of CA certificates in PEM format,
