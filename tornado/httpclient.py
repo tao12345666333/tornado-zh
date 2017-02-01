@@ -352,19 +352,16 @@ class HTTPRequest(object):
         :arg callable prepare_curl_callback: If set, will be called with
            a ``pycurl.Curl`` object to allow the application to make additional
            ``setopt`` calls.
-        :arg string proxy_host: HTTP proxy hostname.  To use proxies,
-           ``proxy_host`` and ``proxy_port`` must be set; ``proxy_username`` and
-           ``proxy_pass`` are optional.  Proxies are currently only supported
-           with ``curl_httpclient``.
+        :arg string proxy_host: HTTP 代理主机名.  如果想要使用代理,
+           ``proxy_host`` 和 ``proxy_port`` 必须设置; ``proxy_username`` 和
+           ``proxy_pass`` 是可选项.  目前只有 ``curl_httpclient`` 支持代理.
         :arg int proxy_port: HTTP 代理端口
         :arg string proxy_username: HTTP 代理用户名
         :arg string proxy_password: HTTP 代理密码
         :arg bool allow_nonstandard_methods: 允许 ``method`` 参数使用未知值?
-        :arg bool validate_cert: For HTTPS requests, validate the server's
-           certificate?
-        :arg string ca_certs: filename of CA certificates in PEM format,
-           or None to use defaults.  See note below when used with
-           ``curl_httpclient``.
+        :arg bool validate_cert: 对于 HTTPS 请求, 是否验证服务器的证书?
+        :arg string ca_certs: PEM 格式的 CA 证书的文件名, 或者默认为 None.
+           当用于 ``curl_httpclient`` 时, 请查看下面的注意事项.
         :arg string client_key: Filename for client SSL key, if any.  See
            note below when used with ``curl_httpclient``.
         :arg string client_cert: Filename for client SSL certificate, if any.
@@ -392,13 +389,13 @@ class HTTPRequest(object):
             use the defaults).
 
         .. versionadded:: 3.1
-           The ``auth_mode`` argument.
+           ``auth_mode`` 参数.
 
         .. versionadded:: 4.0
-           The ``body_producer`` and ``expect_100_continue`` arguments.
+           ``body_producer`` 和 ``expect_100_continue`` 参数.
 
         .. versionadded:: 4.2
-           The ``ssl_options`` argument.
+           ``ssl_options`` 参数.
         """
         # Note that some of these attributes go through property setters
         # defined below.
@@ -499,22 +496,22 @@ class HTTPResponse(object):
 
     * request: HTTPRequest 对象
 
-    * code: numeric HTTP status code, e.g. 200 or 404
+    * code: HTTP 状态码数值, e.g. 200 或 404
 
-    * reason: human-readable reason phrase describing the status code
+    * reason: 人类可读的, 对状态码原因的简短描述
 
-    * headers: `tornado.httputil.HTTPHeaders` object
+    * headers: `tornado.httputil.HTTPHeaders` 对象
 
     * effective_url: final location of the resource after following any
       redirects
 
-    * buffer: ``cStringIO`` object for response body
+    * buffer: 响应体的 ``cStringIO`` 对象
 
-    * body: response body as string (created on demand from ``self.buffer``)
+    * body: string 化的响应体 (created on demand from ``self.buffer``)
 
-    * error: Exception object, if any
+    * error: 任何异常对象
 
-    * request_time: seconds from request start to finish
+    * request_time: 请求开始到结束的时间(秒)
 
     * time_info: dictionary of diagnostic timing information from the request.
       Available data are subject to change, but currently uses timings
@@ -563,7 +560,7 @@ class HTTPResponse(object):
     body = property(_get_body)
 
     def rethrow(self):
-        """If there was an error on the request, raise an `HTTPError`."""
+        """如果请求中有错误发生, 抛出一个 `HTTPError`."""
         if self.error:
             raise self.error
 
