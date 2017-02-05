@@ -320,27 +320,24 @@ class HTTPRequest(object):
         :arg string auth_username: HTTP 认证的用户名
         :arg string auth_password: HTTP 认证的密码
         :arg string auth_mode: 认证模式; 默认是 "basic".
-           Allowed values are implementation-defined; ``curl_httpclient``
-           supports "basic" and "digest"; ``simple_httpclient`` only supports
-           "basic"
-        :arg float connect_timeout: Timeout for initial connection in seconds
-        :arg float request_timeout: Timeout for entire request in seconds
+           所允许的值是实现方式定义的; ``curl_httpclient``
+           支持 "basic" 和 "digest"; ``simple_httpclient`` 只支持 "basic"
+        :arg float connect_timeout: 初始化连接的超时时间
+        :arg float request_timeout: 整个请求的超时时间
         :arg if_modified_since: ``If-Modified-Since`` 头的时间戳
         :type if_modified_since: `datetime` 或 `float`
-        :arg bool follow_redirects: Should redirects be followed automatically
-           or return the 3xx response?
-        :arg int max_redirects: ``follow_redirects`` 的限制
-        :arg string user_agent: String to send as ``User-Agent`` header
-        :arg bool decompress_response: Request a compressed response from
-           the server and decompress it after downloading.  Default is True.
-           New in Tornado 4.0.
-        :arg bool use_gzip: ``decompress_response`` 的别名从 Tornado 4.0已弃用.
+        :arg bool follow_redirects: 是否应该自动跟随重定向还是返回 3xx 响应?
+        :arg int max_redirects: ``follow_redirects`` 的最大次数限制
+        :arg string user_agent: ``User-Agent`` 头
+        :arg bool decompress_response: 从服务器请求一个压缩过的响应, 在下载
+           后对其解压缩.  默认是 True.
+           Tornado 4.0 新增.
+        :arg bool use_gzip: ``decompress_response`` 的别名从 Tornado 4.0 已弃用.
         :arg string network_interface: 请求所使用的网络接口.
            只有 ``curl_httpclient`` ; 请看下面的备注.
-        :arg callable streaming_callback: If set, ``streaming_callback`` will
-           be run with each chunk of data as it is received, and
-           ``HTTPResponse.body`` and ``HTTPResponse.buffer`` will be empty in
-           the final response.
+        :arg callable streaming_callback: 如果设置了, ``streaming_callback`` 将
+           用它接收到的数据块执行, 并且
+           ``HTTPResponse.body`` 和 ``HTTPResponse.buffer`` 在最后的响应中将为空.
         :arg callable header_callback: If set, ``header_callback`` will
            be run with each header line as it is received (including the
            first line, e.g. ``HTTP/1.0 200 OK\r\n``, and a final line
@@ -370,7 +367,7 @@ class HTTPRequest(object):
            ``simple_httpclient`` (unsupported by ``curl_httpclient``).
            Overrides ``validate_cert``, ``ca_certs``, ``client_key``,
            and ``client_cert``.
-        :arg bool allow_ipv6: Use IPv6 when available?  Default is true.
+        :arg bool allow_ipv6: 当 IPv6 可用时是否使用?  默认是 true.
         :arg bool expect_100_continue: If true, send the
            ``Expect: 100-continue`` header and wait for a continue response
            before sending the request body.  Only supported with
