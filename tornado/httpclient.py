@@ -572,13 +572,13 @@ class HTTPError(Exception):
     属性:
 
     * ``code`` - 整数的 HTTP 错误码, e.g. 404. 当没有接收到 HTTP 响应时
-      将会使用 599 错误码, e.g. for a timeout.
+      将会使用 599 错误码, e.g. 超时.
 
-    * ``response`` - `HTTPResponse` object, if any.
+    * ``response`` - 全部的 `HTTPResponse` 对象.
 
     注意如果 ``follow_redirects`` 为 False, 重定向将导致 HTTPErrors,
-    and you can look at ``error.response.headers['Location']`` to see the
-    destination of the redirect.
+    and 你可以通过 ``error.response.headers['Location']`` 查看重定向的
+    描述.
     """
     def __init__(self, code, message=None, response=None):
         self.code = code
