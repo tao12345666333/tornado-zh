@@ -361,7 +361,7 @@ class HTTPRequest(object):
            当用于 ``curl_httpclient`` 时, 请查看下面的注意事项.
         :arg string client_key: Filename for client SSL key, if any.  See
            note below when used with ``curl_httpclient``.
-        :arg string client_cert: Filename for client SSL certificate, if any.
+        :arg string client_cert: 客户端 SSL 证书的文件名, if any.
            See note below when used with ``curl_httpclient``.
         :arg ssl.SSLContext ssl_options: `ssl.SSLContext` object for use in
            ``simple_httpclient`` (unsupported by ``curl_httpclient``).
