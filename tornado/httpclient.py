@@ -503,17 +503,17 @@ class HTTPResponse(object):
 
     * buffer: 响应体的 ``cStringIO`` 对象
 
-    * body: string 化的响应体 (created on demand from ``self.buffer``)
+    * body: string 化的响应体 (从 ``self.buffer`` 的需求创建)
 
     * error: 任何异常对象
 
     * request_time: 请求开始到结束的时间(秒)
 
-    * time_info: dictionary of diagnostic timing information from the request.
-      Available data are subject to change, but currently uses timings
-      available from http://curl.haxx.se/libcurl/c/curl_easy_getinfo.html,
-      plus ``queue``, which is the delay (if any) introduced by waiting for
-      a slot under `AsyncHTTPClient`'s ``max_clients`` setting.
+    * time_info: 来自请求的诊断时间信息的字典.
+      可用数据可能会更改, 不过当前在用的时间信息是
+      http://curl.haxx.se/libcurl/c/curl_easy_getinfo.html,
+      加上 ``queue``, 这是通过等待在 `AsyncHTTPClient` 的 ``max_clients``
+      设置下的插槽引入的延迟(如果有的话).
     """
     def __init__(self, request, code, headers=None, buffer=None,
                  effective_url=None, error=None, request_time=None,
@@ -556,7 +556,7 @@ class HTTPResponse(object):
     body = property(_get_body)
 
     def rethrow(self):
-        """如果请求中有错误发生, 抛出一个 `HTTPError`."""
+        """如果请求中有错误发生, 将抛出一个 `HTTPError`."""
         if self.error:
             raise self.error
 
@@ -576,7 +576,7 @@ class HTTPError(Exception):
     * ``response`` - 全部的 `HTTPResponse` 对象.
 
     注意如果 ``follow_redirects`` 为 False, 重定向将导致 HTTPErrors,
-    and 你可以通过 ``error.response.headers['Location']`` 查看重定向的
+    并且你可以通过 ``error.response.headers['Location']`` 查看重定向的
     描述.
     """
     def __init__(self, code, message=None, response=None):
