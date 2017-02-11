@@ -338,7 +338,7 @@ class HTTPRequest(object):
         :arg callable streaming_callback: 如果设置了, ``streaming_callback`` 将
            用它接收到的数据块执行, 并且
            ``HTTPResponse.body`` 和 ``HTTPResponse.buffer`` 在最后的响应中将为空.
-        :arg callable header_callback: If set, ``header_callback`` will
+        :arg callable header_callback: 如果设置了, ``header_callback`` will
            be run with each header line as it is received (including the
            first line, e.g. ``HTTP/1.0 200 OK\r\n``, and a final line
            containing only ``\r\n``.  All lines include the trailing newline
@@ -499,8 +499,7 @@ class HTTPResponse(object):
 
     * headers: `tornado.httputil.HTTPHeaders` 对象
 
-    * effective_url: final location of the resource after following any
-      redirects
+    * effective_url: 跟随重定向后资源的最后位置
 
     * buffer: 响应体的 ``cStringIO`` 对象
 
