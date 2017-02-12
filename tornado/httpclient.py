@@ -306,17 +306,15 @@ class HTTPRequest(object):
         :type headers: `~tornado.httputil.HTTPHeaders` 或 `dict`
         :arg body: HTTP 请求体字符串 (byte 或 unicode; 如果是 unicode
            则使用 utf-8 编码)
-        :arg body_producer: Callable used for lazy/asynchronous request bodies.
-           It is called with one argument, a ``write`` function, and should
-           return a `.Future`.  It should call the write function with new
-           data as it becomes available.  The write function returns a
-           `.Future` which can be used for flow control.
-           Only one of ``body`` and ``body_producer`` may
-           be specified.  ``body_producer`` is not supported on
-           ``curl_httpclient``.  When using ``body_producer`` it is recommended
-           to pass a ``Content-Length`` in the headers as otherwise chunked
-           encoding will be used, and many servers do not support chunked
-           encoding on requests.  New in Tornado 4.0
+        :arg body_producer: 可以被用于延迟/异步请求体调用.
+           它可以被调用, 带有一个参数, 一个 ``write`` 函数, 并应该
+           返回一个 `.Future` 对象.  它应该在新的数据可用时调用 write 函数.
+           write 函数返回一个可用于流程控制的 `.Future` 对象.
+           只能指定 ``body`` 和 ``body_producer`` 其中之一.
+           ``body_producer`` 不被 ``curl_httpclient`` 支持.
+           当使用 ``body_producer`` 时, 建议传递一个
+           ``Content-Length`` 头, 否则将使用其他的分块编码,
+           并且很多服务断不支持请求的分块编码.  New in Tornado 4.0
         :arg string auth_username: HTTP 认证的用户名
         :arg string auth_password: HTTP 认证的密码
         :arg string auth_mode: 认证模式; 默认是 "basic".
