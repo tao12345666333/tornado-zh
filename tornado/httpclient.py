@@ -314,11 +314,11 @@ class HTTPRequest(object):
            ``body_producer`` 不被 ``curl_httpclient`` 支持.
            当使用 ``body_producer`` 时, 建议传递一个
            ``Content-Length`` 头, 否则将使用其他的分块编码,
-           并且很多服务断不支持请求的分块编码.  New in Tornado 4.0
+           并且很多服务断不支持请求的分块编码.  Tornado 4.0 新增
         :arg string auth_username: HTTP 认证的用户名
         :arg string auth_password: HTTP 认证的密码
         :arg string auth_mode: 认证模式; 默认是 "basic".
-           所允许的值是实现方式定义的; ``curl_httpclient``
+           所允许的值是根据实现方式定义的; ``curl_httpclient``
            支持 "basic" 和 "digest"; ``simple_httpclient`` 只支持 "basic"
         :arg float connect_timeout: 初始化连接的超时时间
         :arg float request_timeout: 整个请求的超时时间
@@ -336,17 +336,15 @@ class HTTPRequest(object):
         :arg callable streaming_callback: 如果设置了, ``streaming_callback`` 将
            用它接收到的数据块执行, 并且
            ``HTTPResponse.body`` 和 ``HTTPResponse.buffer`` 在最后的响应中将为空.
-        :arg callable header_callback: 如果设置了, ``header_callback`` will
-           be run with each header line as it is received (including the
-           first line, e.g. ``HTTP/1.0 200 OK\r\n``, and a final line
-           containing only ``\r\n``.  All lines include the trailing newline
-           characters).  ``HTTPResponse.headers`` will be empty in the final
-           response.  This is most useful in conjunction with
-           ``streaming_callback``, because it's the only way to get access to
-           header data while the request is in progress.
-        :arg callable prepare_curl_callback: If set, will be called with
-           a ``pycurl.Curl`` object to allow the application to make additional
-           ``setopt`` calls.
+        :arg callable header_callback: 如果设置了, ``header_callback`` 将
+           在接收到每行头信息时运行(包括第一行, e.g. ``HTTP/1.0 200 OK\r\n``,
+           最后一行只包含 ``\r\n``.  所有行都包含结尾的换行符).
+           ``HTTPResponse.headers`` 在最终响应中将为空.  这与
+           ``streaming_callback`` 结合是最有用的, 因为它是在请求正在进行时
+           访问头信息唯一的方法.
+        :arg callable prepare_curl_callback: 如果设置, 将使用
+           ``pycurl.Curl`` 对象调用, 以允许应用程序进行额外的
+           ``setopt`` 调用.
         :arg string proxy_host: HTTP 代理主机名.  如果想要使用代理,
            ``proxy_host`` 和 ``proxy_port`` 必须设置; ``proxy_username`` 和
            ``proxy_pass`` 是可选项.  目前只有 ``curl_httpclient`` 支持代理.
@@ -356,22 +354,22 @@ class HTTPRequest(object):
         :arg bool allow_nonstandard_methods: 允许 ``method`` 参数使用未知值?
         :arg bool validate_cert: 对于 HTTPS 请求, 是否验证服务器的证书?
         :arg string ca_certs: PEM 格式的 CA 证书的文件名, 或者默认为 None.
-           当用于 ``curl_httpclient`` 时, 请查看下面的注意事项.
-        :arg string client_key: Filename for client SSL key, if any.  See
-           note below when used with ``curl_httpclient``.
-        :arg string client_cert: 客户端 SSL 证书的文件名, if any.
-           See note below when used with ``curl_httpclient``.
-        :arg ssl.SSLContext ssl_options: `ssl.SSLContext` object for use in
-           ``simple_httpclient`` (unsupported by ``curl_httpclient``).
-           Overrides ``validate_cert``, ``ca_certs``, ``client_key``,
-           and ``client_cert``.
+           当与 ``curl_httpclient`` 一起使用时参阅下面的注释.
+        :arg string client_key: 客户端 SSL key 文件名(如果有).
+           当与 ``curl_httpclient`` 一起使用时参阅下面的注释.
+        :arg string client_cert: 客户端 SSL 证书的文件名(如果有).
+           当与 ``curl_httpclient`` 一起使用时参阅下面的注释.
+        :arg ssl.SSLContext ssl_options: 用在
+           ``simple_httpclient`` (``curl_httpclient`` 不支持) 的
+           `ssl.SSLContext` 对象.
+           覆写 ``validate_cert``, ``ca_certs``, ``client_key``,
+           和 ``client_cert``.
         :arg bool allow_ipv6: 当 IPv6 可用时是否使用?  默认是 true.
-        :arg bool expect_100_continue: If true, send the
-           ``Expect: 100-continue`` header and wait for a continue response
-           before sending the request body.  Only supported with
-           simple_httpclient.
+        :arg bool expect_100_continue: 如果为 true, 发送
+           ``Expect: 100-continue`` 头并在发送请求体前等待继续响应.
+           只被 simple_httpclient 支持.
 
-        .. note::
+        .. 注意::
 
             When using ``curl_httpclient`` certain options may be
             inherited by subsequent fetches because ``pycurl`` does
