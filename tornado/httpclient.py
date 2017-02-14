@@ -1,39 +1,36 @@
-"""Blocking and non-blocking HTTP client interfaces.
+#!/usr/bin/env python
+# coding: utf-8
 
-This module defines a common interface shared by two implementations,
-``simple_httpclient`` and ``curl_httpclient``.  Applications may either
-instantiate their chosen implementation class directly or use the
-`AsyncHTTPClient` class from this module, which selects an implementation
-that can be overridden with the `AsyncHTTPClient.configure` method.
+"""阻塞和非阻塞的 HTTP 客户端接口.
 
-The default implementation is ``simple_httpclient``, and this is expected
-to be suitable for most users' needs.  However, some applications may wish
-to switch to ``curl_httpclient`` for reasons such as the following:
+这个模块定义了一个被两种实现方式 ``simple_httpclient`` 和
+``curl_httpclient`` 共享的通用接口 . 应用程序可以选择直接实例化相对应的实现类,
+或使用本模块提供的 `AsyncHTTPClient` 类, 通过复写
+`AsyncHTTPClient.configure` 方法来选择一种实现 .
 
-* ``curl_httpclient`` has some features not found in ``simple_httpclient``,
-  including support for HTTP proxies and the ability to use a specified
-  network interface.
+默认的实现是 ``simple_httpclient``, 这可以能满足大多数用户的需要 . 然而, 一
+些应用程序可能会因为以下原因想切换到 ``curl_httpclient`` :
 
-* ``curl_httpclient`` is more likely to be compatible with sites that are
-  not-quite-compliant with the HTTP spec, or sites that use little-exercised
-  features of HTTP.
+* ``curl_httpclient`` 有一些 ``simple_httpclient`` 不具有的功能特性,
+  包括对 HTTP 代理和使用指定网络接口能力的支持.
 
-* ``curl_httpclient`` is faster.
+* ``curl_httpclient`` 更有可能与不完全符合 HTTP 规范的网站兼容, 或者与
+  使用很少使用 HTTP 特性的网站兼容.
 
-* ``curl_httpclient`` was the default prior to Tornado 2.0.
+* ``curl_httpclient`` 更快.
 
-Note that if you are using ``curl_httpclient``, it is highly
-recommended that you use a recent version of ``libcurl`` and
-``pycurl``.  Currently the minimum supported version of libcurl is
-7.21.1, and the minimum version of pycurl is 7.18.2.  It is highly
-recommended that your ``libcurl`` installation is built with
-asynchronous DNS resolver (threaded or c-ares), otherwise you may
-encounter various problems with request timeouts (for more
-information, see
+* ``curl_httpclient`` 是 Tornado 2.0 之前的默认值.
+
+注意, 如果你正在使用 ``curl_httpclient``, 强力建议你使用最新版本的
+``libcurl`` 和 ``pycurl``.  当前 libcurl 能被支持的最小版本是
+7.21.1, pycurl 能被支持的最小版本是 7.18.2. 强烈建议你所安装的 ``libcurl``
+是和异步 DNS 解析器 (threaded 或 c-ares) 一起构建的,
+否则你可能会遇到各种请求超时的问题 (更多信息请查看
 http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTCONNECTTIMEOUTMS
-and comments in curl_httpclient.py).
+和 curl_httpclient.py 里面的注释).
 
-To select ``curl_httpclient``, call `AsyncHTTPClient.configure` at startup::
+为了选择 ``curl_httpclient``, 只需要在启动的时候调用
+`AsyncHTTPClient.configure` ::
 
     AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
 """
@@ -52,11 +49,11 @@ from tornado.util import Configurable
 
 
 class HTTPClient(object):
-    """A blocking HTTP client.
+    """一个阻塞的 HTTP 客户端.
 
-    This interface is provided for convenience and testing; most applications
-    that are running an IOLoop will want to use `AsyncHTTPClient` instead.
-    Typical usage looks like this::
+    提供这个接口是为了方便使用和测试; 大多数运行于 IOLoop 的应用程序
+    会使用 `AsyncHTTPClient` 来替代它.
+    一般的用法就像这样 ::
 
         http_client = httpclient.HTTPClient()
         try:
@@ -82,21 +79,21 @@ class HTTPClient(object):
         self.close()
 
     def close(self):
-        """Closes the HTTPClient, freeing any resources used."""
+        """关闭该 HTTPClient, 释放所有使用的资源."""
         if not self._closed:
             self._async_client.close()
             self._io_loop.close()
             self._closed = True
 
     def fetch(self, request, **kwargs):
-        """Executes a request, returning an `HTTPResponse`.
+        """执行一个请求, 返回一个 `HTTPResponse` 对象.
 
-        The request may be either a string URL or an `HTTPRequest` object.
-        If it is a string, we construct an `HTTPRequest` using any additional
-        kwargs: ``HTTPRequest(request, **kwargs)``
+        该请求可以是一个 URL 字符串或是一个 `HTTPRequest` 对象.
+        如果它是一个字符串, 我们会使用任意关键字参数构造一个
+        `HTTPRequest` : ``HTTPRequest(request, **kwargs)``
 
-        If an error occurs during the fetch, we raise an `HTTPError` unless
-        the ``raise_error`` keyword argument is set to False.
+        如果在 fetch 过程中发生错误, 我们将抛出一个 `HTTPError` 除非
+        ``raise_error`` 关键字参数被设置为 False.
         """
         response = self._io_loop.run_sync(functools.partial(
             self._async_client.fetch, request, **kwargs))
@@ -104,9 +101,9 @@ class HTTPClient(object):
 
 
 class AsyncHTTPClient(Configurable):
-    """An non-blocking HTTP client.
+    """一个非阻塞 HTTP 客户端.
 
-    Example usage::
+    使用示例::
 
         def handle_request(response):
             if response.error:
@@ -117,19 +114,15 @@ class AsyncHTTPClient(Configurable):
         http_client = AsyncHTTPClient()
         http_client.fetch("http://www.google.com/", handle_request)
 
-    The constructor for this class is magic in several respects: It
-    actually creates an instance of an implementation-specific
-    subclass, and instances are reused as a kind of pseudo-singleton
-    (one per `.IOLoop`).  The keyword argument ``force_instance=True``
-    can be used to suppress this singleton behavior.  Unless
-    ``force_instance=True`` is used, no arguments other than
-    ``io_loop`` should be passed to the `AsyncHTTPClient` constructor.
-    The implementation subclass as well as arguments to its
-    constructor can be set with the static method `configure()`
+    这个类的构造器有几个比较神奇的考虑: 它实际创建了一个基于特定实现的子
+    类的实例, 并且该实例被作为一种伪单例重用 (每一个 `.IOLoop` ).
+    使用关键字参数 ``force_instance=True`` 可以用来限制这种单例行为.
+    只有使用了 ``force_instance=True`` 时候, 才可以传递 ``io_loop`` 以外其他
+    的参数给 `AsyncHTTPClient` 构造器.
+    实现的子类以及它的构造器的参数可以通过静态方法 `configure()` 设置.
 
-    All `AsyncHTTPClient` implementations support a ``defaults``
-    keyword argument, which can be used to set default values for
-    `HTTPRequest` attributes.  For example::
+    所有 `AsyncHTTPClient` 实现都支持一个 ``defaults`` 关键字参数,
+    可以被用来设置默认 `HTTPRequest` 属性的值. 例如::
 
         AsyncHTTPClient.configure(
             None, defaults=dict(user_agent="MyUserAgent"))
@@ -138,7 +131,7 @@ class AsyncHTTPClient(Configurable):
             defaults=dict(user_agent="MyUserAgent"))
 
     .. versionchanged:: 4.1
-       The ``io_loop`` argument is deprecated.
+       ``io_loop`` 参数被废弃.
     """
     @classmethod
     def configurable_base(cls):
@@ -183,16 +176,15 @@ class AsyncHTTPClient(Configurable):
         self._closed = False
 
     def close(self):
-        """Destroys this HTTP client, freeing any file descriptors used.
+        """销毁该 HTTP 客户端, 释放所有被使用的文件描述符.
 
-        This method is **not needed in normal use** due to the way
-        that `AsyncHTTPClient` objects are transparently reused.
-        ``close()`` is generally only necessary when either the
-        `.IOLoop` is also being closed, or the ``force_instance=True``
-        argument was used when creating the `AsyncHTTPClient`.
+        因为 `AsyncHTTPClient` 对象透明重用的方式, 该方法
+        **在正常使用时并不需要** .
+        ``close()`` 一般只有在`.IOLoop` 也被关闭, 或在创建
+        `AsyncHTTPClient` 的时候使用了 ``force_instance=True`` 参数才需要.
 
-        No other methods may be called on the `AsyncHTTPClient` after
-        ``close()``.
+        在 `AsyncHTTPClient` 调用 ``close()`` 方法后, 其他方法就不能被调用
+        了.
 
         """
         if self._closed:
@@ -204,22 +196,20 @@ class AsyncHTTPClient(Configurable):
             del self._instance_cache[self.io_loop]
 
     def fetch(self, request, callback=None, raise_error=True, **kwargs):
-        """Executes a request, asynchronously returning an `HTTPResponse`.
+        """执行一个请求, 并且异步的返回 `HTTPResponse`.
 
-        The request may be either a string URL or an `HTTPRequest` object.
-        If it is a string, we construct an `HTTPRequest` using any additional
-        kwargs: ``HTTPRequest(request, **kwargs)``
+        request 参数可以是一个 URL 字符串也可以是一个 `HTTPRequest` 对象.
+        如果是一个字符串, 我们将使用全部的关键字参数一起构造一个
+        `HTTPRequest` 对象: ``HTTPRequest(request, **kwargs)``
 
-        This method returns a `.Future` whose result is an
-        `HTTPResponse`.  By default, the ``Future`` will raise an `HTTPError`
-        if the request returned a non-200 response code. Instead, if
-        ``raise_error`` is set to False, the response will always be
-        returned regardless of the response code.
+        这个方法返回一个结果为 `HTTPResponse` 的 `.Future` 对象.
+        默认情况下, 如果该请求返回一个非 200 的响应码, 这个 ``Future``
+        将会抛出一个 `HTTPError` 错误. 相反, 如果 ``raise_error`` 设置为
+        False, 则无论响应码如何, 都将返回该 response (响应).
 
-        If a ``callback`` is given, it will be invoked with the `HTTPResponse`.
-        In the callback interface, `HTTPError` is not automatically raised.
-        Instead, you must check the response's ``error`` attribute or
-        call its `~HTTPResponse.rethrow` method.
+        如果给定了 ``callback`` , 它将被 `HTTPResponse` 调用.
+        在回调接口中, `HTTPError` 不会自动抛出. 相反你必须检查该响应的
+        ``error`` 属性或者调用它的 `~HTTPResponse.rethrow` 方法.
         """
         if self._closed:
             raise RuntimeError("fetch() called on closed AsyncHTTPClient")
@@ -260,21 +250,18 @@ class AsyncHTTPClient(Configurable):
 
     @classmethod
     def configure(cls, impl, **kwargs):
-        """Configures the `AsyncHTTPClient` subclass to use.
+        """配置要使用的 `AsyncHTTPClient` 子类.
 
-        ``AsyncHTTPClient()`` actually creates an instance of a subclass.
-        This method may be called with either a class object or the
-        fully-qualified name of such a class (or ``None`` to use the default,
-        ``SimpleAsyncHTTPClient``)
+        ``AsyncHTTPClient()`` 实际上是创建一个子类的实例.
+        此方法可以使用一个类对象或此类的完全限定名称(或为 ``None`` 则使用默认的,
+        ``SimpleAsyncHTTPClient``) 调用.
 
-        If additional keyword arguments are given, they will be passed
-        to the constructor of each subclass instance created.  The
-        keyword argument ``max_clients`` determines the maximum number
-        of simultaneous `~AsyncHTTPClient.fetch()` operations that can
-        execute in parallel on each `.IOLoop`.  Additional arguments
-        may be supported depending on the implementation class in use.
+        如果给定了额外的关键字参数, 它们将会被传递给创建的每个子类实例的
+        构造函数. 关键字参数 ``max_clients`` 确定了可以在每个 `.IOLoop` 上
+        并行执行的 `~AsyncHTTPClient.fetch()` 操作的最大数量. 根据使用的
+        实现类不同, 可能支持其他参数.
 
-        Example::
+        例如::
 
            AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
         """
@@ -282,7 +269,7 @@ class AsyncHTTPClient(Configurable):
 
 
 class HTTPRequest(object):
-    """HTTP client request object."""
+    """HTTP 客户端请求对象."""
 
     # Default values for HTTPRequest parameters.
     # Merged with the values on the request object by AsyncHTTPClient
@@ -311,109 +298,94 @@ class HTTPRequest(object):
                  client_key=None, client_cert=None, body_producer=None,
                  expect_100_continue=False, decompress_response=None,
                  ssl_options=None):
-        r"""All parameters except ``url`` are optional.
+        r"""除了 ``url`` 以外所有参数都是可选的.
 
-        :arg string url: URL to fetch
-        :arg string method: HTTP method, e.g. "GET" or "POST"
-        :arg headers: Additional HTTP headers to pass on the request
-        :type headers: `~tornado.httputil.HTTPHeaders` or `dict`
-        :arg body: HTTP request body as a string (byte or unicode; if unicode
-           the utf-8 encoding will be used)
-        :arg body_producer: Callable used for lazy/asynchronous request bodies.
-           It is called with one argument, a ``write`` function, and should
-           return a `.Future`.  It should call the write function with new
-           data as it becomes available.  The write function returns a
-           `.Future` which can be used for flow control.
-           Only one of ``body`` and ``body_producer`` may
-           be specified.  ``body_producer`` is not supported on
-           ``curl_httpclient``.  When using ``body_producer`` it is recommended
-           to pass a ``Content-Length`` in the headers as otherwise chunked
-           encoding will be used, and many servers do not support chunked
-           encoding on requests.  New in Tornado 4.0
-        :arg string auth_username: Username for HTTP authentication
-        :arg string auth_password: Password for HTTP authentication
-        :arg string auth_mode: Authentication mode; default is "basic".
-           Allowed values are implementation-defined; ``curl_httpclient``
-           supports "basic" and "digest"; ``simple_httpclient`` only supports
-           "basic"
-        :arg float connect_timeout: Timeout for initial connection in seconds
-        :arg float request_timeout: Timeout for entire request in seconds
-        :arg if_modified_since: Timestamp for ``If-Modified-Since`` header
-        :type if_modified_since: `datetime` or `float`
-        :arg bool follow_redirects: Should redirects be followed automatically
-           or return the 3xx response?
-        :arg int max_redirects: Limit for ``follow_redirects``
-        :arg string user_agent: String to send as ``User-Agent`` header
-        :arg bool decompress_response: Request a compressed response from
-           the server and decompress it after downloading.  Default is True.
-           New in Tornado 4.0.
-        :arg bool use_gzip: Deprecated alias for ``decompress_response``
-           since Tornado 4.0.
-        :arg string network_interface: Network interface to use for request.
-           ``curl_httpclient`` only; see note below.
-        :arg callable streaming_callback: If set, ``streaming_callback`` will
-           be run with each chunk of data as it is received, and
-           ``HTTPResponse.body`` and ``HTTPResponse.buffer`` will be empty in
-           the final response.
-        :arg callable header_callback: If set, ``header_callback`` will
-           be run with each header line as it is received (including the
-           first line, e.g. ``HTTP/1.0 200 OK\r\n``, and a final line
-           containing only ``\r\n``.  All lines include the trailing newline
-           characters).  ``HTTPResponse.headers`` will be empty in the final
-           response.  This is most useful in conjunction with
-           ``streaming_callback``, because it's the only way to get access to
-           header data while the request is in progress.
-        :arg callable prepare_curl_callback: If set, will be called with
-           a ``pycurl.Curl`` object to allow the application to make additional
-           ``setopt`` calls.
-        :arg string proxy_host: HTTP proxy hostname.  To use proxies,
-           ``proxy_host`` and ``proxy_port`` must be set; ``proxy_username`` and
-           ``proxy_pass`` are optional.  Proxies are currently only supported
-           with ``curl_httpclient``.
-        :arg int proxy_port: HTTP proxy port
-        :arg string proxy_username: HTTP proxy username
-        :arg string proxy_password: HTTP proxy password
-        :arg bool allow_nonstandard_methods: Allow unknown values for ``method``
-           argument?
-        :arg bool validate_cert: For HTTPS requests, validate the server's
-           certificate?
-        :arg string ca_certs: filename of CA certificates in PEM format,
-           or None to use defaults.  See note below when used with
-           ``curl_httpclient``.
-        :arg string client_key: Filename for client SSL key, if any.  See
-           note below when used with ``curl_httpclient``.
-        :arg string client_cert: Filename for client SSL certificate, if any.
-           See note below when used with ``curl_httpclient``.
-        :arg ssl.SSLContext ssl_options: `ssl.SSLContext` object for use in
-           ``simple_httpclient`` (unsupported by ``curl_httpclient``).
-           Overrides ``validate_cert``, ``ca_certs``, ``client_key``,
-           and ``client_cert``.
-        :arg bool allow_ipv6: Use IPv6 when available?  Default is true.
-        :arg bool expect_100_continue: If true, send the
-           ``Expect: 100-continue`` header and wait for a continue response
-           before sending the request body.  Only supported with
-           simple_httpclient.
+        :arg string url: fetch 的 URL
+        :arg string method: HTTP 方法, e.g. "GET" or "POST"
+        :arg headers: 额外的 HTTP 请求头
+        :type headers: `~tornado.httputil.HTTPHeaders` 或 `dict`
+        :arg body: HTTP 请求体字符串 (byte 或 unicode; 如果是 unicode
+           则使用 utf-8 编码)
+        :arg body_producer: 可以被用于延迟/异步请求体调用.
+           它可以被调用, 带有一个参数, 一个 ``write`` 函数, 并应该
+           返回一个 `.Future` 对象.  它应该在新的数据可用时调用 write 函数.
+           write 函数返回一个可用于流程控制的 `.Future` 对象.
+           只能指定 ``body`` 和 ``body_producer`` 其中之一.
+           ``body_producer`` 不被 ``curl_httpclient`` 支持.
+           当使用 ``body_producer`` 时, 建议传递一个
+           ``Content-Length`` 头, 否则将使用其他的分块编码,
+           并且很多服务断不支持请求的分块编码.  Tornado 4.0 新增
+        :arg string auth_username: HTTP 认证的用户名
+        :arg string auth_password: HTTP 认证的密码
+        :arg string auth_mode: 认证模式; 默认是 "basic".
+           所允许的值是根据实现方式定义的; ``curl_httpclient``
+           支持 "basic" 和 "digest"; ``simple_httpclient`` 只支持 "basic"
+        :arg float connect_timeout: 初始化连接的超时时间
+        :arg float request_timeout: 整个请求的超时时间
+        :arg if_modified_since: ``If-Modified-Since`` 头的时间戳
+        :type if_modified_since: `datetime` 或 `float`
+        :arg bool follow_redirects: 是否应该自动跟随重定向还是返回 3xx 响应?
+        :arg int max_redirects: ``follow_redirects`` 的最大次数限制
+        :arg string user_agent: ``User-Agent`` 头
+        :arg bool decompress_response: 从服务器请求一个压缩过的响应, 在下载
+           后对其解压缩.  默认是 True.
+           Tornado 4.0 新增.
+        :arg bool use_gzip: ``decompress_response`` 的别名从 Tornado 4.0 已弃用.
+        :arg string network_interface: 请求所使用的网络接口.
+           只有 ``curl_httpclient`` ; 请看下面的备注.
+        :arg callable streaming_callback: 如果设置了, ``streaming_callback`` 将
+           用它接收到的数据块执行, 并且
+           ``HTTPResponse.body`` 和 ``HTTPResponse.buffer`` 在最后的响应中将为空.
+        :arg callable header_callback: 如果设置了, ``header_callback`` 将
+           在接收到每行头信息时运行(包括第一行, e.g. ``HTTP/1.0 200 OK\r\n``,
+           最后一行只包含 ``\r\n``.  所有行都包含结尾的换行符).
+           ``HTTPResponse.headers`` 在最终响应中将为空.  这与
+           ``streaming_callback`` 结合是最有用的, 因为它是在请求正在进行时
+           访问头信息唯一的方法.
+        :arg callable prepare_curl_callback: 如果设置, 将使用
+           ``pycurl.Curl`` 对象调用, 以允许应用程序进行额外的
+           ``setopt`` 调用.
+        :arg string proxy_host: HTTP 代理主机名.  如果想要使用代理,
+           ``proxy_host`` 和 ``proxy_port`` 必须设置; ``proxy_username`` 和
+           ``proxy_pass`` 是可选项.  目前只有 ``curl_httpclient`` 支持代理.
+        :arg int proxy_port: HTTP 代理端口
+        :arg string proxy_username: HTTP 代理用户名
+        :arg string proxy_password: HTTP 代理密码
+        :arg bool allow_nonstandard_methods: 允许 ``method`` 参数使用未知值?
+        :arg bool validate_cert: 对于 HTTPS 请求, 是否验证服务器的证书?
+        :arg string ca_certs: PEM 格式的 CA 证书的文件名, 或者默认为 None.
+           当与 ``curl_httpclient`` 一起使用时参阅下面的注释.
+        :arg string client_key: 客户端 SSL key 文件名(如果有).
+           当与 ``curl_httpclient`` 一起使用时参阅下面的注释.
+        :arg string client_cert: 客户端 SSL 证书的文件名(如果有).
+           当与 ``curl_httpclient`` 一起使用时参阅下面的注释.
+        :arg ssl.SSLContext ssl_options: 用在
+           ``simple_httpclient`` (``curl_httpclient`` 不支持) 的
+           `ssl.SSLContext` 对象.
+           覆写 ``validate_cert``, ``ca_certs``, ``client_key``,
+           和 ``client_cert``.
+        :arg bool allow_ipv6: 当 IPv6 可用时是否使用?  默认是 true.
+        :arg bool expect_100_continue: 如果为 true, 发送
+           ``Expect: 100-continue`` 头并在发送请求体前等待继续响应.
+           只被 simple_httpclient 支持.
 
-        .. note::
+        .. 注意::
 
-            When using ``curl_httpclient`` certain options may be
-            inherited by subsequent fetches because ``pycurl`` does
-            not allow them to be cleanly reset.  This applies to the
-            ``ca_certs``, ``client_key``, ``client_cert``, and
-            ``network_interface`` arguments.  If you use these
-            options, you should pass them on every request (you don't
-            have to always use the same values, but it's not possible
-            to mix requests that specify these options with ones that
-            use the defaults).
+            当使用 ``curl_httpclient`` 时, 某些选项可能会被后续获取
+            的继承, 因为 ``pycurl`` 不允许它们被彻底重置.  这适用于
+            ``ca_certs``, ``client_key``, ``client_cert``, 和
+            ``network_interface`` 参数. 如果你使用这些参数, 你应该在
+            每次请求中都传递它们(你不必总使用相同的值, 但不能混合
+            指定了这些参数和使用默认参数的请求).
 
         .. versionadded:: 3.1
-           The ``auth_mode`` argument.
+           ``auth_mode`` 参数.
 
         .. versionadded:: 4.0
-           The ``body_producer`` and ``expect_100_continue`` arguments.
+           ``body_producer`` 和 ``expect_100_continue`` 参数.
 
         .. versionadded:: 4.2
-           The ``ssl_options`` argument.
+           ``ssl_options`` 参数.
         """
         # Note that some of these attributes go through property setters
         # defined below.
@@ -508,34 +480,33 @@ class HTTPRequest(object):
 
 
 class HTTPResponse(object):
-    """HTTP Response object.
+    """HTTP 响应对象.
 
-    Attributes:
+    属性:
 
-    * request: HTTPRequest object
+    * request: HTTPRequest 对象
 
-    * code: numeric HTTP status code, e.g. 200 or 404
+    * code: HTTP 状态码数值, e.g. 200 或 404
 
-    * reason: human-readable reason phrase describing the status code
+    * reason: 人类可读的, 对状态码原因的简短描述
 
-    * headers: `tornado.httputil.HTTPHeaders` object
+    * headers: `tornado.httputil.HTTPHeaders` 对象
 
-    * effective_url: final location of the resource after following any
-      redirects
+    * effective_url: 跟随重定向后资源的最后位置
 
-    * buffer: ``cStringIO`` object for response body
+    * buffer: 响应体的 ``cStringIO`` 对象
 
-    * body: response body as string (created on demand from ``self.buffer``)
+    * body: string 化的响应体 (从 ``self.buffer`` 的需求创建)
 
-    * error: Exception object, if any
+    * error: 任何异常对象
 
-    * request_time: seconds from request start to finish
+    * request_time: 请求开始到结束的时间(秒)
 
-    * time_info: dictionary of diagnostic timing information from the request.
-      Available data are subject to change, but currently uses timings
-      available from http://curl.haxx.se/libcurl/c/curl_easy_getinfo.html,
-      plus ``queue``, which is the delay (if any) introduced by waiting for
-      a slot under `AsyncHTTPClient`'s ``max_clients`` setting.
+    * time_info: 来自请求的诊断时间信息的字典.
+      可用数据可能会更改, 不过当前在用的时间信息是
+      http://curl.haxx.se/libcurl/c/curl_easy_getinfo.html,
+      加上 ``queue``, 这是通过等待在 `AsyncHTTPClient` 的 ``max_clients``
+      设置下的插槽引入的延迟(如果有的话).
     """
     def __init__(self, request, code, headers=None, buffer=None,
                  effective_url=None, error=None, request_time=None,
@@ -578,7 +549,7 @@ class HTTPResponse(object):
     body = property(_get_body)
 
     def rethrow(self):
-        """If there was an error on the request, raise an `HTTPError`."""
+        """如果请求中有错误发生, 将抛出一个 `HTTPError`."""
         if self.error:
             raise self.error
 
@@ -588,18 +559,18 @@ class HTTPResponse(object):
 
 
 class HTTPError(Exception):
-    """Exception thrown for an unsuccessful HTTP request.
+    """一个 HTTP 请求失败后抛出的异常.
 
-    Attributes:
+    属性:
 
-    * ``code`` - HTTP error integer error code, e.g. 404.  Error code 599 is
-      used when no HTTP response was received, e.g. for a timeout.
+    * ``code`` - 整数的 HTTP 错误码, e.g. 404. 当没有接收到 HTTP 响应时
+      将会使用 599 错误码, e.g. 超时.
 
-    * ``response`` - `HTTPResponse` object, if any.
+    * ``response`` - 全部的 `HTTPResponse` 对象.
 
-    Note that if ``follow_redirects`` is False, redirects become HTTPErrors,
-    and you can look at ``error.response.headers['Location']`` to see the
-    destination of the redirect.
+    注意如果 ``follow_redirects`` 为 False, 重定向将导致 HTTPErrors,
+    并且你可以通过 ``error.response.headers['Location']`` 查看重定向的
+    描述.
     """
     def __init__(self, code, message=None, response=None):
         self.code = code
@@ -612,9 +583,9 @@ class HTTPError(Exception):
 
 
 class _RequestProxy(object):
-    """Combines an object with a dictionary of defaults.
+    """将对象和默认字典相结合.
 
-    Used internally by AsyncHTTPClient implementations.
+    本质上是被 AsyncHTTPClient 的实现使用.
     """
     def __init__(self, request, defaults):
         self.request = request

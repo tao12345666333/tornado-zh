@@ -1,9 +1,9 @@
-``tornado.httpclient`` --- Asynchronous HTTP client
+``tornado.httpclient`` --- 异步 HTTP 客户端
 ===================================================
 
 .. automodule:: tornado.httpclient
 
-   HTTP client interfaces
+   HTTP 客户端接口
    ----------------------
 
    .. autoclass:: HTTPClient
@@ -12,22 +12,22 @@
    .. autoclass:: AsyncHTTPClient
       :members:
 
-   Request objects
+   Request 对象
    ---------------
    .. autoclass:: HTTPRequest
       :members:
    
-   Response objects
+   Response 对象
    ----------------
    .. autoclass:: HTTPResponse
       :members:
 
-   Exceptions
+   异常
    ----------
    .. autoexception:: HTTPError
       :members:
 
-   Command-line interface
+   Command-line 接口
    ----------------------
 
    This module provides a simple command-line interface to fetch a url
