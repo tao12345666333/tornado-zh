@@ -371,15 +371,12 @@ class HTTPRequest(object):
 
         .. 注意::
 
-            When using ``curl_httpclient`` certain options may be
-            inherited by subsequent fetches because ``pycurl`` does
-            not allow them to be cleanly reset.  This applies to the
-            ``ca_certs``, ``client_key``, ``client_cert``, and
-            ``network_interface`` arguments.  If you use these
-            options, you should pass them on every request (you don't
-            have to always use the same values, but it's not possible
-            to mix requests that specify these options with ones that
-            use the defaults).
+            当使用 ``curl_httpclient`` 时, 某些选项可能会被后续获取
+            的继承, 因为 ``pycurl`` 不允许它们被彻底重置.  这适用于
+            ``ca_certs``, ``client_key``, ``client_cert``, 和
+            ``network_interface`` 参数. 如果你使用这些参数, 你应该在
+            每次请求中都传递它们(你不必总使用相同的值, 但不能混合
+            指定了这些参数和使用默认参数的请求).
 
         .. versionadded:: 3.1
            ``auth_mode`` 参数.
