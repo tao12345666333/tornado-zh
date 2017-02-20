@@ -1,9 +1,9 @@
-``tornado.ioloop`` --- Main event loop
+``tornado.ioloop`` --- 主要的事件循环
 ======================================
 
 .. automodule:: tornado.ioloop
 
-   IOLoop objects
+   IOLoop 对象
    --------------
 
    .. autoclass:: IOLoop
