@@ -180,7 +180,7 @@ class AsyncHTTPClient(Configurable):
 
         因为 `AsyncHTTPClient` 对象透明重用的方式, 该方法
         **在正常使用时并不需要** .
-        ``close()`` 一般只有在`.IOLoop` 也被关闭, 或在创建
+        ``close()`` 一般只有在 `.IOLoop` 也被关闭, 或在创建
         `AsyncHTTPClient` 的时候使用了 ``force_instance=True`` 参数才需要.
 
         在 `AsyncHTTPClient` 调用 ``close()`` 方法后, 其他方法就不能被调用
