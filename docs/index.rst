@@ -82,6 +82,7 @@ Tornado的源码托管在 `hosted on GitHub
 **平台**: Tornado可以运行在任何类Unix平台上,虽然为了最好的性能和可扩展性
 只有Linux(使用 ``epoll``)和BSD(使用 ``kqueue``)是推荐的产品部署环境(尽管Mac OS X通过BSD发展来并且支持kqueue,但它的网络质量很差，所以它只适合开发使用)
 Tornado也可以运行在Windows上，虽然它的配置不是官方支持的,同时也仅仅推荐开发使用.
+windows平台上Tornado需要`WindowsSelectorEventLoop`。在python3.7及更早的版本中默认是这个事件循环，但是python3.8默认的事件循环跟tornado并不兼容。所以python3.8在使用Tornado时必须在main文件/函数的开始调用`asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())`
 
 文档
 -------------
