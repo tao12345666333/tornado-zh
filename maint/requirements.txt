@@ -28,7 +28,7 @@ virtualenv==13.1.2
 
 # Indirect dependencies
 alabaster==0.7.6
-Babel==2.1.1
+Babel==2.9.1
 docutils==0.12
 Jinja2==2.8
 MarkupSafe==0.23
