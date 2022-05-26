@@ -10,7 +10,7 @@
 certifi==2015.9.6.2
 
 # Tornado's optional dependencies
-Twisted==15.4.0
+Twisted==22.4.0
 pycares==1.0.0
 pycurl==7.19.5.1
 
