@@ -7,7 +7,7 @@
 # Use virtualenv instead of venv; tox seems to get confused otherwise.
 
 # Tornado's required dependencies
-certifi==2015.9.6.2
+certifi==2022.12.7
 
 # Tornado's optional dependencies
 Twisted==15.4.0
